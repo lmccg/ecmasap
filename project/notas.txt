@@ -1,0 +1,5 @@
+Modelos de ML:
+ mensagem - [train / predict] <ML> <input>
+    * ML -> pode ser regressores ou classificadores (if else para saber qual usar, testar se funciona usar uma classe instanciada n vezes)
+
+norm_test_data inclui x e y normalizados

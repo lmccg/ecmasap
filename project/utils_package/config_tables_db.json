@@ -1,0 +1,79 @@
+{
+  "units_binary": ["binary", "activity", ""],
+  "binary_columns": [
+      "n101_activity_analytics",
+        "n102_activity_analytics",
+        "n103_activity_analytics",
+        "hallway_zone4_activity_analytics",
+        "n101_activity_resource",
+        "n102_activity_resource",
+        "n103_activity_resource",
+        "hallway_zone4_activity_resource",
+        "n101_ac_state",
+        "n102_ac_state",
+        "n103_ac_state",
+        "hallway_ac_state",
+        "door_101",
+        "door_102",
+        "door_103",
+        "movement_sensors",
+        "n102_1",
+        "n102_2",
+        "n102_3",
+        "n102_4",
+        "n103_1",
+        "n103_2"],
+  "state_columns": {
+    "n101_ac_state": {"on": 1, "off": -1, "standby": 0},
+        "n102_ac_state":{"on": 1, "off": -1, "standby": 0},
+        "n103_ac_state":{"on": 1, "off": -1, "standby": 0},
+        "hallway_ac_state": {"on": 1, "off": -1, "standby": 0}
+  },
+  "columns_with_sunny_time": ["pv",
+        "outdoor_temp",
+        "outdoor_temp_meteo_station",
+        "solar_radiation",
+        "rainfall_rate",
+        "wind_speed",
+        "outdoor_humidity",
+        "outdoor_dew_point"],
+  "tables": [
+    {
+      "emul": [
+        "n101_activity_analytics",
+        "n102_activity_analytics",
+        "n103_activity_analytics",
+        "hallway_zone4_activity_analytics"
+      ]
+    },
+    {
+      "cons_zone1": [
+        "cons_total"
+      ]
+    },
+    {
+      "cons_hallway_zone4": [
+        "cons_total"
+      ]
+    },
+    {
+      "gen_rooftop": [
+        "pv"
+      ]
+    },
+    {
+      "sensors_zone1": [
+        "lights_101",
+        "temperature_101",
+        "lights_102",
+        "temperature_102",
+        "lights_103",
+        "temperature_103"
+      ]
+    },
+    {
+      "sensors_hallway_zone4": [
+        "lights"]
+    }
+  ]
+}

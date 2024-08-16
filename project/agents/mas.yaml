@@ -1,0 +1,55 @@
+defaults:
+    domain: ecmasap.gecad.isep.ipp.pt
+    log_level: DEBUG
+agents:
+    db_agent:
+        resource: db_agent
+        file: DBAgent.py
+    evaluator_agent:
+        resource: evaluator_agent
+        file: EvaluatorAgent.py
+    historical_data_agent:
+        resource: historical_data_agent
+        file: HistoricalDataAgent.py
+    main_agent:
+        resource: main_agent
+        file: MainAgent.py
+    ml_model_1_agent:
+        resource: ml_model_1_agent
+        file: MLModelAgent.py
+    ml_model_2_agent:
+        resource: ml_model_2_agent
+        file: MLModelAgent.py
+    ml_model_3_agent:
+        resource: ml_model_3_agent
+        file: MLModelAgent.py
+    ml_model_4_agent:
+        resource: ml_model_4_agent
+        file: MLModelAgent.py
+    ml_model_5_agent:
+        resource: ml_model_5_agent
+        file: MLModelAgent.py
+    ml_model_6_agent:
+        resource: ml_model_6_agent
+        file: MLModelAgent.py
+    ml_model_7_agent:
+        resource: ml_model_7_agent
+        file: MLModelAgent.py
+    ml_model_8_agent:
+        resource: ml_model_8_agent
+        file: MLModelAgent.py
+    publisher_agent:
+        resource: publisher_agent
+        file: PublisherAgent.py
+    rl_retrain_agent:
+        resource: rl_retrain_agent
+        file: RLRetrainAgent.py
+    rl_selector_agent:
+        resource: rl_selector_agent
+        file: RLSelectorAgent.py
+    rules_agent:
+        resource: rules_agent
+        file: RulesAgent.py
+    target_agent:
+        resource: target_agent
+        file: TargetAgent.py
