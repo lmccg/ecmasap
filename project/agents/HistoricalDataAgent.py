@@ -13,16 +13,16 @@ class TargetAgent(Agent):
                     config_urls = json.load(config_file)
                 with open('../utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
-                with open('../utils_package/config_dataset.json') as config_file:
-                    config_dataset = json.load(config_file)
+                with open('../utils_package/config_tables_db.json') as config_file:
+                    config_tables_db = json.load(config_file)
                 input_data = msg.body
                 input_data = json.loads(input_data)
 
                 # Make an async HTTP request to the external service
-                data = await self.obtain_data(input_data, config_settings, config_urls, config_dataset)
+                data = await self.obtain_data(input_data, config_settings, config_urls, config_tables_db)
                 response_msg = msg.make_reply()
                 response_msg.set_metadata("performative", "inform")
-                response_msg.body = str(data)
+                response_msg.body = json.dumps(data)
                 await self.send(response_msg)
                 print(f"Data sent back to {msg.sender}: {data}")
 
@@ -61,98 +61,99 @@ class TargetAgent(Agent):
                 new_url = await self.replaceFields(url_data, fields, data)
                 async with aiohttp.ClientSession() as session:
                     async with session.get(new_url, timeout=time_out_val) as response:
-                        err = await response.json()
+                        await response.json()
                         status_code = response.status
                 if status_code in config_settings.get('errors').values():
                     return -2, None, None, None, None, None, None, None, None
-                found_columns = False
                 url_resources = config_urls.get("url_resources")
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url_resources, timeout=time_out_val) as response:
                         response_resources = await response.json()
                 resources_list = response_resources.get('resources')
-                with open('./tablesData.json') as f:
+                with open('../utils_package/tablesData.json') as f:
                     tables_for_dataset = json.load(f)
                 columns_table = tables_for_dataset.get(dataset_type).get(table)
                 column_for_that_value = columns_table.get(column)
-                dict_columns = {}
+                list_columns = []
                 for c in column_for_that_value:
                     if isinstance(c, dict):
                         for new_table, other_col in c.items():
                             for col in other_col:
-                                dict_columns.update({col: new_table})
+                                list_columns.append({col: new_table})
                     else:
-                        dict_columns.update({c: table})
+                        list_columns.append({c: table})
                 final_df = pd.DataFrame()
                 first_one = True
-                for new_col, new_table in dict_columns.items():
-                    data = [str(frequency), new_table, new_col, start_date, end_date, start_time, end_time]
-                    new_url = await self.replaceFields(url_data, fields, data)
-                    async with aiohttp.ClientSession() as session:
-                        async with session.get(new_url, timeout=time_out_val) as response:
-                            resp_data = await response.json()
-                            status_code = response.status
-                    # logging.info(
-                    #     f'[{str(Utils.timestamp_with_time_zone())}] [mlt] {str(table)} {str(column)}: url {str(new_url)} {str(status_code)}')
-                    if status_code in config_errors:
-                        return -2, None, None, None, None, None, None, None, None
-                    if isinstance(resp_data, list):
-                        # print(Utils.timestamp_with_time_zone(), 'list')
-                        if len(resp_data) > 0:
-                            first_row = resp_data[0]
+                for dict_columns in list_columns:
+                    for new_col, new_table in dict_columns.items():
+                        data = [str(frequency), new_table, new_col, start_date, end_date, start_time, end_time]
+                        new_url = await self.replaceFields(url_data, fields, data)
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(new_url, timeout=time_out_val) as response:
+                                resp_data = await response.json()
+                                status_code = response.status
+                        if status_code in config_errors:
+                            return -2, None, None, None, None, None, None, None, None
+                        if isinstance(resp_data, list):
+                            if len(resp_data) > 0:
+                                first_row = resp_data[0]
+                            else:
+                                first_row = resp_data
                         else:
-                            first_row = resp_data
-                    else:
-                        try:
-                            if not isinstance(resp_data, dict):
-                                resp_data = json.loads(resp_data)
-                            first_row = resp_data
-                            resp_data = [resp_data]
-                        except Exception as ex:
-                            resp_data = []
-                            first_row = {}
-                    if new_col == column:
-                        try:
-                            unit_target = first_row['unit']
-                        except Exception as ex:
-                            found_unit = False
-                            for entry in resources_list:
-                                if entry.get('name') == table:
-                                    properties = entry.get('properties')
-                                    for p in properties:
-                                        if p.get('name') == column:
-                                            unit_target = p.get('unit')
-                                            found_unit = True
+                            try:
+                                if not isinstance(resp_data, dict):
+                                    resp_data = json.loads(resp_data)
+                                first_row = resp_data
+                                resp_data = [resp_data]
+                            except Exception as ex:
+                                resp_data = []
+                                first_row = {}
+                        if new_col == column:
+                            try:
+                                unit_target = first_row['unit']
+                            except Exception as ex:
+                                found_unit = False
+                                for entry in resources_list:
+                                    if entry.get('name') == table:
+                                        properties = entry.get('properties')
+                                        for p in properties:
+                                            if p.get('name') == column:
+                                                unit_target = p.get('unit')
+                                                found_unit = True
+                                                break
+                                        if found_unit:
                                             break
-                                    if found_unit:
-                                        break
-                    try:
-                        dataframe_column = [date_column, new_col]
-                        new_df = pd.DataFrame(columns=dataframe_column)
-                        # print(Utils.timestamp_with_time_zone(), 'line 239')
-                        col_data = []
-                        date_col = []
-                        for entry in resp_data:
-                            first_row = True
-                            # print('index', index, 'value', entry.get('value'))
-                            if isinstance(entry.get('value'), str):
-                                if new_col not in categorical_columns and new_col != column:
-                                    categorical_columns.append(new_col)
-                                col_data.append(entry.get('value'))
-                            else:
-                                col_data.append(entry.get('value'))
-                            date_value = entry.get('start_at')
-                            date_col.append(date_value)
-                        if len(date_col) > 0:
-                            new_df[new_col] = col_data
-                            new_df[date_column] = date_col
-                            if first_one:
-                                final_df = new_df.copy()
-                                first_one = False
-                            else:
-                                final_df = pd.merge(final_df, new_df, how='inner', on=[date_column])
-                    except Exception as e:
-                        pass
+                            new_col_df = column
+                        else:
+                            new_col_df = new_table + "_" + new_col
+                        try:
+
+                            dataframe_column = [date_column, new_col_df]
+                            new_df = pd.DataFrame(columns=dataframe_column)
+                            # print(Utils.timestamp_with_time_zone(), 'line 239')
+                            col_data = []
+                            date_col = []
+                            for entry in resp_data:
+                                first_row = True
+                                # print('index', index, 'value', entry.get('value'))
+                                if isinstance(entry.get('value'), str):
+                                    if new_col_df not in categorical_columns and new_col_df != column:
+                                        categorical_columns.append(new_col_df)
+                                    col_data.append(entry.get('value'))
+                                else:
+                                    col_data.append(entry.get('value'))
+                                date_value = entry.get('start_at')
+                                date_col.append(date_value)
+                            if len(date_col) > 0:
+                                new_df[new_col_df] = col_data
+                                new_df[date_column] = date_col
+                                if first_one:
+                                    final_df = new_df.copy()
+                                    first_one = False
+                                else:
+                                    final_df = pd.merge(final_df, new_df, how='inner', on=[date_column])
+                        except Exception as e:
+                            pass
                 new_df = final_df
                 new_df = new_df[[col for col in new_df.columns if col != column] + [column]]
                 response = await self.fix_dataset(new_df, start_date, end_date, start_time, end_time, frequency,
@@ -343,7 +344,7 @@ class TargetAgent(Agent):
             df3 = df3.drop(columns='dayofweek')
             df_dataset = df3.values
             df_dataset = df_dataset.tolist()
-            return df_dataset
+            return df_dataset, date_columm, datetimeFormat
 
         async def replaceFields(self, url, fields, data):
             newUrl = url
