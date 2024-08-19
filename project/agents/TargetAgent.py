@@ -23,22 +23,21 @@ class TargetAgent(Agent):
                     process = False
                 if process:
                     print(parts_of_msg)
-                    with open('../utils_package/config_data.json') as config_file:
-                        config_data = json.load(config_file)
-                    model_type = config_data.get("model_type").get(target)
                     with open('../utils_package/config_agents.json') as config_file:
                         config_agents = json.load(config_file)
                     with open('../utils_package/config_settings.json') as config_file:
                         config_settings = json.load(config_file)
-                    with open('../utils_package/config_dataset.json') as config_file:
-                        config_dataset = json.load(config_file)
+                    with open('../utils_package/tablesData.json') as config_file:
+                        tables_dataset = json.load(config_file)
                     datetime_format = config_settings.get('datetime_format')
                     if request_type == 'predict':
                         first_start_timestamp, last_end_timestamp, request_data = await self.fix_timestamps(request_data,
                                                                                                       datetime_format)
                     elif request_type == 'train' or request_type == 'retrain':
                         _, _, request_data = await self.fix_timestamps(request_data, datetime_format)
-
+                    dataset_type, request_data = await self.checkDatasetType(request_data, datetime_format)
+                    table_target = request_data['target_table']
+                    model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
                     agents = config_agents['ml_model_agents'][model_type]
                     # get the historical data
                     historical_data_agent = config_agents["historical_data_agent"]
@@ -46,15 +45,15 @@ class TargetAgent(Agent):
                     msg_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
                     if isinstance(request_data, dict):
                         request_data = json.dumps(request_data)
-                    # todo: insert dataset_type in request_data
                     msg_data.body = request_data
                     await self.send(msg_data)
                     response = await self.receive(timeout=60)
-                    input_data = []
+                    input_dataset = []
                     if response:
                         if response.get_metadata("performative") == "inform":
                             input_data = response.body
-
+                            input_data = json.loads(input_data)
+                    input_dataset = input_data[0]
                     # ask predictions
                     if request_type == 'predict':
                         # get the models to predict
@@ -63,22 +62,20 @@ class TargetAgent(Agent):
                         msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
                         if not isinstance(request_data, dict):
                             request_data = json.loads(request_data)
-                        dataset_type = await self.checkDatasetType(request_data, datetime_format)
 
-                        request_data = await self.get_input_characterization_predict(request_data, config_dataset,
+                        request_data = await self.get_input_characterization_predict(request_data, tables_dataset,
                                                                                      dataset_type, first_start_timestamp,
                                                                                      last_end_timestamp)
                         if isinstance(request_data, dict):
                             request_data = json.dumps(request_data)
-                        msg.body = dataset_type + "|" + target + "|" + request_data
+                        msg.body = request_data
                         await self.send(msg)
                         response = await self.receive(timeout=60)
-                        # todo: ver estrutura models
-
-                        models = {}
+                        models = []
                         if response:
                             if response.get_metadata("performative") == "inform":
                                 models = response.body
+                                models = json.loads(models)
 
                         # Wait for a response
                         print('lets send some requests')
@@ -86,17 +83,20 @@ class TargetAgent(Agent):
                         predict_one_model = False
                         while models:
                             entry = models.pop(0)
-                            agent, model = next(iter(entry.items()))
-                            # agent = entry['agent']
-                            # model = entry['model']
+                            ml_model = entry['agent']
+                            type_model = entry['model_type']
+                            agents = config_agents['ml_model_agents'][type_model]
+                            agent = next((key for key, value in agents.items() if value.lower() == ml_model.lower()),
+                                         None)
+                            model = entry['model_id']
                             #model é model id e model id será o meu boolean
                             result = await self._send_and_collect_response(request_type, agent, model, request_data,
-                                                                           input_data, False)
+                                                                           input_dataset, False)
                             if result != 'Failed':
                                 predict_one_model = True
                                 response_msg = msg.make_reply()
                                 response_msg.set_metadata("performative", "inform")
-                                response_msg.body = str(result)
+                                response_msg.body = json.dumps(result)
                                 await self.send(response_msg)
                                 break
                         if not predict_one_model:
@@ -106,10 +106,16 @@ class TargetAgent(Agent):
                             await self.send(response_msg)
 
                         if models:
-                            for agent, model in models.items():
-                                print(agent, model)
+                            for entry in models:
+                                ml_model = entry['agent']
+                                type_model = entry['model_type']
+                                agents = config_agents['ml_model_agents'][type_model]
+                                agent = next(
+                                    (key for key, value in agents.items() if value.lower() == ml_model.lower()),
+                                    None)
+                                model = entry['model_id']
                                 #model é model id
-                                task = self._send_and_collect_response(request_type, agent, model, request_data, input_data,
+                                task = self._send_and_collect_response(request_type, agent, model, request_data, input_dataset,
                                                                        True)
                                 tasks.append(task)
                             await asyncio.gather(*tasks)
@@ -119,6 +125,9 @@ class TargetAgent(Agent):
                             response_msg.body = "Request executed!"
                             await self.send(response_msg)
                     elif request_type == 'train':
+                        date_column = input_data[1]
+                        datetimeFormat = input_data[2]
+                        categorical_columns = input_data[3]
                         dataset_types = config_settings.get('possible_data_types')
                         dataset_types = list(dataset_types.keys())
                         response = msg.make_reply()
@@ -126,28 +135,30 @@ class TargetAgent(Agent):
                         response.body = "Requested train"
                         await self.send(response)
                         training_dates = await self.get_training_dates(request_data, config_settings)
-                        request_data = await self.get_input_characterization_train(request_data, config_dataset,
-                                                                                     training_dates)
+                        request_data = await self.get_input_characterization_train(request_data, tables_dataset,
+                                                                                     training_dates, date_column, datetimeFormat, categorical_columns)
                         asyncio.create_task(
-                            self.run_train_in_background(request_data, request_type, input_data, dataset_types, agents))
+                            self.run_train_in_background(request_data, request_type, input_dataset, dataset_types, agents))
                     elif request_type == 'retrain':
+                        date_column = input_data[1]
+                        datetimeFormat = input_data[2]
+                        categorical_columns = input_data[3]
                         response = msg.make_reply()
                         response.set_metadata("performative", "inform")
                         response.body = "Requested retrain"
                         await self.send(response)
                         model_id = parts_of_msg[3]
                         training_dates = await self.get_training_dates(request_data, config_settings)
-                        request_data = await self.get_input_characterization_train(request_data, config_dataset,
-                                                                                   training_dates)
+                        request_data = await self.get_input_characterization_train(request_data, tables_dataset,
+                                                                                   training_dates, date_column, datetimeFormat, categorical_columns)
                         asyncio.create_task(
-                            self.run_retrain_in_background(request_data, request_type, input_data, model_id))
+                            self.run_retrain_in_background(request_data, request_type, input_dataset, model_id, agents))
                 else:
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
                     response_msg.body = "Please fix the timestamps provided! For train and retrain is mandatory to have 'end_date' and 'end_time' fields. For predict is mandatory to have 'start_date' and 'start_time' fields"
                     await self.send(response_msg)
         async def run_train_in_background(self, request_data, request_type, input_data, dataset_types, agents):
-            results = []
             tasks = []
             for dataset_type in dataset_types:
                 for agent, model in agents.items():
@@ -156,8 +167,7 @@ class TargetAgent(Agent):
                     request_data['dataset_type'] = dataset_type
                     if isinstance(request_data, dict):
                         request_data = json.dumps(request_data)
-                    task = self._send_and_collect_response(request_type, agent, model, request_data, input_data,
-                                                           results)
+                    task = self._send_and_collect_response(request_type, agent, model, request_data, input_data)
                     tasks.append(task)
             await asyncio.gather(*tasks)
 
@@ -180,14 +190,16 @@ class TargetAgent(Agent):
                               'end_time': end_time}
             return training_dates
 
-        async def run_retrain_in_background(self, request_data, request_type, input_data, model_id):
+        async def run_retrain_in_background(self, request_data, request_type, input_data, model_id, agents):
             if not isinstance(request_data, dict):
                 request_data = json.loads(request_data)
-            agent = request_data['agent']
             model = request_data['model']
+            agent = next(
+                (key for key, value in agents.items() if value.lower() == model.lower()),
+                None)
             if isinstance(request_data, dict):
                 request_data = json.dumps(request_data)
-            result = await self._send_and_collect_response(request_type, agent, model, request_data, input_data,
+            await self._send_and_collect_response(request_type, agent, model, request_data, input_data,
                                                            model_id)
 
         async def round_to_frequency(self, dt, frequency_minutes, round_up=False):
@@ -326,33 +338,76 @@ class TargetAgent(Agent):
             input_data['dayofweek'] = dayofweek_final
             input_data['exclude_weekends'] = exclude_weekends
             input_data['weekends'] = weekends
-            return dataset_type
+            input_data['dataset_type'] = dataset_type
+            return dataset_type, input_data
 
-        async def get_input_characterization_train(self, input_data, config_dataset, training_dates):
+        async def get_input_characterization_train(self, input_data, tables_dataset, training_dates, date_column, datetimeFormat, categorical_columns):
+            table_target = input_data['target_table']
+            dataset_type = input_data['dataset_type']
+            target = input_data['target']
+            columns_for_target = []
+            data_column = tables_dataset.get(dataset_type).get(table_target).get(target)
+            for entry in data_column:
+                if isinstance(entry, dict):
+                    for k, v in entry.items():
+                        for value in v:
+                            columns_for_target.append(k + "_" + value)
+
+                else:
+                    if entry != target:
+                        columns_for_target.append(table_target + "_" + entry)
+                    else:
+                        columns_for_target.append(target)
+            model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
+            settings = tables_dataset.get("settings")
+            settings['filters']['dayofweek'] = input_data['dayofweek']
+            settings['filters']['exclude_weekends'] = input_data['exclude_weekends']
+            settings["transformations"]['weekends'] = input_data['weekends']
+            settings["datetime_column_name"] = date_column
+            settings["datetime_format"] = datetimeFormat
+            settings["target_column_name"] = target
+            settings["categorical_columns_names"] = categorical_columns
+            settings["columns_names"] = columns_for_target
             characterization = {}
             characterization.update({"frequency": input_data['frequency']})
-            characterization.update({"target_table": input_data['target_table']})
-            characterization.update({"target": input_data['target']})
-            characterization.update({"time_series": config_dataset.get(input_data['target']).get('type')})
-            characterization.update({"dataset_type": input_data['dataset_type']})
-            characterization.update({"features": config_dataset[input_data['target']].get("columns_for_target")})
-            input_data.update({'characteristics': characterization})
-            input_data.update({'dataset_type': input_data['dataset_type']})
-            input_data.update({'training_dates': training_dates})
-            return input_data
-
-        async def get_input_characterization_predict(self, input_data, config_dataset, dataset_type,
-                                                     first_start_timestamp, last_end_timestamp):
-            characterization = {}
-            characterization.update({"frequency": input_data['frequency']})
-            characterization.update({"target_table": input_data['target_table']})
-            characterization.update({"target": input_data['target']})
-            characterization.update({"time_series": config_dataset.get(input_data['target']).get('type')})
+            characterization.update({"target_table": table_target})
+            characterization.update({"target": target})
+            characterization.update({"time_series": model_type})
             characterization.update({"dataset_type": dataset_type})
-            characterization.update({"features": config_dataset[input_data['target']].get("columns_for_target")})
+            characterization.update({"features": columns_for_target})
             input_data.update({'characteristics': characterization})
             input_data.update({'dataset_type': dataset_type})
-            input_data.update({"settings": config_dataset[input_data['target']].get("settings")})
+            input_data.update({'training_dates': training_dates})
+            input_data.update({"settings": settings})
+            return input_data
+
+        async def get_input_characterization_predict(self, input_data, tables_dataset, dataset_type,
+                                                     first_start_timestamp, last_end_timestamp):
+            table_target = input_data['target_table']
+            target = input_data['target']
+            columns_for_target = []
+            data_column = tables_dataset.get(dataset_type).get(table_target).get(target)
+            for entry in data_column:
+                if isinstance(entry, dict):
+                    for k, v in entry.items():
+                        for value in v:
+                            columns_for_target.append(k + "_" + value)
+
+                else:
+                    if entry != target:
+                        columns_for_target.append(table_target + "_" + entry)
+                    else:
+                        columns_for_target.append(target)
+            model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
+            characterization = {}
+            characterization.update({"frequency": input_data['frequency']})
+            characterization.update({"target_table": input_data['target_table']})
+            characterization.update({"target": input_data['target']})
+            characterization.update({"time_series": model_type})
+            characterization.update({"dataset_type": dataset_type})
+            characterization.update({"features": columns_for_target})
+            input_data.update({'characteristics': characterization})
+            input_data.update({'dataset_type': dataset_type})
             input_data.update({"first_start_timestamp": first_start_timestamp})
             input_data.update({"last_end_timestamp": last_end_timestamp})
             return input_data
