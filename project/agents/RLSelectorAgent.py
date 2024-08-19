@@ -120,7 +120,7 @@ class RLSelectorAgent(Agent):
 
         def get_similar_models(self):
             """
-            Get models that are similar to the target characteristics and sort them.
+            Get models that are similar to the target characteristics and sort them by similarity then by metric.
             """
             similar_models = []
             for mdl in self.models:
@@ -130,9 +130,9 @@ class RLSelectorAgent(Agent):
                 similarity = cosine_similarity(model_characteristics, target_values)[0][0]
 
                 if similarity >= self.similarity_threshold:
-                    similar_models.append((mdl['name'], similarity, mdl['errors'][mdl['default_metric']]))
+                    similar_models.append((mdl['id'], mdl['ml_model'], mdl['model_type'], similarity, mdl['errors'][mdl['default_metric']]))
 
-            similar_models.sort(key=lambda x: (x[1], x[2]), reverse=True)
+            similar_models.sort(key=lambda x: (x[3], x[4]), reverse=True)
             return similar_models
     async def setup(self):
         self.add_behaviour(self.ReceiveMsg(period=1))

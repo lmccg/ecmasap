@@ -58,8 +58,8 @@ class TargetAgent(Agent):
                     if request_type == 'predict':
                         # get the models to predict
                         agent_get_ml_models = config_agents["rl_selector_agent"]
-                        msg = Message(to=f"{agent_get_ml_models}@{self.agent.jid.domain}/{agent_get_ml_models}")
-                        msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                        predict_msg = Message(to=f"{agent_get_ml_models}@{self.agent.jid.domain}/{agent_get_ml_models}")
+                        predict_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
                         if not isinstance(request_data, dict):
                             request_data = json.loads(request_data)
 
@@ -68,8 +68,8 @@ class TargetAgent(Agent):
                                                                                      last_end_timestamp)
                         if isinstance(request_data, dict):
                             request_data = json.dumps(request_data)
-                        msg.body = request_data
-                        await self.send(msg)
+                        predict_msg.body = request_data
+                        await self.send(predict_msg)
                         response = await self.receive(timeout=60)
                         models = []
                         if response:
@@ -83,12 +83,12 @@ class TargetAgent(Agent):
                         predict_one_model = False
                         while models:
                             entry = models.pop(0)
-                            ml_model = entry['agent']
-                            type_model = entry['model_type']
+                            ml_model = entry[1]
+                            type_model = entry[2]
                             agents = config_agents['ml_model_agents'][type_model]
                             agent = next((key for key, value in agents.items() if value.lower() == ml_model.lower()),
                                          None)
-                            model = entry['model_id']
+                            model = entry[0]
                             #model é model id e model id será o meu boolean
                             result = await self._send_and_collect_response(request_type, agent, model, request_data,
                                                                            input_dataset, False)
@@ -107,13 +107,13 @@ class TargetAgent(Agent):
 
                         if models:
                             for entry in models:
-                                ml_model = entry['agent']
-                                type_model = entry['model_type']
+                                ml_model = entry[1]
+                                type_model = entry[2]
                                 agents = config_agents['ml_model_agents'][type_model]
                                 agent = next(
                                     (key for key, value in agents.items() if value.lower() == ml_model.lower()),
                                     None)
-                                model = entry['model_id']
+                                model = entry[0]
                                 #model é model id
                                 task = self._send_and_collect_response(request_type, agent, model, request_data, input_dataset,
                                                                        True)
