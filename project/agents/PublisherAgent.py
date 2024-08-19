@@ -1,5 +1,5 @@
 # python 3.6
-
+from peak import Agent, OneShotBehaviour, CyclicBehaviour, PeriodicBehaviour, Message
 import random
 import time
 from datetime import datetime, timedelta
@@ -13,6 +13,8 @@ port = 1883
 client_id_base = 'publish-'
 # username = 'emqx'
 # password = 'public'
+
+
 def connect_mqtt(client_id):
         def on_connect(client, userdata, flags, rc):
             if rc == 0:
@@ -26,56 +28,59 @@ def connect_mqtt(client_id):
         client.connect(broker, port)
         return client
 
-class MQTTPublisher:
-    def __init__(self, client_id, topic):
-        self.client_id = client_id
-        self.topic = topic
-        self.datetime_start = datetime.now()
+class PublisherAgent(Agent):
+    class PublishResults(PeriodicBehaviour):
+        async def run(self):
+            msg = await self.receive(10)
+            if msg:
+                publishers = []
+                topics = ["report/predictions"]
+                client_id = client_id_base + str(random.randint(0, 1000))
+                client = connect_mqtt(client_id)
+                client.loop_start()
+                content = msg.body
+                for topic in topics:
+                    publisher = self.MQTTPublisher(client_id, topic, content)
+                    publishers.append(publisher)
 
-    def publish(self, client):
-        #comentar esta linha
-        # msg_count = 1
-        while True:
-            time.sleep(1)
-            report = str(random.randint(4000,5000))
+                threads = []
+                for publisher in publishers:
+                    thread = Thread(target=publisher.run, args=(client,))
+                    thread.start()
+                    threads.append(thread)
 
-            if self.topic == "report/agent2" and datetime.now() > self.datetime_start + timedelta(minutes=1):
-                report = '0'
-
-            msg = f"messages: {report}"
-            result = client.publish(self.topic, report)
-            # result: [0, 1]
-            status = result[0]
-            if status == 0:
-                print(f"Send `{msg}` to topic `{self.topic}` using client ID: {self.client_id}")
-            else:
-                print(f"Failed to send message to topic {self.topic} using client ID: {self.client_id}")
-            #comentar esta zona
-            # msg_count += 1
-            # if msg_count > 5:
-            #     break
-
-    def run(self, client):
-        self.publish(client)
-        client.loop_stop()
+                for thread in threads:
+                    thread.join()
 
 
-if __name__ == '__main__':
-    publishers = []
-    topics = ["report/agent1", "report/agent2", "report/agent3", "report/agent4", "report/agentC"]
-    client_id = client_id_base + str(random.randint(0, 1000))
-    client = connect_mqtt(client_id)
-    client.loop_start()
+        class MQTTPublisher:
+            def __init__(self, client_id, topic, content):
+                self.client_id = client_id
+                self.topic = topic
+                self.content = content
+                self.datetime_start = datetime.now()
 
-    for topic in topics:
-        publisher = MQTTPublisher(client_id, topic)
-        publishers.append(publisher)
+            def publish(self, client):
+                # msg_count = 1
+                while True:
+                    time.sleep(1)
+                    result = client.publish(self.topic, self.content)
+                    # result: [0, 1]
+                    status = result[0]
+                    if status == 0:
+                        print(f"Send `{self.content}` to topic `{self.topic}` using client ID: {self.client_id}")
+                    else:
+                        print(f"Failed to send message to topic {self.topic} using client ID: {self.client_id}")
+                    #comentar esta zona
+                    # msg_count += 1
+                    # if msg_count > 5:
+                    #     break
 
-    threads = []
-    for publisher in publishers:
-        thread = Thread(target=publisher.run, args=(client,))
-        thread.start()
-        threads.append(thread)
+            def run(self, client):
+                self.publish(client)
+                client.loop_stop()
 
-    for thread in threads:
-        thread.join()
+    async def setup(self):
+        print(f"Agent {self.jid} starting...")
+        b = self.PublishResults()
+        self.add_behaviour(b)
