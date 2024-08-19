@@ -2,7 +2,7 @@ from peak import Agent, Message, PeriodicBehaviour, CyclicBehaviour
 import json
 import pickle
 from ..utils_package.repository import Session, Model, Result
-from sqlalchemy import func
+from sqlalchemy import func, asc
 
 
 class DBAgent(Agent):
@@ -14,17 +14,38 @@ class DBAgent(Agent):
                 if 'save_model' in msg.body:
                     data_to_insert_in_database = json.loads(msg.body)
                     data_to_insert_in_database = data_to_insert_in_database['save_model']
-                    if data_to_insert_in_database['target'] == 'model':
-                        input = data_to_insert_in_database['input_data']
-                        response_db = await self.save_model_to_db(input)
-                        # REPLY BACK
-                        response_msg = msg.make_reply()
-                        response_msg.set_metadata("performative", "inform")
-                        if response_db:
-                            response_msg.body = "success"
-                        else:
-                            response_msg.body = "failure"
-                        await self.send(response_msg)
+                    response_db = await self.save_model_to_db(data_to_insert_in_database)
+                    # REPLY BACK
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    if response_db:
+                        response_msg.body = "success"
+                    else:
+                        response_msg.body = "failure"
+                #     await self.send(response_msg)
+                    # if data_to_insert_in_database['target'] == 'model':
+                    #     input = data_to_insert_in_database['input_data']
+                    #     response_db = await self.save_model_to_db(input)
+                    #     # REPLY BACK
+                    #     response_msg = msg.make_reply()
+                    #     response_msg.set_metadata("performative", "inform")
+                    #     if response_db:
+                    #         response_msg.body = "success"
+                    #     else:
+                    #         response_msg.body = "failure"
+                    #     await self.send(response_msg)
+                elif 'save_result' in msg.body:
+                    data_to_insert_in_database = json.loads(msg.body)
+                    data_to_insert_in_database = data_to_insert_in_database['save_result']
+                    response_db = await self.save_result_to_db(data_to_insert_in_database)
+                    # REPLY BACK
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    if response_db:
+                        response_msg.body = "success"
+                    else:
+                        response_msg.body = "failure"
+                    await self.send(response_msg)
 
                 elif 'get_regressor_and_scalers' in msg.body:
                     info = json.loads(msg.body)
@@ -69,6 +90,14 @@ class DBAgent(Agent):
                     info = json.loads(msg.body)
                     model_info = info['update_model_historic_norm']
                     response_db = await self.get_model_historic_norm_and_version(model_info)
+                    # REPLY BACK
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = response_db
+                    await self.send(response_msg)
+
+                elif 'get_models' in msg.body:
+                    response_db = await self.get_models()
                     # REPLY BACK
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
@@ -168,9 +197,33 @@ class DBAgent(Agent):
                 session.close()
                 return 'Success'
 
+        async def save_result_to_db(self, result_info):
+            session = None
+            try:
+                session = Session()
+                result = Result(
+                        model_id=result_info['model_id'],
+                        input_data=result_info['input_data'],
+                        result_values=result_info['result_values'],
+                        execution_time=result_info['execution_time'],
+                        chosen_model=result_info['chosen_model']
+                    )
+                session.add(result)
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                return 'Failed'
+            finally:
+                session.close()
+                return 'Success'
+
+
         async def get_regressor_and_scalers(self, model_id):
             session = Session()
-            model = session.query(Model).filter_by(model_id=model_id).first()
+            model = session.query(Model.model_binary,
+                                  Model.x_scaler,
+                                  Model.y_scaler,
+                                  Model.dataset_transformations).filter_by(model_id=model_id).first()
             session.close()
             model_dict = {}
             if model:
@@ -179,12 +232,35 @@ class DBAgent(Agent):
 
         async def get_model_historic_norm_and_version(self, model_id):
             session = Session()
-            model = session.query(Model).filter_by(model_id=model_id).first()
+            model = session.query(Model.historic_norm_test_data, Model.models_version).filter_by(model_id=model_id).first()
             session.close()
             model_dict = {}
             if model:
                 model_dict = {'historic_norm_test_data': json.loads(model.historic_norm_test_data) if model.historic_norm_test_data else {}, 'model_version': model.model_version}
             return json.dumps(model_dict)
+
+        async def get_models(self):
+            session = Session()
+            models = session.query(Model.model_id,
+                                   Model.model_name,
+                                   Model.target_name,
+                                   Model.ml_model,
+                                   Model.model_type,
+                                   Model.test_errors,
+                                   Model.default_metric,
+                                   Model.characteristics).order_by(asc(Model.model_id)).all()
+            session.close()
+
+            model_list = [{'model_id': model.model_id,
+                           'model_name': model.model_name,
+                           'target_name': model.target_name,
+                           'ml_model': model.ml_mdodel,
+                           'model_type': model.model_type,
+                           'default_metric': model.default_metric,
+                           "test_errors": model.test_errors,
+                           "characteristics": model.characteristics}
+                          for model in models]
+            return json.dumps(model_list)
 
         async def update_model_historic_norm(self, model_info):
             model_id = model_info['model_id']
