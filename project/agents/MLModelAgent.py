@@ -24,8 +24,8 @@ class MLModelAgent(Agent):
                     config_params = json.load(config_file)
                 with open('../utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
-                with open('../utils_package/config_dataset.json') as config_file:
-                    config_dataset = json.load(config_file)
+                with open('../utils_package/tablesData.json') as config_file:
+                    tables_dataset = json.load(config_file)
                 with open('../utils_package/config_agents.json') as config_file:
                     config_agents = json.load(config_file)
                 database_agent = config_agents["database_agent"]
@@ -41,12 +41,16 @@ class MLModelAgent(Agent):
                         dataset_type = input['dataset_type']
                         training_dates = input['training_dates']
                         dataset_ja = parts_of_msg[3]
-                        ml_model_parameters = config_params.get(ml_model_name).get(target).get('params')
-                        ml_model_type = config_dataset.get(target).get('type')
-                        metric_score = config_settings.get(ml_model_name).get('metric_score')
+                        table_target = input['target_table']
+                        ml_model_type = next((key for key, models in config_agents.get("ml_model_agents").items() if ml_model_name in models.values()), None)
+                        key_params = target_table + '_' + target + '_' + str(frequency)
+                        ml_model_parameters = config_params.get(key_params).get(dataset_type).get(ml_model_name).get('params')
+                        metric_score = config_settings.get('error_metric')
                         settings = input.get('settings')
+                        if not isinstance(settings, dict):
+                            settings = json.loads(settings)
                         characteristics = input.get('characteristics')
-                        array_data_df, X_train, y_train, x_scale, y_scale, final_columns_names = await self.__generate_train_data(dataset_ja, settings, config_dataset)
+                        array_data_df, X_train, y_train, x_scale, y_scale, final_columns_names = await self.__generate_train_data(dataset_ja, settings, tables_dataset, target_table, target, dataset_type)
                         if ml_model_name == "MLPR":
                             regressor = MLPRegressor(**ml_model_parameters)
                         elif ml_model_name == "SVR":
@@ -82,6 +86,7 @@ class MLModelAgent(Agent):
                         trained_at = current_time.strftime(formated_timestamp)
                         method = TimeSeriesSplit(n_splits=2)
                         scores = cross_val_score(regressor, X_train, y_train, cv=method, scoring=metric_score)
+                        scores_ = {metric_score:scores}
                         # save the data from database
                         new_msg = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
                         new_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
@@ -101,9 +106,11 @@ class MLModelAgent(Agent):
                                 'columns_names': final_columns_names,
                                 'target_name': target,
                                 'model_name': ml_model_name_,
+                                'ml_model': ml_model_name,
                                 'model_type': ml_model_type,
                                 'model_params': ml_model_parameters,
-                                'train_errors': scores,
+                                'train_errors': scores_,
+                                'test_errors': scores_,
                                 'notes': {'note': 'Trained model'},
                                 'dataset_transformations': settings,
                                 'default_metric': metric_score,
@@ -159,9 +166,11 @@ class MLModelAgent(Agent):
                                     'columns_names': final_columns_names,
                                     'target_name': target,
                                     'model_name': ml_model_name_,
+                                    'ml_model': ml_model_name,
                                     'model_type': ml_model_type,
                                     'model_params': ml_model_parameters,
-                                    'train_errors': scores,
+                                    'train_errors': scores_,
+                                    'test_errors': scores_,
                                     'notes': {'note': 'Trained model'},
                                     'dataset_transformations': settings,
                                     'default_metric': metric_score,
@@ -184,11 +193,13 @@ class MLModelAgent(Agent):
 
                 elif 'predict' in msg.body:
                     try:
-                        parts_of_msg = msg.body.split(" ")
+                        parts_of_msg = msg.body.split("|")
                         ml_model_id = parts_of_msg[1]
                         input = parts_of_msg[2]
                         input = json.loads(input)
                         target = input['target']
+                        target_table = input['target_table']
+                        dataset_type = input['dataset_type']
                         first_start_timestamp = input['first_start_timestamp']
                         last_start_timestamp = input['last_end_timestamp']
                         input_data_result = {'start_at': input['start_date'],
@@ -197,7 +208,8 @@ class MLModelAgent(Agent):
                                              'end_time': input['end_time'],
                                              'frequency': input['frequency'],
                                              'target': target,
-                                             'dataset_type': input['dataset_type']}
+                                             'target_table': target_table,
+                                             'dataset_type': dataset_type}
                         dataset_ja = parts_of_msg[3]
                         background_models = parts_of_msg[4]
                         if str(background_models).lower() == 'true':
@@ -245,7 +257,7 @@ class MLModelAgent(Agent):
                                 historic_norm_test_data = info_norm_and_version['historic_norm_test_data']
                                 model_version = info_norm_and_version['model_version']
 
-                                X_test = await self.__generate_test_data(dataset_ja, x_scaler, y_scaler, settings_jo, config_dataset)
+                                X_test = await self.__generate_test_data(dataset_ja, x_scaler, y_scaler, settings_jo, tables_dataset,  target_table, target, dataset_type)
                                 start_ = time.time()
                                 predictions = regressor.predict(X_test)
                                 end_ = time.time()
@@ -295,7 +307,7 @@ class MLModelAgent(Agent):
                                         response = await self.receive(timeout=60)
                                         if response:
                                             if response.get_metadata("performative") == "inform":
-                                                result = inv_predict
+                                                result = {target: inv_predict}
 
                                         else:
                                             error_ = True
@@ -309,13 +321,33 @@ class MLModelAgent(Agent):
                         result = "Failed"
 
                 print('sending back')
+                if result != "Failed":
+                    publisher_agent = config_agents["publisher_agent"]
+                    request_publish = Message(to=f"{publisher_agent}@{self.agent.jid.domain}/{publisher_agent}")
+                    request_publish.set_metadata("performative", "inform")
+                    msg_ = json.dumps(result)
+                    request_publish.body = msg_
+                    await self.send(request_publish)
                 await self.send_reply(msg, result)
 
-        async def __generate_train_data(self, dataset_ja, settings_jo, config_dataset):
+        async def __generate_train_data(self, dataset_ja, settings_jo, tables_dataset, target_table, target, dataset_type):
+            dataset_ja = json.loads(dataset_ja)
             datetime_column_name = settings_jo["datetime_column_name"]
             datetime_format = settings_jo["datetime_format"]
             target_name = settings_jo["target_column_name"]
-            columns_for_target = config_dataset[target_name].get("columns_for_target")
+            columns_for_target = []
+            data_column = tables_dataset.get(dataset_type).get(target_table).get(target)
+            for entry in data_column:
+                if isinstance(entry, dict):
+                    for k, v in entry.items():
+                        for value in v:
+                            columns_for_target.append(k + "_" + value)
+
+                else:
+                    if entry != target:
+                        columns_for_target.append(target + "_" + entry)
+                    else:
+                        columns_for_target.append(target)
             categorical_columns_names = settings_jo["categorical_columns_names"]
             columns_names = settings_jo["columns_names"]
             normalize = settings_jo["normalize"]
@@ -362,11 +394,24 @@ class MLModelAgent(Agent):
                 normalized_data_df = data_df
             x_train, y_train, final_columns_names = await self.__split_x_y(normalized_data_df, target_name)
             return array_data_df, x_train, y_train, x_std_scale, y_std_scale, final_columns_names
-        async def __generate_test_data(self, dataset_ja, x_scale, y_scale, settings_jo, config_dataset):
+        async def __generate_test_data(self, dataset_ja, x_scale, y_scale, settings_jo, tables_dataset, target_table, target, dataset_type):
+            dataset_ja = json.loads(dataset_ja)
             datetime_column_name = settings_jo["datetime_column_name"]
             datetime_format = settings_jo["datetime_format"]
             target_name = settings_jo["target_column_name"]
-            columns_for_target = config_dataset[target_name].get("columns_for_target")
+            columns_for_target = []
+            data_column = tables_dataset.get(dataset_type).get(target_table).get(target)
+            for entry in data_column:
+                if isinstance(entry, dict):
+                    for k, v in entry.items():
+                        for value in v:
+                            columns_for_target.append(k + "_" + value)
+
+                else:
+                    if entry != target:
+                        columns_for_target.append(target + "_" + entry)
+                    else:
+                        columns_for_target.append(target)
             categorical_columns_names = settings_jo["categorical_columns_names"]
             columns_names = settings_jo["columns_names"]
             normalize = settings_jo["normalize"]
@@ -426,7 +471,7 @@ class MLModelAgent(Agent):
         async def send_reply(self, msg, result):
             response_msg = msg.make_reply()
             response_msg.set_metadata("performative", "inform")
-            response_msg.body = str(result)
+            response_msg.body = json.dumps(result)
             await self.send(response_msg)
 
         async def __extract_categorical_data_test(self, data_df, categorical_columns_names, all_columns_names):
