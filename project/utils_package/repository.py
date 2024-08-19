@@ -21,6 +21,7 @@ class Model(Base):
     columns_names = Column(ARRAY(String), nullable=False)
     target_name = Column(String, nullable=False)
     model_name = Column(String, nullable=False)
+    ml_model = Column(String, nullable=False)
     model_type = Column(String, nullable=False)
     model_params = Column(JSON, nullable=False)
     test_errors = Column(JSON)

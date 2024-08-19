@@ -128,6 +128,7 @@
   "threshold_nights_and_weekends_periods": 60,
   "previous_periods": [],
   "minimumDaysReplaceModel": 30,
+  "similarity_threshold": 0.60,
   "possible_data_types": {"working_periods": ["working_periods", "general_periods"],
   "nights_and_weekends_periods": ["nights_and_weekends_periods", "general_periods"],
   "general_periods": ["general_periods", "working_periods", "nights_and_weekends_periods"]}

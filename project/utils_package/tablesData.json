@@ -1,0 +1,632 @@
+{"working_periods":{
+  "cons_zone1": {
+    "cons_total": [
+      "cons_total",
+      "ac_total",
+      "sockets_total",
+      "lights_total",
+      "cons_ac101"
+    ]
+  },
+  "cons_hallway_zone4": {
+    "cons_total": [
+      "cons_total",
+      "ac",
+      "lights",
+      {
+        "sensors_hallway_zone4": [
+          "lights"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      }]
+  },
+  "gen_rooftop": {
+    "pv": [
+      "pv",
+      "solar_radiation",
+      "outdoor_humidity",
+      "outdoor_temp",
+      {
+        "sensors_zone1": [
+          "temperature_101",
+          "co2_102"
+        ]
+      }
+        ]
+  },
+  "sensors_zone1": {
+    "lights_101": [
+      "lights_101",
+      "co2_101",
+      "lights_103",
+      {
+        "cons_zone1": [
+          "lights_total",
+           "int_lights_101_1",
+          "int_lights_101_2"
+        ]
+      }
+    ],
+    "temperature_101": [
+      "temperature_101",
+      "temperature_102",
+      "temperature_103",
+      "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp",
+          "solar_radiation"
+        ]
+      }
+    ],
+    "lights_102": [
+      "lights_102",
+      {
+        "cons_hallway_zone4":[
+        "int_lights_1",
+        "int_lights_2",
+        "int_lights_3",
+        "int_lights_4"]
+      },
+      {"sensors_hallway_zone4":["lights"]}
+    ],
+    "temperature_102": [
+      "temperature_102",
+      "temperature_101",
+      "temperature_103",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ],
+    "lights_103": [
+      "lights_103",
+
+      {
+        "cons_zone1": [
+          "lights_total",
+          "int_lights_103_1",
+          "int_lights_103_2",
+          "cons_total"
+        ]
+      }
+    ],
+    "temperature_103": [
+      "temperature_103",
+      "temperature_101",
+      "temperature_102",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ]
+  },
+  "sensors_hallway_zone4": {
+    "lights": [
+      "lights",
+      {
+        "cons_hallway_zone4": [
+          "int_lights_1",
+          "int_lights_2",
+          "int_lights_3",
+          "int_lights_4"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      }
+    ],
+    "movement_sensors": [
+      "movement_sensors",
+      "lights",
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      },
+      {
+        "cons_hallway_zone4": [
+          "int_lights_4",
+          "int_lights_3",
+          "int_lights_2",
+          "int_lights_1"
+        ]
+      }
+      ]
+
+  },
+  "emul": {
+    "n101_activity_analytics": [
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "n102_activity_analytics": [
+      "n102_activity_analytics",
+      "n101_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "n103_activity_analytics": [
+      "n103_activity_analytics",
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "hallway_zone4_activity_analytics": [
+      "hallway_zone4_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ]
+  }
+},
+  "nights_and_weekends_periods": {
+  "cons_zone1": {
+    "cons_total": [
+      "cons_total",
+      "ac_total",
+      "sockets_total",
+      "lights_total",
+      {"cons_hallway_zone4": ["lights"]}
+    ]
+  },
+  "cons_hallway_zone4": {
+    "cons_total": [
+      "cons_total",
+      "ac",
+      "lights",
+      {
+        "sensors_hallway_zone4": [
+          "lights"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      },
+      {"cons_zone1":["lights_total"]}
+    ]
+  },
+  "gen_rooftop": {
+    "pv": [
+      "pv",
+      "solar_radiation",
+      "outdoor_temp_meteo_station",
+      "outdoor_humidity",
+      {
+        "sensors_zone1": [
+          "temperature_101"]
+      },{
+        "movement_sensors_zone1": [
+          "n102_1"]}
+        ]
+  },
+  "sensors_zone1": {
+    "lights_101": [
+      "lights_101",
+      {
+        "cons_zone1": [
+          "int_lights_101_1",
+          "int_lights_101_2"
+        ]
+      },
+      {
+        "cons_hallway_zone4": [
+          "sockets"
+        ]
+      },
+      {"gen_rooftop":  [
+        "pv",
+      "solar_radiation"
+      ]}
+    ],
+    "temperature_101": [
+      "temperature_101",
+      "temperature_102",
+      "temperature_103",
+      "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ],
+    "lights_102": [
+      "lights_102",
+      {
+        "cons_hallway_zone4":[
+        "int_lights_1",
+        "int_lights_2",
+        "int_lights_3",
+        "int_lights_4"]
+
+      },
+      {"sensors_hallway_zone4":["lights"]}
+    ],
+    "temperature_102": [
+      "temperature_102",
+      "temperature_101",
+      "temperature_103",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ],
+    "lights_103": [
+      "lights_103",
+
+      {
+        "cons_zone1": [
+          "int_lights_103_1",
+          "int_lights_103_2"
+        ]
+      },
+      {
+        "cons_hallway_zone4":[
+        "int_lights_1",
+        "int_lights_2",
+        "int_lights_3",
+        "int_lights_4"]
+
+      }
+    ],
+    "temperature_103": [
+      "temperature_103",
+      "temperature_101",
+      "temperature_102",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ]
+  },
+  "sensors_hallway_zone4": {
+    "lights": [
+      "lights",
+      {
+        "cons_hallway_zone4": [
+          "int_lights_1",
+          "int_lights_2",
+          "int_lights_3",
+          "int_lights_4"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      }
+    ],
+    "movement_sensors": [
+      "movement_sensors",
+      "lights",
+      {
+        "sensors_zone1": [
+          "co2_101"
+        ]
+      },
+      {
+        "cons_hallway_zone4": [
+          "int_lights_4",
+          "int_lights_3",
+          "int_lights_2",
+          "int_lights_1"
+        ]
+      }
+      ]
+  },
+  "emul": {
+    "n101_activity_analytics": [
+      "n101_activity_analytics",
+      "hallway_light_1_state",
+      "hallway_light_2_state",
+      "hallway_light_3_state",
+      "hallway_light_4_state",
+      {"sensors_zone1": ["lights_102"]}
+    ],
+    "n102_activity_analytics": [
+      "n102_activity_analytics",
+      "hallway_light_1_state",
+      "hallway_light_2_state",
+      "hallway_light_3_state",
+      "hallway_light_4_state",
+      {"sensors_zone1": ["co2_101"]}
+    ],
+    "n103_activity_analytics": [
+      "n103_activity_analytics",
+      "n103_light_1_consumption",
+      "n103_light_1_state",
+      "n103_light_2_consumption",
+      "n103_light_2_state",
+      {"movement_sensors_zone1":["n102_1"]}
+    ],
+    "hallway_zone4_activity_analytics": [
+      "hallway_zone4_activity_analytics",
+      "hallway_light_2_consumption",
+      "hallway_light_3_consumption",
+      "hallway_light_4_consumption",
+      "hallway_light_1_consumption",
+      {"movement_sensors_zone1":["n102_1"]},
+      {"sensors_zone1": ["lights_102"]},
+      {"sensors_hallway_zone4":["lights"]}
+    ]
+  }
+},
+  "general_periods": {
+  "cons_zone1": {
+    "cons_total": [
+      "cons_total",
+      "ac_total",
+      "sockets_total",
+      "lights_total",
+      "cons_ac101"
+    ]
+  },
+  "cons_hallway_zone4": {
+    "cons_total": [
+      "cons_total",
+      "ac",
+      "lights",
+      {
+        "sensors_hallway_zone4": [
+          "lights"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      },
+      {"cons_zone1":["lights_total"]}
+    ]
+  },
+  "gen_rooftop": {
+    "pv": [
+      "pv",
+      "solar_radiation",
+      "outdoor_humidity",
+      {
+        "sensors_zone1": [
+          "co2_102"
+        ]
+      },{
+        "movement_sensors_zone1": [
+          "n102_1"]}
+        ]
+  },
+  "sensors_zone1": {
+    "lights_101": [
+      "lights_101",
+      "lights_102",
+      {
+        "cons_zone1": [
+          "lights_total",
+          "int_lights_101_2"
+        ]
+      },
+      {
+        "sensors_hallway_zone4": [
+          "lights"
+        ]
+      }
+    ],
+    "temperature_101": [
+      "temperature_101",
+      "temperature_102",
+      "temperature_103",
+      "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ],
+    "lights_102": [
+      "lights_102",
+      {
+        "cons_zone1": [
+          "int_lights_103_1",
+          "int_lights_103_2"
+        ]
+      },
+      {
+        "cons_hallway_zone4":["lights",
+        "int_lights_1",
+        "int_lights_2",
+        "int_lights_3",
+        "int_lights_4"]
+
+      },
+      {"sensors_hallway_zone4":["lights"]}
+    ],
+    "temperature_102": [
+      "temperature_102",
+      "temperature_101",
+      "temperature_103",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ],
+    "lights_103": [
+      "lights_103",
+
+      {
+        "cons_zone1": [
+          "lights_total",
+          "int_lights_103_1",
+          "int_lights_103_2"
+        ]
+      },
+      {
+        "cons_hallway_zone4":[
+        "int_lights_1",
+        "int_lights_2",
+        "int_lights_3",
+        "int_lights_4"]
+
+      }
+    ],
+    "temperature_103": [
+      "temperature_103",
+      "temperature_101",
+      "temperature_102",
+       "co2_103",
+      {
+        "gen_rooftop": [
+          "outdoor_temp"
+        ]
+      }
+    ]
+  },
+  "sensors_hallway_zone4": {
+    "lights": [
+      "lights",
+      {
+        "cons_hallway_zone4": [
+          "lights",
+          "int_lights_1",
+          "int_lights_2",
+          "int_lights_3",
+          "int_lights_4"
+        ]
+      },
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      }
+    ],
+    "movement_sensors": [
+      "movement_sensors",
+      "lights",
+      {
+        "sensors_zone1": [
+          "lights_102"
+        ]
+      },
+      {
+        "cons_hallway_zone4": [
+          "int_lights_4",
+          "int_lights_3",
+          "int_lights_2",
+          "int_lights_1"
+        ]
+      }
+      ]
+  },
+  "emul": {
+    "n101_activity_analytics": [
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "n102_activity_analytics": [
+      "n102_activity_analytics",
+      "n101_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "n103_activity_analytics": [
+      "n103_activity_analytics",
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ],
+    "hallway_zone4_activity_analytics": [
+      "hallway_zone4_activity_analytics",
+      "n103_activity_analytics",
+      "n101_activity_analytics",
+      "n102_activity_analytics",
+      "n101_activity_resource",
+      "n102_activity_resource",
+      "n103_activity_resource"
+    ]
+  }
+},
+  "datetime_cols": {
+    "working_periods": {
+      "sensors_zone1":{
+        "temperature_102": ["hour"]
+      }
+    }
+  },
+  "time_series_columns":
+    {
+      "emul": {
+        "n101_activity_analytics": "classification",
+        "n102_activity_analytics": "classification",
+        "n103_activity_analytics": "classification",
+        "hallway_zone4_activity_analytics": "classification"
+      },
+      "cons_zone1": {
+        "cons_total": "regression"
+      },
+      "cons_hallway_zone4": {
+        "cons_total": "regression"
+      },
+      "gen_rooftop": {"pv": "regression"},
+      "sensors_zone1": {
+        "lights_101": "regression",
+        "temperature_101": "regression",
+        "lights_102": "regression",
+        "temperature_102": "regression",
+        "lights_103": "regression",
+        "temperature_103": "regression"
+      },
+    "sensors_hallway_zone4": {
+        "lights": "regression"
+    }
+    },
+  "settings": {
+      "normalize": true,
+      "transformations": {
+      "split_datetime": true,
+      "day_of_week": true,
+      "weekend": false,
+      "trimester": false,
+      "week_of_year": false,
+      "day_of_year": false,
+      "previous_periods": false,
+      "number_previous_periods": []
+      },
+      "filters": {
+      "day_of_week": [],
+      "exclude_weekend": false }}
+}
+

@@ -1,12 +1,12 @@
 {"ml_model_agents": {
   "regression": {
-    "ml_model_1_agent": "KKNR",
+    "ml_model_1_agent": "KNNR",
     "ml_model_2_agent": "MLPR",
     "ml_model_3_agent":  "RFR",
     "ml_model_4_agent":  "SVR"
   },
   "classification": {
-  "ml_model_5_agent": "KKNC",
+  "ml_model_5_agent": "KNNC",
   "ml_model_6_agent":  "MLPC",
   "ml_model_7_agent": "RFC",
   "ml_model_8_agent":  "SVC"

@@ -1,0 +1,7005 @@
+{
+  "cons_zone1_ac_total_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.31953521953797814
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9132823608928708
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "logistic"
+        },
+        "r2": 0.013989161394254324
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": -0.5228991872616826
+      }
+    }
+  },
+  "cons_zone1_sockets_total_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.6199463270978497
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9568322982968865
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "logistic"
+        },
+        "r2": 0.23717994171719115
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": -0.6503398634179891
+      }
+    }
+  },
+  "cons_zone1_lights_total_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.9093458613960896
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9835893879000394
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "tanh"
+        },
+        "r2": 0.8770826678583886
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.4724088601982587
+      }
+    }
+  },
+  "cons_zone1_cons_total_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 3,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 5,
+          "n_estimators": 100
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.7094304473942713
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9555943122057449
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.7473100170153001
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.4058885155199966
+      }
+    }
+  },
+  "cons_zone1_cons_ac101_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.49805792966050133
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9257984704898189
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50,50)"
+        },
+        "r2": 0.4543605977459162
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": -0.8929214783461892
+      }
+    }
+  },
+  "cons_zone1_cons_ac102_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.29673576205720675
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.8711651568806786
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.1585019768990802
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": -2.025883431583653
+      }
+    }
+  },
+  "cons_zone1_cons_ac103_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.34128349916377543
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.875685950005855
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.008845362381883604
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": -2.208095594855822
+      }
+    }
+  },
+  "cons_zone1_int_lights_101_1_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.8439261423934581
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 700
+        },
+        "r2": 0.9425513844881321
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.6854406496399328
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "auto"
+        },
+        "r2": 0.07028409122060963
+      }
+    }
+  },
+  "cons_zone1_int_lights_101_2_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.8458936260708761
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9417951694307289
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.6696506009981251
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "auto"
+        },
+        "r2": 0.06630733900548158
+      }
+    }
+  },
+  "cons_zone1_int_lights_102_1_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9760490199772368
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 400
+        },
+        "r2": 0.992779899381855
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9638246208577879
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9100526659429387
+      }
+    }
+  },
+  "cons_zone1_int_lights_102_2_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.9401189007838205
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9928601464315666
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.9429522330830011
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9096171918138519
+      }
+    }
+  },
+  "cons_zone1_int_lights_103_1_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9762912219106366
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9923116985597212
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9476432770635699
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "scale"
+        },
+        "r2": 0.9371325263069338
+      }
+    }
+  },
+  "cons_zone1_int_lights_103_2_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9760950991535446
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9918558508747908
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9469538171392776
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "scale"
+        },
+        "r2": 0.9366920913788159
+      }
+    }
+  },
+  "cons_hallway_zone4_ac_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.8012357546949613
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9732667801734364
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.016628614684514487
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.26391462615935
+      }
+    }
+  },
+  "cons_hallway_zone4_sockets_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,)",
+          "activation": "relu"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "cons_hallway_zone4_lights_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9854125446951326
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.997050814027277
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9804362414960556
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.956119184999766
+      }
+    }
+  },
+  "cons_hallway_zone4_cons_total_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 3,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.2,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 3,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.2,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "min_samples_split": 10,
+          "n_estimators": 50
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "log2",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.958855072782338
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9888274287986821
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "tanh"
+        },
+        "r2": 0.9251703136998662
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.6562694549710744
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_1_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9859806404242031
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 1000
+        },
+        "r2": 0.9971269082756924
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9782882086958345
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9566959773592514
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_2_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9858586244560401
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9971943439377361
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9819675928128561
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9563845318285003
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_3_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9864464146040823
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9971762141018187
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9830445568252926
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9561326139714376
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_4_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9854296688745221
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9967463025370045
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9661576331329716
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9551851187909488
+      }
+    }
+  },
+  "gen_rooftop_pv_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 30,
+          "max_features": "auto",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 50
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 15,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.2,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 5,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.9591692446501052
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9929683620281914
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9352452950053232
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.8834809157965446
+      }
+    }
+  },
+  "gen_rooftop_outdoor_temp_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.994659911485438
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9995219644521006
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "tanh"
+        },
+        "r2": 0.9960607883529518
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9673536584568717
+      }
+    }
+  },
+  "gen_rooftop_outdoor_temp_meteo_station_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.35979153094462524
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.959986970684039
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "logistic"
+        },
+        "r2": 0.0016681230778688994
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": -11.556913234925691
+      }
+    }
+  },
+  "gen_rooftop_solar_radiation_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,)",
+          "activation": "relu"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "gen_rooftop_rainfall_rate_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,)",
+          "activation": "relu"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "gen_rooftop_wind_speed_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.35979153094462524
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9423812377850163
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": -0.0006060661303208814
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": -11.556913234925679
+      }
+    }
+  },
+  "gen_rooftop_outdoor_humidity_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.5554107853782121
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9215744625407166
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.9424823216001339
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": -11.556913234925679
+      }
+    }
+  },
+  "gen_rooftop_outdoor_dew_point_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.555410785378212
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.8630554071661236
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": -0.0004168260046333305
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": -11.578788278674464
+      }
+    }
+  },
+  "sensors_zone1_lights_101_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.1,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 30,
+          "max_features": "log2",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 200
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "log2",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "general_periods_12": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.1,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.5492853200947517
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9312170542137549
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.5582926988127918
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": -1.6813640237572902
+      }
+    }
+  },
+  "sensors_zone1_temperature_101_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 30,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 200
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.2,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.2,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9926196037845509
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9992632061143756
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.9959163628005604
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9662869602073054
+      }
+    }
+  },
+  "sensors_zone1_co2_101_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.8930750333008837
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9946176864393075
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9598090354339707
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "auto"
+        },
+        "r2": 0.7578508753597263
+      }
+    }
+  },
+  "sensors_zone1_voc_101_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.979175929528516
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.9977375311766005
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9857785317206859
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8989794442691509
+      }
+    }
+  },
+  "sensors_zone1_humidity_101_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9954190539933483
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9991099332945346
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.993718753677153
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9543998530285983
+      }
+    }
+  },
+  "sensors_zone1_lights_102_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 20,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "log2",
+          "min_samples_leaf": 1,
+          "min_samples_split": 10,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 10,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.9603949943375318
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.996798452177025
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.9657253635586671
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.9487758145240647
+      }
+    }
+  },
+  "sensors_zone1_temperature_102_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 20,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 50
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 10,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 200
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9806180894374384
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9992619094925795
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.994397726365421
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.9347106149360449
+      }
+    }
+  },
+  "sensors_zone1_co2_102_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.927956954252882
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 550
+        },
+        "r2": 0.9903540086874257
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.8932829835885432
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.8097986349346679
+      }
+    }
+  },
+  "sensors_zone1_voc_102_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9813953993771232
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9991155133029792
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9935717762634453
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9759658659380828
+      }
+    }
+  },
+  "sensors_zone1_humidity_102_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,)",
+          "activation": "relu"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "sensors_zone1_lights_103_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.1,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 30,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.1,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 5,
+          "n_estimators": 50
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.9423617232790671
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 700
+        },
+        "r2": 0.9922504065371196
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(50,50)"
+        },
+        "r2": 0.9369253381520282
+      },
+      "SVR": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.8981970786877208
+      }
+    }
+  },
+  "sensors_zone1_temperature_103_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.1,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.2,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 100
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 3,
+          "p": 2,
+          "weights": "distance"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.7150663202352932
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9486073256734294
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.6569646314071893
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": -1.4188888413075342
+      }
+    }
+  },
+  "sensors_zone1_co2_103_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.7447033586396659
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.9608668216385131
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.7419176917747217
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.7311561890587714
+      }
+    }
+  },
+  "sensors_zone1_voc_103_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.8298440281756034
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.9786925548968313
+      },
+      "MLPR": {
+        "params": {
+          "hidden_layer_sizes": "(100,100,100)",
+          "activation": "relu"
+        },
+        "r2": 0.8876664765138367
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.4075660032738141
+      }
+    }
+  },
+  "sensors_zone1_humidity_103_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9872882422670609
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9991031234865048
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9933511710308877
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9529064996218112
+      }
+    }
+  },
+  "sensors_zone1_door_101_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 100,
+          "gamma": "scale"
+        },
+        "r2": 0.9938130901986324
+      }
+    }
+  },
+  "sensors_zone1_door_102_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.9902311950504722
+      }
+    }
+  },
+  "sensors_zone1_door_103_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9908824487137741
+      }
+    }
+  },
+  "sensors_hallway_zone4_lights_15": {
+    "working_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 5,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": null,
+          "max_features": "auto",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 500
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 3,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "invscaling",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 1.0,
+          "epsilon": 0.01,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 1,
+          "min_samples_split": 5,
+          "n_estimators": 100
+        }
+      }
+    },
+    "general_periods": {
+      "KNNR": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 15,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVR": {
+        "params": {
+          "C": 0.1,
+          "epsilon": 0.2,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFR": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "log2",
+          "min_samples_leaf": 12,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.9656803196076016
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9962331054529127
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9623035071242074
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.9143960848821128
+      }
+    }
+  },
+  "sensors_hallway_zone4_movement_sensors_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9938130901986324
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 0.9921849560403777
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.9921849560403777
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_1_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9840442852491045
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": [
+            100,
+            100,
+            100
+          ]
+        },
+        "r2": 0.9928362097036796
+      },
+      "SVC": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9843699120807554
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_2_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.9902311950504722
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_3_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_4_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "movement_sensors_zone1_n103_1_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.9605991533702377
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": [
+            200,
+            200
+          ]
+        },
+        "r2": 0.958971019211983
+      },
+      "SVC": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.9619016606968415
+      }
+    }
+  },
+  "movement_sensors_zone1_n103_2_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9908824487137741
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 0.9905568218821231
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.9905568218821231
+      }
+    }
+  },
+  "default_regression": {
+    "KNNR": {
+      "n_neighbors": 10
+    },
+    "RFR": {
+      "n_estimators": 200
+    },
+    "MLPR": {
+      "hidden_layer_sizes": "(100,100,100)",
+      "activation": "logistic"
+    },
+    "SVR": {
+      "C": 10,
+      "gamma": "auto"
+    }
+  },
+  "default_classification": {
+    "KNNC": {
+      "n_neighbors": 10
+    },
+    "RFC": {
+      "n_estimators": 200
+    },
+    "MLPC": {
+      "hidden_layer_sizes": "(100,100,100)",
+      "activation": "logistic"
+    },
+    "SVC": {
+      "C": 10,
+      "gamma": "auto"
+    }
+  },
+  "emul_n101_activity_analytics_15": {
+    "working_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 10,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": "auto",
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "min_samples_split": 5,
+          "n_estimators": 50
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 0.1,
+          "gamma": 1.0,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": "scale",
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 20,
+          "max_features": "auto",
+          "min_samples_leaf": 4,
+          "min_samples_split": 2,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.9856724194073592
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n102_activity_analytics_15": {
+    "working_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "kd_tree",
+          "n_neighbors": 10,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(100,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 0.1,
+          "gamma": 1.0,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": null,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 2,
+          "n_estimators": 500
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": 0.1,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 0.1,
+          "gamma": 1.0,
+          "kernel": "linear",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 10,
+          "n_estimators": 100
+        }
+      }
+    },
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.9856724194073592
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n103_activity_analytics_15": {
+    "working_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": 0.1,
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 20,
+          "max_features": "auto",
+          "min_samples_leaf": 4,
+          "min_samples_split": 2,
+          "n_estimators": 50
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "brute",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "logistic",
+          "alpha": 0.01,
+          "hidden_layer_sizes": "(50,50)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 0.1,
+          "gamma": 1.0,
+          "kernel": "sigmoid",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "ball_tree",
+          "n_neighbors": 5,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "logistic",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": "scale",
+          "kernel": "poly",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "auto",
+          "min_samples_leaf": 1,
+          "min_samples_split": 5,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9970693585151417
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_hallway_zone4_activity_analytics_15": {
+    "working_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 10,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.1,
+          "hidden_layer_sizes": "(100,100)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": "auto",
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 4,
+          "min_samples_split": 5,
+          "n_estimators": 50
+        }
+      }
+    },
+    "nights_and_weekends_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 15,
+          "p": 1,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "alpha": 0.0001,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "constant",
+          "max_iter": 2000,
+          "solver": "adam"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 0.1,
+          "gamma": 1.0,
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 10,
+          "max_features": "sqrt",
+          "min_samples_leaf": 2,
+          "min_samples_split": 5,
+          "n_estimators": 500
+        }
+      }
+    },
+    "general_periods": {
+      "KNNC": {
+        "params": {
+          "algorithm": "auto",
+          "n_neighbors": 10,
+          "p": 2,
+          "weights": "uniform"
+        }
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "alpha": 0.001,
+          "hidden_layer_sizes": "(50,)",
+          "learning_rate": "adaptive",
+          "max_iter": 2000,
+          "solver": "sgd"
+        }
+      },
+      "SVC": {
+        "params": {
+          "C": 1.0,
+          "gamma": "scale",
+          "kernel": "rbf",
+          "max_iter": 2000
+        }
+      },
+      "RFC": {
+        "params": {
+          "max_depth": 20,
+          "max_features": "auto",
+          "min_samples_leaf": 4,
+          "min_samples_split": 2,
+          "n_estimators": 200
+        }
+      }
+    },
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.9856724194073592
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n101_activity_resource_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9902311950504722
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n102_activity_resource_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9964181048518398
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n103_activity_resource_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9905568218821231
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n101_light_1_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9985670321029294
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9478778692357511
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n101_light_1_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9985717001846981
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9566916217702864
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n101_light_2_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9988221901963221
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9746524307986291
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n101_light_2_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9986683135230684
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9359023392853161
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n102_light_1_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 800
+        },
+        "r2": 0.9987660770107483
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9603647342952958
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n102_light_1_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9982387582401674
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.963519361781603
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n102_light_2_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.9986648991014876
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9552444682793698
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n102_light_2_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 350
+        },
+        "r2": 0.9987982589817995
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9564730351056288
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n103_light_1_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9987359209040457
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9414069779378034
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n103_light_1_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 800
+        },
+        "r2": 0.9987227466422447
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9604043717708116
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n103_light_2_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9986637228816089
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9430495879308162
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n103_light_2_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 750
+        },
+        "r2": 0.998660591516865
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.956276387689024
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_1_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 500
+        },
+        "r2": 0.998710191254726
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9554874911632111
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_1_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9985019161190978
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9664257764731133
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_2_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9986158559142669
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.954913125613068
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_2_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9986656475403111
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9431911920805932
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_3_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9986635064047921
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9567865882997507
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_3_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9987274555434199
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9640092934569802
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_4_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9985923581881015
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9483773690484502
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_light_4_state_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.9987648180408966
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9622564382437739
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n101_ac_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.9987559901020792
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9577782055380484
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n101_ac_state_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9899055682188213
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n102_ac_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9984851371853101
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9641185390678285
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n102_ac_state_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.9856724194073592
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n103_ac_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9986569029481287
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9514670129682313
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_n103_ac_state_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9957668511885379
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_hallway_ac_consumption_15": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.9594783945209607
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9984958326195844
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.958335804674113
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9365670233371188
+      }
+    }
+  },
+  "emul_hallway_ac_state_15": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.9886030608922175
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9928362097036796
+      }
+    }
+  },
+  "emul_n101_activity_analytics_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.970013037809648
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n102_activity_analytics_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9817470664928292
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n103_activity_analytics_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9348109517601043
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n101_activity_resource_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9426336375488917
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n102_activity_resource_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9426336375488917
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n103_activity_resource_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.9778357235984355
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n101_light_1_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9961647689619857
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.882550050073965
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n101_light_1_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9942425326826917
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.8379693117138229
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n101_light_2_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9945736871699098
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9282552785344096
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n101_light_2_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.994492053738177
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8756865238994328
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n102_light_1_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9926160250617507
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8743947846400204
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n102_light_1_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9947369540333755
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8130819148241537
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n102_light_2_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.995068079997382
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.8640336943008248
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n102_light_2_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9954901379601181
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.8476079207798509
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n103_light_1_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9948655651946905
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8695633441846244
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n103_light_1_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9942702572444123
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8778692145194092
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n103_light_2_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9949065744422355
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.8361017945108115
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n103_light_2_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9942425326826917
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8615766353827191
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_1_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9908878607145009
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8704278797412689
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_1_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9945648307126935
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8669420898066484
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_2_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9944114792306765
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.8665423369755508
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_2_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9949941282230857
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8473670852225328
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_3_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9934200373516477
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.8342579474239206
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_3_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.995180113824628
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.8051654585733536
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_4_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9945451924814748
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9002557365181693
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_light_4_state_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9946702418067354
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8684059226369213
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n101_ac_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.9945680110507922
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9041284143837267
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n101_ac_state_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9282920469361148
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n102_ac_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.995296066028074
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8893056548129048
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n102_ac_state_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9426336375488917
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_n103_ac_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.995229711910356
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.8928093710283105
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_n103_ac_state_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9582790091264668
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "emul_hallway_ac_consumption_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.83965961804928
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9948986806434122
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.8728722365475017
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.787470763671139
+      }
+    }
+  },
+  "emul_hallway_ac_state_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9621903520208605
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "scale"
+        },
+        "r2": 0.9713168187744459
+      }
+    }
+  },
+  "cons_zone1_ac_total_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 65
+        },
+        "r2": 0.07924360318385515
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.8837321773071971
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.0042508039276375476
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": -0.02218971856896368
+      }
+    }
+  },
+  "cons_zone1_sockets_total_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.3146919473474321
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9093295127591167
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.10830161327286247
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.2675629549295854
+      }
+    }
+  },
+  "cons_zone1_lights_total_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 12
+        },
+        "r2": 0.7672421377106624
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9805892202263046
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.8299379125584677
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.7746049209504839
+      }
+    }
+  },
+  "cons_zone1_cons_total_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.29975814084415564
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9605888082912752
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.03341170710810526
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.7152683053192121
+      }
+    }
+  },
+  "cons_zone1_cons_ac101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.1353667522206803
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.8738951914309658
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.05448782019067844
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.170699884190895
+      }
+    }
+  },
+  "cons_zone1_cons_ac102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.038373713568512824
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 350
+        },
+        "r2": 0.8573075395463798
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.25351790769036964
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "scale"
+        },
+        "r2": 0.0867486820175506
+      }
+    }
+  },
+  "cons_zone1_cons_ac103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 35
+        },
+        "r2": 0.2414471141308292
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9149916645976177
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.0057255453639931675
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": -0.6536445934375412
+      }
+    }
+  },
+  "cons_zone1_int_lights_101_1_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.7990561454061329
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.2555773967398579
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": -0.5228315046133207
+      }
+    }
+  },
+  "cons_zone1_int_lights_101_2_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 950
+        },
+        "r2": 0.857222998742743
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(150,150)"
+        },
+        "r2": 0.03604384972511021
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": -0.5249270923412988
+      }
+    }
+  },
+  "cons_zone1_int_lights_102_1_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9897726917169971
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.886203840893644
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.8822818659685469
+      }
+    }
+  },
+  "cons_zone1_int_lights_102_2_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.9023173016591166
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9870999075913103
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.8815553270902524
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.8473203763748886
+      }
+    }
+  },
+  "cons_zone1_int_lights_103_1_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.863237916315403
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9834510447745423
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.8260838779759685
+      },
+      "SVR": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.8905049497575416
+      }
+    }
+  },
+  "cons_zone1_int_lights_103_2_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.8622479363045138
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.982325248450826
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8357674181412622
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.8411074108573285
+      }
+    }
+  },
+  "cons_hallway_zone4_ac_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 25
+        },
+        "r2": 0.21400222951131043
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9067716855869359
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.5766513827105562
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": -0.05512634905240121
+      }
+    }
+  },
+  "cons_hallway_zone4_sockets_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "cons_hallway_zone4_lights_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9692681620829081
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9893880563761825
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9422038031819647
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8952528358275856
+      }
+    }
+  },
+  "cons_hallway_zone4_cons_total_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.3630823769911844
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9719445806112461
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.08019117072563842
+      },
+      "SVR": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.30223568689671143
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_1_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9698140389301844
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.990445112049172
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9335229963852933
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.89520478261983
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_2_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9698312978462986
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.9912823593576348
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9427481995177154
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8952547437158407
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_3_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9526102647408786
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9878827696372589
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.9462392636725329
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8936732515640043
+      }
+    }
+  },
+  "cons_hallway_zone4_int_lights_4_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9515621530197806
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9901321161266297
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9465506044815677
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8921342376010895
+      }
+    }
+  },
+  "gen_rooftop_pv_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.9131707369589732
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 250
+        },
+        "r2": 0.9898316666981625
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(200,200)"
+        },
+        "r2": 0.8340717332067593
+      },
+      "SVR": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.8621673703723031
+      }
+    }
+  },
+  "gen_rooftop_outdoor_temp_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9974886559592363
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.9754056027716097
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.958328925706616
+      }
+    }
+  },
+  "gen_rooftop_outdoor_temp_meteo_station_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 70
+        },
+        "r2": 0.02101885528059244
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.8626046532726555
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": -9.965104818143722e-05
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": -0.39448997094298965
+      }
+    }
+  },
+  "gen_rooftop_solar_radiation_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "gen_rooftop_rainfall_rate_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "gen_rooftop_wind_speed_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 70
+        },
+        "r2": 0.02766917990644946
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": -6.7458740815595775e-09
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": -1.9926750696439835e+26
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": -14.204535968159469
+      }
+    }
+  },
+  "gen_rooftop_outdoor_humidity_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "gen_rooftop_outdoor_dew_point_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 70
+        },
+        "r2": 0.01997492959890379
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.8599544175694074
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.0003422477722593298
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "scale"
+        },
+        "r2": -0.5404101735413296
+      }
+    }
+  },
+  "sensors_zone1_lights_101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 15
+        },
+        "r2": 0.4728123390224017
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9276409838532809
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(50,50,50)"
+        },
+        "r2": 0.3974986436665705
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.2796589260140865
+      }
+    }
+  },
+  "sensors_zone1_temperature_101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9898317240058095
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 150
+        },
+        "r2": 0.9973480163802855
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9707787884410178
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.9575288269918366
+      }
+    }
+  },
+  "sensors_zone1_co2_101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 55
+        },
+        "r2": 0.3390133583076874
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 800
+        },
+        "r2": 0.9663817844364277
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(150,150,150)"
+        },
+        "r2": 0.8125167168289945
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "auto"
+        },
+        "r2": 0.5619687265435278
+      }
+    }
+  },
+  "sensors_zone1_voc_101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.957565961567383
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 100
+        },
+        "r2": 0.994570733862583
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9651126542798236
+      },
+      "SVR": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.9166747416947211
+      }
+    }
+  },
+  "sensors_zone1_humidity_101_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 300
+        },
+        "r2": 0.9985463319945941
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(200,200,200)"
+        },
+        "r2": 0.9903219643054348
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.9669503444127163
+      }
+    }
+  },
+  "sensors_zone1_lights_102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 5
+        },
+        "r2": 0.9026941601182688
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9902498786611948
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.8362695823859047
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.8532744574809752
+      }
+    }
+  },
+  "sensors_zone1_temperature_102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9748676734094138
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 550
+        },
+        "r2": 0.9961944742649489
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9628671881479918
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9073897757601954
+      }
+    }
+  },
+  "sensors_zone1_co2_102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 100
+        },
+        "r2": 0.2738187042246851
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 200
+        },
+        "r2": 0.9836879103592511
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(100,)"
+        },
+        "r2": 0.6064345737389222
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "auto"
+        },
+        "r2": 0.38791751120452345
+      }
+    }
+  },
+  "sensors_zone1_voc_102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 0.9973685791080057
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9855834834098541
+      },
+      "SVR": {
+        "params": {
+          "C": 50,
+          "gamma": "auto"
+        },
+        "r2": 0.9625455554418603
+      }
+    }
+  },
+  "sensors_zone1_humidity_102_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50)"
+        },
+        "r2": 0.0
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "sensors_zone1_lights_103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 30
+        },
+        "r2": 0.8275697747014936
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 0.9823013553242504
+      },
+      "MLPR": {
+        "params": {
+          "activation": "logistic",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.8155051257816939
+      },
+      "SVR": {
+        "params": {
+          "C": 10,
+          "gamma": "scale"
+        },
+        "r2": 0.9081885901008767
+      }
+    }
+  },
+  "sensors_zone1_temperature_103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 3
+        },
+        "r2": 0.9235754463123146
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 550
+        },
+        "r2": 0.9807185823985737
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(100,100)"
+        },
+        "r2": 0.8354266694783526
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "auto"
+        },
+        "r2": 0.7495194174975389
+      }
+    }
+  },
+  "sensors_zone1_co2_103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 12
+        },
+        "r2": 0.8287962955472561
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 750
+        },
+        "r2": 0.9749314708531549
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(100,100,100)"
+        },
+        "r2": 0.8198261111315404
+      },
+      "SVR": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.8227897693987178
+      }
+    }
+  },
+  "sensors_zone1_voc_103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.910593623748353
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9864781710336474
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(250,250,250)"
+        },
+        "r2": 0.9473912872438184
+      },
+      "SVR": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.8954666895884803
+      }
+    }
+  },
+  "sensors_zone1_humidity_103_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9827302685211549
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 50
+        },
+        "r2": 0.9963033415183069
+      },
+      "MLPR": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": "(250,250)"
+        },
+        "r2": 0.9796677537559298
+      },
+      "SVR": {
+        "params": {
+          "C": 5,
+          "gamma": "auto"
+        },
+        "r2": 0.9509834011622765
+      }
+    }
+  },
+  "sensors_zone1_door_101_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 100,
+          "gamma": "scale"
+        },
+        "r2": 0.9752281616688396
+      }
+    }
+  },
+  "sensors_zone1_door_102_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.9687092568448501
+      }
+    }
+  },
+  "sensors_zone1_door_103_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 500,
+          "gamma": "auto"
+        },
+        "r2": 0.9621903520208605
+      }
+    }
+  },
+  "sensors_hallway_zone4_lights_60": {
+    "default": {
+      "KNNR": {
+        "params": {
+          "n_neighbors": 10
+        },
+        "r2": 0.894692785154631
+      },
+      "RFR": {
+        "params": {
+          "n_estimators": 1000
+        },
+        "r2": 0.9871991973986521
+      },
+      "MLPR": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": "(50,50)"
+        },
+        "r2": 0.8672206392522721
+      },
+      "SVR": {
+        "params": {
+          "C": 100,
+          "gamma": "auto"
+        },
+        "r2": 0.8429622382597444
+      }
+    }
+  },
+  "sensors_hallway_zone4_movement_sensors_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 2
+        },
+        "r2": 0.9973924380704041
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 0.9973924380704041
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.9973924380704041
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_1_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 450
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            200,
+            200,
+            200
+          ]
+        },
+        "r2": 0.9986962190352021
+      },
+      "SVC": {
+        "params": {
+          "C": 1000,
+          "gamma": "auto"
+        },
+        "r2": 0.9791395045632334
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_2_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 50,
+          "gamma": "scale"
+        },
+        "r2": 0.9856584093872229
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_3_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            100
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "movement_sensors_zone1_n102_4_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            100
+          ]
+        },
+        "r2": 1.0
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 1.0
+      }
+    }
+  },
+  "movement_sensors_zone1_n103_1_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 7
+        },
+        "r2": 0.9621903520208605
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 400
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "tanh",
+          "hidden_layer_sizes": [
+            200,
+            200,
+            200
+          ]
+        },
+        "r2": 0.9634941329856584
+      },
+      "SVC": {
+        "params": {
+          "C": 5,
+          "gamma": "scale"
+        },
+        "r2": 0.9608865710560626
+      }
+    }
+  },
+  "movement_sensors_zone1_n103_2_60": {
+    "default": {
+      "KNNC": {
+        "params": {
+          "n_neighbors": 1
+        },
+        "r2": 1.0
+      },
+      "RFC": {
+        "params": {
+          "n_estimators": 25
+        },
+        "r2": 1.0
+      },
+      "MLPC": {
+        "params": {
+          "activation": "relu",
+          "hidden_layer_sizes": [
+            50
+          ]
+        },
+        "r2": 0.9973924380704041
+      },
+      "SVC": {
+        "params": {
+          "C": 1,
+          "gamma": "scale"
+        },
+        "r2": 0.9973924380704041
+      }
+    }
+  }
+}
