@@ -33,6 +33,7 @@
   "weeks_historical_cases_train": 53,
   "day_of_week_training": 4,
   "error_metric": "r2",
+  "instant_error": "ae",
   "best_metric_value": "higher",
   "r2": 1,
   "ae": 0,

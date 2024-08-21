@@ -13,151 +13,173 @@ class TargetAgent(Agent):
                 print(f"TargetAgent: {msg.sender} sent me a message: '{msg.body}'")
                 parts_of_msg = msg.body.split("|")
                 request_type = parts_of_msg[0]
-                target = parts_of_msg[1]
-                request_data = parts_of_msg[2]
-                request_data = json.loads(request_data)
-                process = True
-                if request_type == 'predict' and ('start_date' not in request_data or 'start_time' not in request_data):
-                    process = False
-                elif (request_type == 'train' or request_type == 'retrain') and ('end_date' not in request_data or 'end_time' not in request_data):
-                    process = False
-                if process:
-                    print(parts_of_msg)
+                if request_type == 'predict' or request_type == 'train' or request_type == 'retrain':
+                    target = parts_of_msg[1]
+                    request_data = parts_of_msg[2]
+                    request_data = json.loads(request_data)
+                    process = True
+                    if request_type == 'predict' and ('start_date' not in request_data or 'start_time' not in request_data):
+                        process = False
+                    elif (request_type == 'train' or request_type == 'retrain') and ('end_date' not in request_data or 'end_time' not in request_data):
+                        process = False
+                    if process:
+                        with open('../utils_package/config_agents.json') as config_file:
+                            config_agents = json.load(config_file)
+                        with open('../utils_package/config_settings.json') as config_file:
+                            config_settings = json.load(config_file)
+                        with open('../utils_package/tablesData.json') as config_file:
+                            tables_dataset = json.load(config_file)
+                        datetime_format = config_settings.get('datetime_format')
+                        if request_type == 'predict':
+                            first_start_timestamp, last_end_timestamp, request_data = await self.fix_timestamps(request_data,
+                                                                                                          datetime_format)
+                        elif request_type == 'train' or request_type == 'retrain':
+                            _, _, request_data = await self.fix_timestamps(request_data, datetime_format)
+                        dataset_type, request_data = await self.checkDatasetType(request_data, datetime_format)
+                        table_target = request_data['target_table']
+                        model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
+                        agents = config_agents['ml_model_agents'][model_type]
+                        # get the historical data
+                        historical_data_agent = config_agents["historical_data_agent"]
+                        msg_data = Message(to=f"{historical_data_agent}@{self.agent.jid.domain}/{historical_data_agent}")
+                        msg_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                        if isinstance(request_data, dict):
+                            request_data = json.dumps(request_data)
+                        msg_data.body = request_data
+                        await self.send(msg_data)
+                        response = await self.receive(timeout=60)
+                        input_dataset = []
+                        if response:
+                            if response.get_metadata("performative") == "inform":
+                                input_data = response.body
+                                input_data = json.loads(input_data)
+                                input_dataset = input_data[0]
+                            # ask predictions
+                            if request_type == 'predict':
+                                # get the models to predict
+                                agent_get_ml_models = config_agents["rl_selector_agent"]
+                                predict_msg = Message(to=f"{agent_get_ml_models}@{self.agent.jid.domain}/{agent_get_ml_models}")
+                                predict_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                                if not isinstance(request_data, dict):
+                                    request_data = json.loads(request_data)
+
+                                request_data = await self.get_input_characterization_predict(request_data, tables_dataset,
+                                                                                             dataset_type, first_start_timestamp,
+                                                                                             last_end_timestamp)
+                                if isinstance(request_data, dict):
+                                    request_data = json.dumps(request_data)
+                                predict_msg.body = request_data
+                                await self.send(predict_msg)
+                                response = await self.receive(timeout=60)
+                                models = []
+                                if response:
+                                    if response.get_metadata("performative") == "inform":
+                                        models = response.body
+                                        models = json.loads(models)
+
+                                # Wait for a response
+                                print('lets send some requests')
+                                tasks = []
+                                predict_one_model = False
+                                while models:
+                                    entry = models.pop(0)
+                                    ml_model = entry[1]
+                                    type_model = entry[2]
+                                    agents = config_agents['ml_model_agents'][type_model]
+                                    agent = next((key for key, value in agents.items() if value.lower() == ml_model.lower()),
+                                                 None)
+                                    model = entry[0]
+                                    #model é model id e model id será o meu boolean
+                                    result = await self._send_and_collect_response(request_type, agent, model, request_data,
+                                                                                   input_dataset, False)
+                                    if result != 'Failed':
+                                        predict_one_model = True
+                                        response_msg = msg.make_reply()
+                                        response_msg.set_metadata("performative", "inform")
+                                        response_msg.body = json.dumps(result)
+                                        await self.send(response_msg)
+                                        break
+                                if not predict_one_model:
+                                    response_msg = msg.make_reply()
+                                    response_msg.set_metadata("performative", "inform")
+                                    response_msg.body = "It was not possible to send a response for request received."
+                                    await self.send(response_msg)
+
+                                if models:
+                                    for entry in models:
+                                        ml_model = entry[1]
+                                        type_model = entry[2]
+                                        agents = config_agents['ml_model_agents'][type_model]
+                                        agent = next(
+                                            (key for key, value in agents.items() if value.lower() == ml_model.lower()),
+                                            None)
+                                        model = entry[0]
+                                        #model é model id
+                                        task = self._send_and_collect_response(request_type, agent, model, request_data, input_dataset,
+                                                                               True)
+                                        tasks.append(task)
+                                    await asyncio.gather(*tasks)
+
+                                    response_msg = msg.make_reply()
+                                    response_msg.set_metadata("performative", "inform")
+                                    response_msg.body = "Request executed!"
+                                    await self.send(response_msg)
+                            elif request_type == 'train':
+                                date_column = input_data[1]
+                                datetimeFormat = input_data[2]
+                                categorical_columns = input_data[3]
+                                dataset_types = config_settings.get('possible_data_types')
+                                dataset_types = list(dataset_types.keys())
+                                response = msg.make_reply()
+                                response.set_metadata("performative", "inform")
+                                response.body = "Requested train"
+                                await self.send(response)
+                                training_dates = await self.get_training_dates(request_data, config_settings)
+                                request_data = await self.get_input_characterization_train(request_data, tables_dataset,
+                                                                                             training_dates, date_column, datetimeFormat, categorical_columns)
+                                asyncio.create_task(
+                                    self.run_train_in_background(request_data, request_type, input_dataset, dataset_types, agents))
+                            elif request_type == 'retrain':
+                                date_column = input_data[1]
+                                datetimeFormat = input_data[2]
+                                categorical_columns = input_data[3]
+                                response = msg.make_reply()
+                                response.set_metadata("performative", "inform")
+                                response.body = "Requested retrain"
+                                await self.send(response)
+                                model_id = parts_of_msg[3]
+                                training_dates = await self.get_training_dates(request_data, config_settings)
+                                request_data = await self.get_input_characterization_train(request_data, tables_dataset,
+                                                                                           training_dates, date_column, datetimeFormat, categorical_columns)
+                                asyncio.create_task(
+                                    self.run_retrain_in_background(request_data, request_type, input_dataset, model_id, agents))
+                        else:
+                            response_msg = msg.make_reply()
+                            response_msg.set_metadata("performative", "inform")
+                            response_msg.body = "Please fix the timestamps provided! For train and retrain is mandatory to have 'end_date' and 'end_time' fields. For predict is mandatory to have 'start_date' and 'start_time' fields"
+                            await self.send(response_msg)
+
+                elif request_type == 'get_real_data':
                     with open('../utils_package/config_agents.json') as config_file:
                         config_agents = json.load(config_file)
-                    with open('../utils_package/config_settings.json') as config_file:
-                        config_settings = json.load(config_file)
-                    with open('../utils_package/tablesData.json') as config_file:
-                        tables_dataset = json.load(config_file)
-                    datetime_format = config_settings.get('datetime_format')
-                    if request_type == 'predict':
-                        first_start_timestamp, last_end_timestamp, request_data = await self.fix_timestamps(request_data,
-                                                                                                      datetime_format)
-                    elif request_type == 'train' or request_type == 'retrain':
-                        _, _, request_data = await self.fix_timestamps(request_data, datetime_format)
-                    dataset_type, request_data = await self.checkDatasetType(request_data, datetime_format)
-                    table_target = request_data['target_table']
-                    model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
-                    agents = config_agents['ml_model_agents'][model_type]
-                    # get the historical data
+
+                    # get the real data
                     historical_data_agent = config_agents["historical_data_agent"]
-                    msg_data = Message(to=f"{historical_data_agent}@{self.agent.jid.domain}/{historical_data_agent}")
-                    msg_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
-                    if isinstance(request_data, dict):
-                        request_data = json.dumps(request_data)
-                    msg_data.body = request_data
-                    await self.send(msg_data)
+                    msg_real_data = Message(to=f"{historical_data_agent}@{self.agent.jid.domain}/{historical_data_agent}")
+                    msg_real_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                    msg_requested = json.dumps({request_type: parts_of_msg[1]})
+                    msg_real_data.body = msg_requested
+                    await self.send(msg_real_data)
                     response = await self.receive(timeout=60)
-                    input_dataset = []
                     if response:
                         if response.get_metadata("performative") == "inform":
                             input_data = response.body
-                            input_data = json.loads(input_data)
-                    input_dataset = input_data[0]
-                    # ask predictions
-                    if request_type == 'predict':
-                        # get the models to predict
-                        agent_get_ml_models = config_agents["rl_selector_agent"]
-                        predict_msg = Message(to=f"{agent_get_ml_models}@{self.agent.jid.domain}/{agent_get_ml_models}")
-                        predict_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
-                        if not isinstance(request_data, dict):
-                            request_data = json.loads(request_data)
-
-                        request_data = await self.get_input_characterization_predict(request_data, tables_dataset,
-                                                                                     dataset_type, first_start_timestamp,
-                                                                                     last_end_timestamp)
-                        if isinstance(request_data, dict):
-                            request_data = json.dumps(request_data)
-                        predict_msg.body = request_data
-                        await self.send(predict_msg)
-                        response = await self.receive(timeout=60)
-                        models = []
-                        if response:
-                            if response.get_metadata("performative") == "inform":
-                                models = response.body
-                                models = json.loads(models)
-
-                        # Wait for a response
-                        print('lets send some requests')
-                        tasks = []
-                        predict_one_model = False
-                        while models:
-                            entry = models.pop(0)
-                            ml_model = entry[1]
-                            type_model = entry[2]
-                            agents = config_agents['ml_model_agents'][type_model]
-                            agent = next((key for key, value in agents.items() if value.lower() == ml_model.lower()),
-                                         None)
-                            model = entry[0]
-                            #model é model id e model id será o meu boolean
-                            result = await self._send_and_collect_response(request_type, agent, model, request_data,
-                                                                           input_dataset, False)
-                            if result != 'Failed':
-                                predict_one_model = True
-                                response_msg = msg.make_reply()
-                                response_msg.set_metadata("performative", "inform")
-                                response_msg.body = json.dumps(result)
-                                await self.send(response_msg)
-                                break
-                        if not predict_one_model:
                             response_msg = msg.make_reply()
                             response_msg.set_metadata("performative", "inform")
-                            response_msg.body = "It was not possible to send a response for request received."
+                            response_msg.body = input_data
                             await self.send(response_msg)
 
-                        if models:
-                            for entry in models:
-                                ml_model = entry[1]
-                                type_model = entry[2]
-                                agents = config_agents['ml_model_agents'][type_model]
-                                agent = next(
-                                    (key for key, value in agents.items() if value.lower() == ml_model.lower()),
-                                    None)
-                                model = entry[0]
-                                #model é model id
-                                task = self._send_and_collect_response(request_type, agent, model, request_data, input_dataset,
-                                                                       True)
-                                tasks.append(task)
-                            await asyncio.gather(*tasks)
 
-                            response_msg = msg.make_reply()
-                            response_msg.set_metadata("performative", "inform")
-                            response_msg.body = "Request executed!"
-                            await self.send(response_msg)
-                    elif request_type == 'train':
-                        date_column = input_data[1]
-                        datetimeFormat = input_data[2]
-                        categorical_columns = input_data[3]
-                        dataset_types = config_settings.get('possible_data_types')
-                        dataset_types = list(dataset_types.keys())
-                        response = msg.make_reply()
-                        response.set_metadata("performative", "inform")
-                        response.body = "Requested train"
-                        await self.send(response)
-                        training_dates = await self.get_training_dates(request_data, config_settings)
-                        request_data = await self.get_input_characterization_train(request_data, tables_dataset,
-                                                                                     training_dates, date_column, datetimeFormat, categorical_columns)
-                        asyncio.create_task(
-                            self.run_train_in_background(request_data, request_type, input_dataset, dataset_types, agents))
-                    elif request_type == 'retrain':
-                        date_column = input_data[1]
-                        datetimeFormat = input_data[2]
-                        categorical_columns = input_data[3]
-                        response = msg.make_reply()
-                        response.set_metadata("performative", "inform")
-                        response.body = "Requested retrain"
-                        await self.send(response)
-                        model_id = parts_of_msg[3]
-                        training_dates = await self.get_training_dates(request_data, config_settings)
-                        request_data = await self.get_input_characterization_train(request_data, tables_dataset,
-                                                                                   training_dates, date_column, datetimeFormat, categorical_columns)
-                        asyncio.create_task(
-                            self.run_retrain_in_background(request_data, request_type, input_dataset, model_id, agents))
-                else:
-                    response_msg = msg.make_reply()
-                    response_msg.set_metadata("performative", "inform")
-                    response_msg.body = "Please fix the timestamps provided! For train and retrain is mandatory to have 'end_date' and 'end_time' fields. For predict is mandatory to have 'start_date' and 'start_time' fields"
-                    await self.send(response_msg)
         async def run_train_in_background(self, request_data, request_type, input_data, dataset_types, agents):
             tasks = []
             for dataset_type in dataset_types:

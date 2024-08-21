@@ -17,14 +17,60 @@ class TargetAgent(Agent):
                     config_tables_db = json.load(config_file)
                 input_data = msg.body
                 input_data = json.loads(input_data)
+                if 'get_real_data' in input_data:
+                    data = await self.get_real_data(input_data, config_settings, config_urls)
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = json.dumps(data)
+                    await self.send(response_msg)
+                    print(f"Data sent back to {msg.sender}: {data}")
+                else:
+                    # Make an async HTTP request to the external service
+                    data = await self.obtain_data(input_data, config_settings, config_urls, config_tables_db)
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = json.dumps(data)
+                    await self.send(response_msg)
+                    print(f"Data sent back to {msg.sender}: {data}")
 
-                # Make an async HTTP request to the external service
-                data = await self.obtain_data(input_data, config_settings, config_urls, config_tables_db)
-                response_msg = msg.make_reply()
-                response_msg.set_metadata("performative", "inform")
-                response_msg.body = json.dumps(data)
-                await self.send(response_msg)
-                print(f"Data sent back to {msg.sender}: {data}")
+        async def get_real_data(self, input_data, config_settings, config_urls):
+            try:
+                time_out_val = 1800
+                categorical_columns = []
+                # fix format time for get file
+                start_date = input_data['start_date']
+                start_time = input_data['start_time']
+                end_date = input_data['end_date']
+                end_time = input_data['end_time']
+                frequency = input_data['frequency']
+                column = input_data['target']
+                table = input_data['target_table'].lower()
+                if start_time.count(":") >= 2:
+                    # Find the index of the second colon
+                    second_colon_index = start_time.find(":", start_time.find(":") + 1)
+
+                    # Remove everything starting from the second colon onward
+                    start_time = start_time[:second_colon_index]
+                if end_time.count(":") >= 2:
+                    # Find the index of the second colon
+                    second_colon_index = end_time.find(":", end_time.find(":") + 1)
+
+                    # Remove everything starting from the second colon onward
+                    end_time = end_time[:second_colon_index]
+
+                data = [str(frequency), table, column, start_date, end_date, start_time, end_time]
+                fields = config_urls.get('fields_to_replace_emul')
+                url_data = config_urls.get('url_table_column_data')
+                new_url = await self.replaceFields(url_data, fields, data)
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(new_url, timeout=time_out_val) as response:
+                        response = await response.json()
+                        status_code = response.status
+                if status_code in config_settings.get('errors').values():
+                    return None
+                return response
+            except Exception as ex:
+                return ex
 
         async def obtain_data(self, input_data, config_settings, config_urls, config_tables_db):
             try:
@@ -109,6 +155,7 @@ class TargetAgent(Agent):
                                 resp_data = []
                                 first_row = {}
                         if new_col == column:
+                            new_col_df = column
                             try:
                                 unit_target = first_row['unit']
                             except Exception as ex:
@@ -123,7 +170,6 @@ class TargetAgent(Agent):
                                                 break
                                         if found_unit:
                                             break
-                            new_col_df = column
                         else:
                             new_col_df = new_table + "_" + new_col
                         try:

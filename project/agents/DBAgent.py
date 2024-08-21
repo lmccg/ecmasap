@@ -23,17 +23,17 @@ class DBAgent(Agent):
                     else:
                         response_msg.body = "failure"
                 #     await self.send(response_msg)
-                    # if data_to_insert_in_database['target'] == 'model':
-                    #     input = data_to_insert_in_database['input_data']
-                    #     response_db = await self.save_model_to_db(input)
-                    #     # REPLY BACK
-                    #     response_msg = msg.make_reply()
-                    #     response_msg.set_metadata("performative", "inform")
-                    #     if response_db:
-                    #         response_msg.body = "success"
-                    #     else:
-                    #         response_msg.body = "failure"
-                    #     await self.send(response_msg)
+                # if data_to_insert_in_database['target'] == 'model':
+                #     input = data_to_insert_in_database['input_data']
+                #     response_db = await self.save_model_to_db(input)
+                #     # REPLY BACK
+                #     response_msg = msg.make_reply()
+                #     response_msg.set_metadata("performative", "inform")
+                #     if response_db:
+                #         response_msg.body = "success"
+                #     else:
+                #         response_msg.body = "failure"
+                #     await self.send(response_msg)
                 elif 'save_result' in msg.body:
                     data_to_insert_in_database = json.loads(msg.body)
                     data_to_insert_in_database = data_to_insert_in_database['save_result']
@@ -66,10 +66,10 @@ class DBAgent(Agent):
                     response_msg.body = response_db
                     await self.send(response_msg)
 
-                elif 'update_model_historic_norm' in msg.body:
+                elif 'update_model_historic' in msg.body:
                     info = json.loads(msg.body)
                     model_info = info['update_model_historic_norm']
-                    response_db = await self.update_model_historic_norm(model_info)
+                    response_db = await self.update_model_historic(model_info)
                     # REPLY BACK
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
@@ -103,7 +103,13 @@ class DBAgent(Agent):
                     response_msg.set_metadata("performative", "inform")
                     response_msg.body = response_db
                     await self.send(response_msg)
-
+                elif 'get_models_to_evaluate' in msg.body:
+                    response_db = await self.get_models_to_evaluate()
+                    # REPLY BACK
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = response_db
+                    await self.send(response_msg)
 
         def extract_shap_data(self, shap_values):
             if isinstance(shap_values, list):
@@ -202,12 +208,12 @@ class DBAgent(Agent):
             try:
                 session = Session()
                 result = Result(
-                        model_id=result_info['model_id'],
-                        input_data=result_info['input_data'],
-                        result_values=result_info['result_values'],
-                        execution_time=result_info['execution_time'],
-                        chosen_model=result_info['chosen_model']
-                    )
+                    model_id=result_info['model_id'],
+                    input_data=result_info['input_data'],
+                    result_values=result_info['result_values'],
+                    execution_time=result_info['execution_time'],
+                    chosen_model=result_info['chosen_model']
+                )
                 session.add(result)
                 session.commit()
             except Exception as e:
@@ -216,7 +222,6 @@ class DBAgent(Agent):
             finally:
                 session.close()
                 return 'Success'
-
 
         async def get_regressor_and_scalers(self, model_id):
             session = Session()
@@ -227,16 +232,21 @@ class DBAgent(Agent):
             session.close()
             model_dict = {}
             if model:
-                model_dict = {'regressor': pickle.loads(model.model_binary), 'x_scaler': pickle.loads(model.x_scaler), 'y_scaler': pickle.loads(model.y_scaler), 'settings': json.loads(model.dataset_transformations) if model.dataset_transformations else {}}
+                model_dict = {'regressor': pickle.loads(model.model_binary), 'x_scaler': pickle.loads(model.x_scaler),
+                              'y_scaler': pickle.loads(model.y_scaler), 'settings': json.loads(
+                        model.dataset_transformations) if model.dataset_transformations else {}}
             return json.dumps(model_dict)
 
         async def get_model_historic_norm_and_version(self, model_id):
             session = Session()
-            model = session.query(Model.historic_norm_test_data, Model.models_version).filter_by(model_id=model_id).first()
+            model = session.query(Model.historic_norm_test_data, Model.models_version).filter_by(
+                model_id=model_id).first()
             session.close()
             model_dict = {}
             if model:
-                model_dict = {'historic_norm_test_data': json.loads(model.historic_norm_test_data) if model.historic_norm_test_data else {}, 'model_version': model.model_version}
+                model_dict = {'historic_norm_test_data': json.loads(
+                    model.historic_norm_test_data) if model.historic_norm_test_data else {},
+                              'model_version': model.model_version}
             return json.dumps(model_dict)
 
         async def get_models(self):
@@ -262,7 +272,25 @@ class DBAgent(Agent):
                           for model in models]
             return json.dumps(model_list)
 
-        async def update_model_historic_norm(self, model_info):
+        async def get_models_to_evaluate(self):
+            session = Session()
+            models = session.query(Model.model_id,
+                                   Model.model_name,
+                                   Model.target_name,
+                                   Model.historic_predictions_model,
+                                   Model.historic_scores_model,
+                                   Model.train_errors).all()
+            session.close()
+
+            model_list = [{'model_id': model.model_id,
+                           'model_name': model.model_name,
+                           'historic_predictions_model': model.historic_predictions_model,
+                           'historic_scores_model': model.historic_scores_model,
+                           "train_errors": model.train_errors}
+                          for model in models]
+            return json.dumps(model_list)
+
+        async def update_model_historic(self, model_info):
             model_id = model_info['model_id']
             session = Session()
 
@@ -279,6 +307,7 @@ class DBAgent(Agent):
 
             # Update the desired fields
             model.historic_norm_test_data = json.dumps(model_info['historic_norm_test_data'])
+            model.historic_predictions_model = json.loads(model_info['historic_predictions_model'])
             # Commit the changes to the database
             session.commit()
 
@@ -299,12 +328,20 @@ class DBAgent(Agent):
             if not model:
                 session.close()
                 return 'Failed'
-
+            commit = False
             # Update the desired fields
-            model.historic_predictions_model = json.dumps(model_info['historic_predictions_model'])
-            model.historic_scores_model = json.dumps(model_info['historic_scores_model'])
+            if model_info['historic_predictions_model']:
+                commit = True
+                model.historic_predictions_model = json.dumps(model_info['historic_predictions_model'])
+            if model_info['test_errors']:
+                commit = True
+                model.test_errors = json.dumps(model_info['test_errors'])
+            if model_info['historic_scores_model']:
+                commit = True
+                model.historic_scores_model = json.dumps(model_info['historic_scores_model'])
             # Commit the changes to the database
-            session.commit()
+            if commit:
+                session.commit()
 
             session.close()
             return 'Success'

@@ -86,7 +86,7 @@ class MLModelAgent(Agent):
                         trained_at = current_time.strftime(formated_timestamp)
                         method = TimeSeriesSplit(n_splits=2)
                         scores = cross_val_score(regressor, X_train, y_train, cv=method, scoring=metric_score)
-                        scores_ = {metric_score:scores}
+                        scores_ = {metric_score: scores}
                         # save the data from database
                         new_msg = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
                         new_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
@@ -255,6 +255,7 @@ class MLModelAgent(Agent):
                                 result = "Failed"
                             if not error_:
                                 historic_norm_test_data = info_norm_and_version['historic_norm_test_data']
+                                historic_predictions_model = info_norm_and_version['historic_predictions_model']
                                 model_version = info_norm_and_version['model_version']
 
                                 X_test = await self.__generate_test_data(dataset_ja, x_scaler, y_scaler, settings_jo, tables_dataset,  target_table, target, dataset_type)
@@ -266,22 +267,32 @@ class MLModelAgent(Agent):
                                     inv_predict = y_scaler.inverse_transform(predictions.reshape(-1, 1))
                                 else:
                                     inv_predict = predictions.reshape(-1, 1)
+                                print(inv_predict)
                                 entry_norm_test_data = {
                                                       "predicted_timestamp": first_start_timestamp,
                                                       "predicted_end_timestamp": last_start_timestamp,
                                                       "normalized_x_test": X_test,
                                                       "normalized_y_test": predictions,
-                                                      "y_predicted": inv_predict,
+                                                      "y_predicted": inv_predict[0],
                                                       "model_version": model_version}
+                                entry_pred = {"predicted_timestamp": first_start_timestamp,
+                                              "frequency": input['frequency'],
+                                              'target': target,
+                                              'target_table': target_table,
+                                     "predicted_value": inv_predict[0],
+                                     "model_version": model_version
+                                     }
                                 historic_norm_test_data.append(entry_norm_test_data)
+                                historic_predictions_model.append(entry_pred)
                                 ml_model_info = {
                                     'model_id': ml_model_id,
                                     'historic_norm_test_data': historic_norm_test_data,
+                                    'historic_predictions_model': historic_predictions_model
                                 }
                                 msg_update_model_historic = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
                                 msg_update_model_historic.set_metadata("performative", "request")  # Set the "inform" FIPA performative
 
-                                msg_ = {'update_model_historic_norm': ml_model_info}
+                                msg_ = {'update_model_historic': ml_model_info}
                                 msg_ = json.dumps(msg_)
                                 msg_update_model_historic.body = msg_
                                 await self.send(msg_update_model_historic)
