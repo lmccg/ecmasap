@@ -1,0 +1,5 @@
+
+/project/database_inputdata/logs
+/project/agents/logs
+/project/agents/__pycache__/
+/project/agents/utils_package/__pycache__/
