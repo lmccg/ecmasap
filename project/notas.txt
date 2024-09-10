@@ -3,3 +3,7 @@ Modelos de ML:
     * ML -> pode ser regressores ou classificadores (if else para saber qual usar, testar se funciona usar uma classe instanciada n vezes)
 
 norm_test_data inclui x e y normalizados
+
+é necessário razões de retreino?
+horas de retreino ainda são para manter?
+nas explicações qual o y_test, o real normalizado, ou o previsto normlaizado?

@@ -1,5 +1,5 @@
 defaults:
-    domain: ecmasap.gecad.isep.ipp.pt
+    domain: localhost
     log_level: DEBUG
 agents:
     db_agent:
@@ -41,15 +41,21 @@ agents:
     publisher_agent:
         resource: publisher_agent
         file: PublisherAgent.py
+    subscriber_agent:
+        resource: subscriber_agent
+        file: SubscriberAgent.py
     rl_retrain_agent:
         resource: rl_retrain_agent
         file: RLRetrainAgent.py
     rl_selector_agent:
         resource: rl_selector_agent
         file: RLSelectorAgent.py
-    rules_agent:
-        resource: rules_agent
-        file: RulesAgent.py
+#    rules_agent:
+#        resource: rules_agent
+#        file: RulesAgent.py
     target_agent:
         resource: target_agent
         file: TargetAgent.py
+    xai_agent:
+        resource: xai_agent
+        file: XAIAgent.py

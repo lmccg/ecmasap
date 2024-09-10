@@ -14,6 +14,10 @@ client_id_base = 'publish-'
 # username = 'emqx'
 # password = 'public'
 
+publish_interval = timedelta(minutes=5)
+
+published_topics = {}
+
 
 def connect_mqtt(client_id):
         def on_connect(client, userdata, flags, rc):
@@ -23,7 +27,6 @@ def connect_mqtt(client_id):
                 print("Failed to connect, return code %d\n", rc)
 
         client = mqtt_client.Client(client_id)
-        # client.username_pw_set(username, password)
         client.on_connect = on_connect
         client.connect(broker, port)
         return client
@@ -31,26 +34,43 @@ def connect_mqtt(client_id):
 class PublisherAgent(Agent):
     class PublishResults(PeriodicBehaviour):
         async def run(self):
-            msg = await self.receive(10)
+            msg = await self.receive()
             if msg:
+                print(f'got a message {msg.body}')
                 publishers = []
-                topics = ["report/predictions"]
-                client_id = client_id_base + str(random.randint(0, 1000))
-                client = connect_mqtt(client_id)
-                client.loop_start()
+                topics = ["report/results"]
                 content = msg.body
                 for topic in topics:
-                    publisher = self.MQTTPublisher(client_id, topic, content)
-                    publishers.append(publisher)
+                    # Check if this topic and message were already published recently
+                    if topic in published_topics:
+                        last_published, last_content = published_topics[topic]
+                        if last_content == content and datetime.now() - last_published < publish_interval:
+                            print(f"Skipping publishing to `{topic}` as the message has been published recently.")
+                            continue
 
-                threads = []
-                for publisher in publishers:
+                    client_id = client_id_base + str(random.randint(0, 1000))
+                    client = connect_mqtt(client_id)
+                    client.loop_start()
+                    print('body', content)
+                    # for topic in topics:
+                    print('topic', topic, client_id)
+                    publisher = self.MQTTPublisher(client_id, topic, content)
                     thread = Thread(target=publisher.run, args=(client,))
                     thread.start()
-                    threads.append(thread)
-
-                for thread in threads:
                     thread.join()
+
+                    # Store the publication timestamp and content
+                    published_topics[topic] = (datetime.now(), content)
+                    # publishers.append(publisher)
+
+                # threads = []
+                # for publisher in publishers:
+                #     thread = Thread(target=publisher.run, args=(client,))
+                #     thread.start()
+                #     threads.append(thread)
+                #
+                # for thread in threads:
+                #     thread.join()
 
 
         class MQTTPublisher:
@@ -62,8 +82,8 @@ class PublisherAgent(Agent):
 
             def publish(self, client):
                 # msg_count = 1
-                while True:
-                    time.sleep(1)
+                # while True:
+                #     time.sleep(1)
                     result = client.publish(self.topic, self.content)
                     # result: [0, 1]
                     status = result[0]
@@ -81,6 +101,5 @@ class PublisherAgent(Agent):
                 client.loop_stop()
 
     async def setup(self):
-        print(f"Agent {self.jid} starting...")
-        b = self.PublishResults()
+        b = self.PublishResults(period=1)
         self.add_behaviour(b)

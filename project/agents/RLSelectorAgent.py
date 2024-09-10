@@ -7,32 +7,31 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 
 class RLSelectorAgent(Agent):
-    def __init__(self):
-        super().__init__()
-        self.similarity_threshold = 0.85
-        self.models = []
-        self.target_characteristics = {}
-        self.model = None
-        self.env = None
-        self.error_metric = None
     class ReceiveMsg(PeriodicBehaviour):
         async def run(self):
-            msg = await self.receive(10)
+            msg = await self.receive()
             if msg:
+                self.similarity_threshold = 0.85
+                self.models = []
+                self.target_characteristics = {}
+                self.model = None
+                self.env = None
+                self.error_metric = None
+
                 print(f"model: {msg.sender} sent me a message: '{msg.body}'")
                 request_data = msg.body
                 request_data = json.loads(request_data)
-                with open('../utils_package/config_settings.json') as config_file:
+                with open('utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
                 similarity_threshold = config_settings['similarity_threshold']  # could be 0.85
-                with open('../utils_package/config_agents.json') as config_file:
+                with open('utils_package/config_agents.json') as config_file:
                     config_agents = json.load(config_file)
                 database_agent = config_agents["database_agent"]
                 request_models = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
                 request_models.set_metadata("performative", "request")
                 request_models.body = 'get_models'
                 await self.send(request_models)
-                response = await self.receive(timeout=60)
+                response = await self.receive()
                 if response:
                     if response.get_metadata("performative") == "inform":
                         models = response.body

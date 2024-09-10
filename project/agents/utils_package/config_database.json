@@ -1,9 +1,9 @@
 {
     "database": {
         "db_username": "postgres",
-        "db_password": "GECAD2022",
+        "db_password": "psw",
         "db_host": "localhost",
-        "db_port": 5432,
-        "db_name": "ecmasap"
+        "db_port": 9911,
+        "db_name": "dbtese"
     }
 }

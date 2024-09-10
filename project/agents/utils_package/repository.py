@@ -1,9 +1,19 @@
 import psycopg2
+import json
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from sqlalchemy import create_engine, Column, Integer, String, Float, LargeBinary, ARRAY, DateTime, JSON, BOOLEAN, func
+from sqlalchemy import create_engine, Column, Integer, String, Text, Float, LargeBinary, ARRAY, DateTime, JSON, BOOLEAN, func
 from sqlalchemy.orm import declarative_base, sessionmaker
-from utils import DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, DATABASE_URL
 
+# Load configuration from JSON file
+with open('utils_package/config_database.json') as config_file:
+    config = json.load(config_file)
+
+DB_USERNAME = config["database"]["db_username"]
+DB_PASSWORD = config["database"]["db_password"]
+DB_HOST = config["database"]["db_host"]
+DB_PORT = config["database"]["db_port"]
+DB_NAME = config["database"]["db_name"]
+DATABASE_URL = f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 Base = declarative_base()
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
@@ -30,10 +40,10 @@ class Model(Base):
     dataset_transformations = Column(JSON)
     default_metric = Column(String, nullable=False)
     characteristics = Column(JSON, nullable=False)
-    # explainer = Column(LargeBinary, nullable=False)
-    # explainer_data = Column(LargeBinary, nullable=False)
-    # global_shap_values = Column(LargeBinary, nullable=False)
-    # base_values = Column(ARRAY(Float), nullable=False)
+    # explainer = Column(LargeBinary)
+    # explainer_data = Column(LargeBinary)
+    # global_shap_values = Column(LargeBinary)
+    # base_values = Column(ARRAY(Float))
     # classes = Column(ARRAY(String))
     # global_explanations = Column(LargeBinary)
     # local_explanations = Column(LargeBinary)
@@ -79,3 +89,8 @@ def create_database_if_not_exists():
 def initialize_database():
     Base.metadata.create_all(engine)
 
+
+async def start_app():
+    # Your logic here
+    create_database_if_not_exists()
+    initialize_database()

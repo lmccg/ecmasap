@@ -39,8 +39,7 @@
   "ae": 0,
   "possible_best_metric_value": ["higher", "lower"],
   "frequencies_list": [
-    "15",
-    "60"
+    "15"
   ],
   "startTimePredictions": "00:00",
   "lastTimePrediction": "23:59",
@@ -132,5 +131,26 @@
   "similarity_threshold": 0.60,
   "possible_data_types": {"working_periods": ["working_periods", "general_periods"],
   "nights_and_weekends_periods": ["nights_and_weekends_periods", "general_periods"],
-  "general_periods": ["general_periods", "working_periods", "nights_and_weekends_periods"]}
+  "general_periods": ["general_periods", "working_periods", "nights_and_weekends_periods"]},
+  "shap": {
+        "n_samples": 20,
+        "nr_top_features_analysis": 3,
+        "plots": {
+            "global": ["beeswarm", "bar"],
+            "local": ["waterfall", "bar"]
+        }
+    },
+  "errors_metric": ["wape", "smape", "rmspe"],
+  "min_len_compare_model": 96,
+  "feature_deviation": 2,
+  "error_deviation": 2,
+  "trigger_retrain": 25,
+  "units_one_val_retrain": ["W"],
+  "hourHigh": "01:00",
+  "hourMediumAndLow": "14:00",
+  "limit": 5,
+  "minimal_days": 3,
+  "to_retrain": "to_retrain",
+  "in_retrain": "retraining",
+  "retrained": "retrained"
 }

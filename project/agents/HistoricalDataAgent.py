@@ -1,37 +1,67 @@
-from peak import Agent, PeriodicBehaviour
+from peak import Agent, PeriodicBehaviour, Message
+import zlib
+import base64
 import json
 import aiohttp
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-class TargetAgent(Agent):
+class HistoricalDataAgent(Agent):
     class GetData(PeriodicBehaviour):
         async def run(self):
-            msg = await self.receive(10)
+            msg = await self.receive()
             if msg:
-                with open('../utils_package/config_urls.json') as config_file:
+                print('msg received', msg.body)
+                with open('utils_package/config_urls.json') as config_file:
                     config_urls = json.load(config_file)
-                with open('../utils_package/config_settings.json') as config_file:
+                with open('utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
-                with open('../utils_package/config_tables_db.json') as config_file:
+                with open('utils_package/config_tables_db.json') as config_file:
                     config_tables_db = json.load(config_file)
-                input_data = msg.body
+                data = msg.body
+                data = data.split('|')
+                request = data[0]
+                input_data = data[1]
                 input_data = json.loads(input_data)
-                if 'get_real_data' in input_data:
+                if request == 'get_real_data':
                     data = await self.get_real_data(input_data, config_settings, config_urls)
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
                     response_msg.body = json.dumps(data)
                     await self.send(response_msg)
-                    print(f"Data sent back to {msg.sender}: {data}")
-                else:
+                    # print(f"Data sent back to {msg.sender}: {data}")
+                elif request == 'get_historical_data':
                     # Make an async HTTP request to the external service
+                    print(datetime.now(), 'get_historical_data')
                     data = await self.obtain_data(input_data, config_settings, config_urls, config_tables_db)
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
-                    response_msg.body = json.dumps(data)
+                    json_data = json.dumps(data)
+                    # Compress the JSON data
+                    compressed_data = zlib.compress(json_data.encode('utf-8'))
+
+                    # Encode the compressed data using Base64
+                    encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+
+                    response_msg.body = encoded_data
+
+                    # Define the maximum chunk size (this could depend on your server's limit)
+                    # MAX_CHUNK_SIZE = 1024  # example size in bytes
+                    #
+                    # # Convert the data to a JSON string
+                    # json_data = json.dumps(data)
+                    # # Split the JSON string into chunks
+                    # total_chunks = math.ceil(len(json_data) / MAX_CHUNK_SIZE)
+                    # for i in range(total_chunks):
+                    #     chunk = json_data[i * MAX_CHUNK_SIZE:(i + 1) * MAX_CHUNK_SIZE]
+                    #     chunk_msg = Message(to=str(response_msg.to))
+                    #     chunk_msg.set_metadata("performative", "inform")
+                    #     chunk_msg.set_metadata("chunk_index", str(i))
+                    #     chunk_msg.set_metadata("total_chunks", str(total_chunks))
+                    #     chunk_msg.body = chunk
+                    #     await self.send(chunk_msg)
                     await self.send(response_msg)
-                    print(f"Data sent back to {msg.sender}: {data}")
+                    print(f"{datetime.now()} Data sent back to {response_msg.sender}, {response_msg.get_metadata('performative')}")
 
         async def get_real_data(self, input_data, config_settings, config_urls):
             try:
@@ -107,16 +137,34 @@ class TargetAgent(Agent):
                 new_url = await self.replaceFields(url_data, fields, data)
                 async with aiohttp.ClientSession() as session:
                     async with session.get(new_url, timeout=time_out_val) as response:
-                        await response.json()
+                        target_data = await response.json()
                         status_code = response.status
                 if status_code in config_settings.get('errors').values():
-                    return -2, None, None, None, None, None, None, None, None
+                    return -2, None, None, None
+                dataframe_column = [date_column, column]
+                final_df = pd.DataFrame(columns=dataframe_column)
+                # print(Utils.timestamp_with_time_zone(), 'line 239')
+                col_data = []
+                date_col = []
+                for entry in target_data:
+                    first_row = True
+                    # print('index', index, 'value', entry.get('value'))
+                    if isinstance(entry.get('value'), str):
+                        col_data.append(entry.get('value'))
+                    else:
+                        col_data.append(entry.get('value'))
+                    date_value = entry.get('start_at')
+                    date_col.append(date_value)
+                if len(date_col) > 0:
+                    final_df[column] = col_data
+                    final_df[date_column] = date_col
+
                 url_resources = config_urls.get("url_resources")
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url_resources, timeout=time_out_val) as response:
                         response_resources = await response.json()
                 resources_list = response_resources.get('resources')
-                with open('../utils_package/tablesData.json') as f:
+                with open('utils_package/tablesData.json') as f:
                     tables_for_dataset = json.load(f)
                 columns_table = tables_for_dataset.get(dataset_type).get(table)
                 column_for_that_value = columns_table.get(column)
@@ -125,11 +173,11 @@ class TargetAgent(Agent):
                     if isinstance(c, dict):
                         for new_table, other_col in c.items():
                             for col in other_col:
-                                list_columns.append({col: new_table})
+                                if col != column:
+                                     list_columns.append({col: new_table})
                     else:
-                        list_columns.append({c: table})
-                final_df = pd.DataFrame()
-                first_one = True
+                        if c != column:
+                            list_columns.append({c: table})
                 for dict_columns in list_columns:
                     for new_col, new_table in dict_columns.items():
                         data = [str(frequency), new_table, new_col, start_date, end_date, start_time, end_time]
@@ -139,7 +187,7 @@ class TargetAgent(Agent):
                                 resp_data = await response.json()
                                 status_code = response.status
                         if status_code in config_errors:
-                            return -2, None, None, None, None, None, None, None, None
+                            return -2, None, None, None
                         if isinstance(resp_data, list):
                             if len(resp_data) > 0:
                                 first_row = resp_data[0]
@@ -193,11 +241,7 @@ class TargetAgent(Agent):
                             if len(date_col) > 0:
                                 new_df[new_col_df] = col_data
                                 new_df[date_column] = date_col
-                                if first_one:
-                                    final_df = new_df.copy()
-                                    first_one = False
-                                else:
-                                    final_df = pd.merge(final_df, new_df, how='inner', on=[date_column])
+                                final_df = pd.merge(final_df, new_df, how='inner', on=[date_column])
                         except Exception as e:
                             pass
                 new_df = final_df
@@ -211,7 +255,7 @@ class TargetAgent(Agent):
                 response = response + (categorical_columns,)
                 return response
             except Exception as ex:
-                return ex
+                return ex, None, None, None
 
         async def fix_dataset(self, dataset, startDate, endDate, startTime, endTime, time, target_name,
                               date_column,
@@ -261,7 +305,7 @@ class TargetAgent(Agent):
             except:
                 end_date = datetime.strptime((endDate + " " + endTime + ":00"), datetimeFormat)
             # Define the frequency in minutes
-            frequency = time  # Generate a date range using the start date, end date, and frequency
+            frequency = int(time)  # Generate a date range using the start date, end date, and frequency
             date_range = [start_date + i * timedelta(minutes=frequency) for i in
                           range(int(((end_date - start_date).total_seconds() / 60) / frequency) + 1)]
             # Create a dataframe using the date range
@@ -404,6 +448,5 @@ class TargetAgent(Agent):
 
     # Setup function for the historical data agent
     async def setup(self):
-        print(f"Agent {self.jid} starting...")
-        b = self.GetData()
+        b = self.GetData(period=1)
         self.add_behaviour(b)

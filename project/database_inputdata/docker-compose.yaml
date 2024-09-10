@@ -1,0 +1,15 @@
+version: '3.8'
+#
+# SERVICES
+services:
+  #
+  # DB-INPUTDATA SERVICE
+  db-inputdata:
+    container_name: db-inputdata
+    build:
+      context: ./db-inputdata
+      network: host
+    restart: unless-stopped
+    command: hypercorn app:app -b 0.0.0.0:8080
+    ports:
+      - 1102:8080

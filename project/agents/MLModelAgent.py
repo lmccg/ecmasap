@@ -11,27 +11,56 @@ from sklearn.preprocessing import StandardScaler
 import json
 from datetime import datetime
 import time
-
-
+import pickle
+import base64
+import asyncio
+import zlib
+import os
+from ast import literal_eval
 class MLModelAgent(Agent):
     class ReceiveMsg(PeriodicBehaviour):
         async def run(self):
-            msg = await self.receive(10)
+            msg = await self.receive()
             if msg:
+                # num_chunks_info = json.loads(msg.body)
+                # num_chunks = num_chunks_info.get("num_chunks", 0)
+                #
+                # # Now, receive all the chunks
+                # received_data = []
+                # for _ in range(num_chunks):
+                #     response = await self.receive(timeout=10)  # Adjust the timeout as necessary
+                #     if response:
+                #         received_data.append(response.body)
+                #     else:
+                #         print("Failed to receive all chunks")
+                #         return None
+                # # Reassemble the data
+                # json_data = ''.join(received_data)
+                # received_data.clear()
+                # result = None
                 error_ = False
-                print(f"model: {msg.sender} sent me a message: '{msg.body}'")
-                with open('../utils_package/config_params.json') as config_file:
+                encoded_data = msg.body
+
+                # Decode the Base64-encoded string
+                compressed_data = base64.b64decode(encoded_data)
+
+                # Decompress the data
+                json_data = zlib.decompress(compressed_data).decode('utf-8')
+                # Convert JSON string back to Python dictionary
+                print(f"model: {msg.sender} sent me a message")
+                with open('utils_package/config_params.json') as config_file:
                     config_params = json.load(config_file)
-                with open('../utils_package/config_settings.json') as config_file:
+                with open('utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
-                with open('../utils_package/tablesData.json') as config_file:
+                with open('utils_package/tablesData.json') as config_file:
                     tables_dataset = json.load(config_file)
-                with open('../utils_package/config_agents.json') as config_file:
+                with open('utils_package/config_agents.json') as config_file:
                     config_agents = json.load(config_file)
                 database_agent = config_agents["database_agent"]
-                if 'train' in msg.body or 'retrain' in msg.body:
+                if 'train' in json_data or 'retrain' in json_data:
                     try:
-                        parts_of_msg = msg.body.split("|")
+                        print('train or retrain')
+                        parts_of_msg = json_data.split("|")
                         ml_model_name = parts_of_msg[1]
                         input = parts_of_msg[2]
                         input = json.loads(input)
@@ -41,40 +70,61 @@ class MLModelAgent(Agent):
                         dataset_type = input['dataset_type']
                         training_dates = input['training_dates']
                         dataset_ja = parts_of_msg[3]
-                        table_target = input['target_table']
                         ml_model_type = next((key for key, models in config_agents.get("ml_model_agents").items() if ml_model_name in models.values()), None)
                         key_params = target_table + '_' + target + '_' + str(frequency)
                         ml_model_parameters = config_params.get(key_params).get(dataset_type).get(ml_model_name).get('params')
+                        ml_model_parameters = await self.get_parameters(ml_model_parameters)
                         metric_score = config_settings.get('error_metric')
                         settings = input.get('settings')
                         if not isinstance(settings, dict):
                             settings = json.loads(settings)
                         characteristics = input.get('characteristics')
                         array_data_df, X_train, y_train, x_scale, y_scale, final_columns_names = await self.__generate_train_data(dataset_ja, settings, tables_dataset, target_table, target, dataset_type)
-                        if ml_model_name == "MLPR":
-                            regressor = MLPRegressor(**ml_model_parameters)
-                        elif ml_model_name == "SVR":
-                            regressor = SVR(**ml_model_parameters)
-                        elif ml_model_name == "KNNR":
-                            regressor = KNeighborsRegressor(**ml_model_parameters)
-                        elif ml_model_name == "RFR":
-                            regressor = RandomForestRegressor(**ml_model_parameters)
-                        elif ml_model_name == "MLPC":
-                            regressor = MLPClassifier(**ml_model_parameters)
-                        elif ml_model_name == "SVC":
-                            regressor = SVC(**ml_model_parameters)
-                        elif ml_model_name == "KNNC":
-                            regressor = KNeighborsClassifier(**ml_model_parameters)
-                        elif ml_model_name == "RFC":
-                            regressor = RandomForestClassifier(**ml_model_parameters)
-                        elif ml_model_name == "GBR":
-                            regressor = GradientBoostingRegressor(**ml_model_parameters)
-                        elif ml_model_name == "ABR":
-                            regressor = AdaBoostRegressor(**ml_model_parameters)
+                        if 'train' in json_data:
+                            if ml_model_name == "MLPR":
+                                regressor = MLPRegressor(**ml_model_parameters)
+                            elif ml_model_name == "SVR":
+                                regressor = SVR(**ml_model_parameters)
+                            elif ml_model_name == "KNNR":
+                                regressor = KNeighborsRegressor(**ml_model_parameters)
+                            elif ml_model_name == "RFR":
+                                regressor = RandomForestRegressor(**ml_model_parameters)
+                            elif ml_model_name == "MLPC":
+                                regressor = MLPClassifier(**ml_model_parameters)
+                            elif ml_model_name == "SVC":
+                                regressor = SVC(**ml_model_parameters)
+                            elif ml_model_name == "KNNC":
+                                regressor = KNeighborsClassifier(**ml_model_parameters)
+                            elif ml_model_name == "RFC":
+                                regressor = RandomForestClassifier(**ml_model_parameters)
+                            elif ml_model_name == "GBR":
+                                regressor = GradientBoostingRegressor(**ml_model_parameters)
+                            elif ml_model_name == "ABR":
+                                regressor = AdaBoostRegressor(**ml_model_parameters)
+                            else:
+                                error_ = True
+                                result = "Failed"
                         else:
-                            error_ = True
-                            result = "Failed"
-                    except:
+                            ml_model_id = parts_of_msg[4]
+                            msg_train_data = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
+                            msg_train_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                            msg_ = {'get_regressor_and_scalers': ml_model_id}
+                            msg_ = json.dumps(msg_)
+                            msg_train_data.body = msg_
+                            await self.send(msg_train_data)
+                            response = await self.receive()
+                            if response:
+                                if response.get_metadata("performative") == "inform":
+                                    info_from_database = response.body
+                            else:
+                                error_ = True
+                                result = "Failed"
+                            if not error_:
+                                info_from_database = json.loads(info_from_database)
+                                if info_from_database:
+                                    regressor = info_from_database['regressor']
+                    except Exception as e:
+                        print(e)
                         error_ = True
                         result = "Failed"
 
@@ -84,25 +134,32 @@ class MLModelAgent(Agent):
                         current_time = datetime.now()
                         formated_timestamp = config_settings.get('datetime_format')
                         trained_at = current_time.strftime(formated_timestamp)
-                        method = TimeSeriesSplit(n_splits=2)
-                        scores = cross_val_score(regressor, X_train, y_train, cv=method, scoring=metric_score)
+                        scores = regressor.score(X_train, y_train)
                         scores_ = {metric_score: scores}
+                        print(scores_)
                         # save the data from database
-                        new_msg = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
-                        new_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                        # new_msg = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
+                        # new_msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
                         ml_model_name_ = ml_model_name + '_' + str(
                             frequency) + 'min' + '_' + target_table + '_' + target + '_' + dataset_type
-                        if 'train' in msg.body:
+                        suffix = ml_model_name + '_' + trained_at +'.pkl'
+                        regressor_path = self.save_object_to_file(regressor, 'regressor_'+suffix)
+                        array_data_df_path = self.save_object_to_file(array_data_df, 'array_data_df_'+suffix)
+                        x_train_path = self.save_object_to_file(X_train, 'x_train_'+suffix)
+                        y_train_path = self.save_object_to_file(X_train, 'y_train_'+suffix)
+                        x_scale_path = self.save_object_to_file(X_train, 'x_scale_'+suffix)
+                        y_scale_path = self.save_object_to_file(X_train, 'y_scale_'+suffix)
+                        if 'train' in json_data:
                             retrain_counter = 0
                             models_version = "v_" + str(retrain_counter) + "_" + trained_at
                             models_version = models_version.replace(" ", "_")
-                            ml_model_info = {
-                                'model_binary': regressor,
-                                'train_data': array_data_df,
-                                'x_train_data_norm': X_train,
-                                'y_train_data_norm': y_train,
-                                'x_scaler': x_scale,
-                                'y_scaler': y_scale,
+                            model_info = {'save_model': {
+                                'model_binary': regressor_path,
+                                'train_data': array_data_df_path,
+                                'x_train_data_norm': x_train_path,
+                                'y_train_data_norm': y_train_path,
+                                'x_scaler': x_scale_path,
+                                'y_scaler': y_scale_path,
                                 'columns_names': final_columns_names,
                                 'target_name': target,
                                 'model_name': ml_model_name_,
@@ -118,29 +175,37 @@ class MLModelAgent(Agent):
                                 'retrain_counter': retrain_counter,
                                 'flag_training': False,
                                 'models_version': models_version,
-                                'training_dates': training_dates}
-                            msg_ = {'save_model': ml_model_info}
-                            msg_ = json.dumps(msg_)
-                            new_msg.body = msg_
-                            await self.send(new_msg)
-                            response = await self.receive(timeout=60)
+                                'training_dates': training_dates}}
+                            msg_ = json.dumps(model_info)
+                            # new_msg.body = msg_
+                            print('sending')
+                            response = await self._send_response(msg_, database_agent)
+                            # await self.send(new_msg)
+                            # response = await self.receive()
                             if response:
+                                print('response')
                                 if response.get_metadata("performative") == "inform":
                                     result = response.body
+                                    if result.lower() != 'failure' or result.lower() != 'failed':
+                                        print('not failed', result)
+                                        result = f"Trained model {ml_model_name} => {scores_}"
+                                        print(result)
+                                    else:
+                                        error_ = True
+                                        result = "Failed"
                             else:
                                 error_ = True
                                 result = "Failed"
-                        elif 'retrain' in msg.body:
+                        elif 'retrain' in json_data:
                             # get the data from database
                             try:
-                                ml_model_id = parts_of_msg[4]
                                 request_counter = Message(to=f"{database_agent}@{self.agent.jid.domain}/{database_agent}")
                                 request_counter.set_metadata("performative", "request")
                                 msg_ = {'get_retrain_counter': ml_model_id}
                                 msg_ = json.dumps(msg_)
                                 request_counter.body = msg_
                                 await self.send(request_counter)
-                                response = await self.receive(timeout=60)
+                                response = await self.receive()
                                 if response:
                                     if response.get_metadata("performative") == "inform":
                                         retrain_counter = response.body
@@ -157,12 +222,12 @@ class MLModelAgent(Agent):
                                 models_version = models_version.replace(" ", "_")
                                 ml_model_info = {
                                     'model_id': ml_model_id,
-                                    'model_binary': regressor,
-                                    'train_data': array_data_df,
-                                    'x_train_data_norm': X_train,
-                                    'y_train_data_norm': y_train,
-                                    'x_scaler': x_scale,
-                                    'y_scaler': y_scale,
+                                    'model_binary': regressor_path,
+                                    'train_data': array_data_df_path,
+                                    'x_train_data_norm': x_train_path,
+                                    'y_train_data_norm': y_train_path,
+                                    'x_scaler': x_scale_path,
+                                    'y_scaler': y_scale_path,
                                     'columns_names': final_columns_names,
                                     'target_name': target,
                                     'model_name': ml_model_name_,
@@ -181,19 +246,29 @@ class MLModelAgent(Agent):
                                     'training_dates': training_dates}
                                 msg_ = {'update_model': ml_model_info}
                                 msg_ = json.dumps(msg_)
-                                new_msg.body = msg_
-                                await self.send(new_msg)
-                                response = await self.receive(timeout=60)
+                                response = await self._send_response(msg_, database_agent)
                                 if response:
                                     if response.get_metadata("performative") == "inform":
                                         result = response.body
+                                        if result == 'success':
+                                            result = f"Retrained model {ml_model_name} => {scores_}"
+
                                 else:
                                     error_ = True
                                     result = "Failed"
+                                # new_msg.body = msg_
+                                # await self.send(new_msg)
+                                # response = await self.receive()
+                                # if response:
+                                #     if response.get_metadata("performative") == "inform":
+                                #         result = response.body
+                                # else:
+                                #     error_ = True
+                                #     result = "Failed"
 
-                elif 'predict' in msg.body:
+                elif 'predict' in json_data:
                     try:
-                        parts_of_msg = msg.body.split("|")
+                        parts_of_msg = json_data.split("|")
                         ml_model_id = parts_of_msg[1]
                         input = parts_of_msg[2]
                         input = json.loads(input)
@@ -223,7 +298,7 @@ class MLModelAgent(Agent):
                         msg_ = json.dumps(msg_)
                         msg_train_data.body = msg_
                         await self.send(msg_train_data)
-                        response = await self.receive(timeout=60)
+                        response = await self.receive()
                         if response:
                             if response.get_metadata("performative") == "inform":
                                 info_from_database = response.body
@@ -246,7 +321,7 @@ class MLModelAgent(Agent):
                             msg_ = json.dumps(msg_)
                             msg_historical_norm_and_versions.body = msg_
                             await self.send(msg_historical_norm_and_versions)
-                            response = await self.receive(timeout=60)
+                            response = await self.receive()
                             if response:
                                 if response.get_metadata("performative") == "inform":
                                     info_norm_and_version = response.body
@@ -296,7 +371,7 @@ class MLModelAgent(Agent):
                                 msg_ = json.dumps(msg_)
                                 msg_update_model_historic.body = msg_
                                 await self.send(msg_update_model_historic)
-                                response = await self.receive(timeout=60)
+                                response = await self.receive()
                                 if response:
                                     if response.get_metadata("performative") == "inform":
                                         #save model result in database
@@ -315,7 +390,7 @@ class MLModelAgent(Agent):
                                         msg_ = json.dumps(msg_)
                                         msg_save_result.body = msg_
                                         await self.send(msg_save_result)
-                                        response = await self.receive(timeout=60)
+                                        response = await self.receive()
                                         if response:
                                             if response.get_metadata("performative") == "inform":
                                                 result = {target: inv_predict}
@@ -333,10 +408,12 @@ class MLModelAgent(Agent):
 
                 print('sending back')
                 if result != "Failed":
+                    print('not failed')
                     publisher_agent = config_agents["publisher_agent"]
                     request_publish = Message(to=f"{publisher_agent}@{self.agent.jid.domain}/{publisher_agent}")
                     request_publish.set_metadata("performative", "inform")
                     msg_ = json.dumps(result)
+                    print('msg reply', msg_)
                     request_publish.body = msg_
                     await self.send(request_publish)
                 await self.send_reply(msg, result)
@@ -346,17 +423,18 @@ class MLModelAgent(Agent):
             datetime_column_name = settings_jo["datetime_column_name"]
             datetime_format = settings_jo["datetime_format"]
             target_name = settings_jo["target_column_name"]
-            columns_for_target = []
+            columns_for_target = [datetime_column_name]
             data_column = tables_dataset.get(dataset_type).get(target_table).get(target)
             for entry in data_column:
                 if isinstance(entry, dict):
                     for k, v in entry.items():
                         for value in v:
-                            columns_for_target.append(k + "_" + value)
+                            if value != target:
+                                columns_for_target.append(k + "_" + value)
 
                 else:
                     if entry != target:
-                        columns_for_target.append(target + "_" + entry)
+                        columns_for_target.append(target_table + "_" + entry)
                     else:
                         columns_for_target.append(target)
             categorical_columns_names = settings_jo["categorical_columns_names"]
@@ -377,32 +455,39 @@ class MLModelAgent(Agent):
                 data_df, datetime_cols_in_df = await self.__transform_data(data_df, transformations, target_name,
                                                                       datetime_cols_in_df, columns_for_target)
             except Exception as e:
+                print("error Transforming data: " + str(e))
                 return ({"error": "Transforming data: " + str(e)})
 
             try:
                 data_df = await self. __extract_categorical_data(data_df, categorical_columns_names)
             except Exception as e:
+                print("error Extracting data: " + str(e))
                 raise Exception({"error": "Extracting categorical data: " + str(e)})
 
             try:
                 data_df = await self.__filter_data(data_df, filters)
             except Exception as e:
+                print("error Filtering data: " + str(e))
                 raise Exception({"error": "Filtering data: " + str(e)})
 
             if data_df.empty:
+                print("Data frame is empty")
                 raise Exception({"error": "Empty dataset"})
 
             x_std_scale = None
             y_std_scale = None
             array_data_df =data_df.values.tolist()
+
             if normalize:
                 try:
                     normalized_data_df, x_std_scale, y_std_scale = await self.__normalize_data(data_df, target_name,
                                                                                               filters["problem_type"])
                 except Exception as e:
+                    print("error Normalizing data: " + str(e))
                     raise Exception({"error": "Normalizing data: " + str(e)})
             else:
                 normalized_data_df = data_df
+
             x_train, y_train, final_columns_names = await self.__split_x_y(normalized_data_df, target_name)
             return array_data_df, x_train, y_train, x_std_scale, y_std_scale, final_columns_names
         async def __generate_test_data(self, dataset_ja, x_scale, y_scale, settings_jo, tables_dataset, target_table, target, dataset_type):
@@ -665,5 +750,135 @@ class MLModelAgent(Agent):
                         cols.append('t-' + str(n_previous_periods_list[i]))
             return cols
 
+        async def get_parameters(self, ml_model_parameters):
+            if ml_model_parameters:
+                # validate parameters
+                for key in ml_model_parameters.keys():
+                    obj = ml_model_parameters[key]
+
+                    # if tuple
+                    if isinstance(obj, str) and obj.startswith("(") and obj.endswith(")"):
+                        tuple = literal_eval(obj)
+                        ml_model_parameters[key] = tuple
+            else:
+                ml_model_parameters = {}
+            return ml_model_parameters
+        def split_into_parts(self, data, num_parts=3):
+            part_size = len(data) // num_parts
+            parts = [data[i * part_size:(i + 1) * part_size] for i in range(num_parts - 1)]
+            parts.append(data[(num_parts - 1) * part_size:])  # Add the remainder part
+            return [(i + 1, part) for i, part in enumerate(parts)]
+        async def _send_response(self, full_message, agent):
+
+            receptor = f"{agent}@{self.agent.jid.domain}/{agent}"
+
+            # Step 4: Send initial message with chunk metadata
+            initial_msg = Message(to=receptor)
+            # Compress the JSON data
+            compressed_data2 = zlib.compress(full_message.encode('utf-8'))
+
+            # Encode the compressed data using Base64
+            encoded_data = base64.b64encode(compressed_data2).decode('utf-8')
+
+            initial_msg.set_metadata("compressed", "true")
+            initial_msg.set_metadata("performative", "request")
+            initial_msg.body = encoded_data
+            await self.send(initial_msg)
+            response = await self.receive(timeout=180)
+            if response:
+                print(f"{datetime.now()} Response received from agent for {agent}: {response.body}")
+                return response
+            else:
+                print(f"{datetime.now()} No response received for {agent}")
+                return "failure"
+
+
+        def save_object_to_file(self, object, file_name):
+            # Get the absolute path for the current working directory
+            current_dir = os.getcwd()
+
+            # Define the full path for the file
+            file_path = os.path.join(current_dir, file_name)
+
+            # Save the regressor to a file using pickle
+            with open(file_path, 'wb') as f:
+                pickle.dump(object, f)
+
+            # Return the file path
+            return file_path
+            # # Split message into chunks
+            # total_length = len(full_message)
+            # num_chunks = (total_length + chunk_size - 1) // chunk_size  # Calculate number of chunks
+            # receptor = f"{agent}@{self.agent.jid.domain}/{agent}"
+            # for i in range(0, total_length, chunk_size):
+            #     chunk = full_message[i:i + chunk_size]
+            #     chunk_msg = Message(to=receptor)
+            #     chunk_msg.set_metadata("performative", "request")
+            #     chunk_msg.set_metadata("chunk_index", str(i // chunk_size))
+            #     chunk_msg.set_metadata("total_chunks", str(num_chunks))
+            #     chunk_msg.body = chunk
+            #
+            #     print(f'Sending chunk {i // chunk_size + 1}/{num_chunks}')
+            #     await self.send(chunk_msg)  # Await the send method
+            #     await asyncio.sleep(0.1)  # Optional: slight delay to prevent message flooding
+            # for i in range(num_chunks):
+            #     chunk = full_message[i * chunk_size: (i + 1) * chunk_size]
+            #
+            #     # Create message and set chunk metadata
+            #     msg = Message(to=receptor)
+            #     msg.set_metadata("chunk_index", str(i))
+            #     msg.set_metadata("total_chunks", str(num_chunks))
+            #     msg.body = chunk
+            #
+            #     # Send the chunk
+            #     await self.send(msg)
+            #     print(f"Sent chunk {i + 1}/{num_chunks}")
+
+        # async def _send_response(self, msg1, msg2, msg3, agent):
+        #     print('let send')
+        #     receptor = f"{agent}@{self.agent.jid.domain}/{agent}"
+        #     new_msg1 = Message(to=receptor)
+        #     new_msg1.set_metadata("performative", "request")  # Set the "request" FIPA performative
+        #
+        #     new_msg1.set_metadata("compressed", "true")
+        #     new_msg1.body = msg1
+        #     print(msg1)
+        #     await self.send(new_msg1)
+        #     new_msg2 = Message(to=receptor)
+        #     new_msg2.set_metadata("performative", "request")  # Set the "request" FIPA performative
+        #
+        #     # Compress the JSON data
+        #     compressed_data2 = zlib.compress(msg2.encode('utf-8'))
+        #
+        #     # Encode the compressed data using Base64
+        #     encoded_data2 = base64.b64encode(compressed_data2).decode('utf-8')
+        #
+        #     new_msg2.set_metadata("compressed", "true")
+        #     new_msg2.body = encoded_data2
+        #     await self.send(new_msg2)
+        #     print('msg2 sent')
+        #     print('let send msg3')
+        #     new_msg3 = Message(to=receptor)
+        #     new_msg3.set_metadata("performative", "request")  # Set the "request" FIPA performative
+        #
+        #     # Compress the JSON data
+        #     compressed_data3 = zlib.compress(msg3.encode('utf-8'))
+        #
+        #     # Encode the compressed data using Base64
+        #     encoded_data3 = base64.b64encode(compressed_data3).decode('utf-8')
+        #
+        #     new_msg3.set_metadata("compressed", "true")
+        #     new_msg3.body = 'encoded_data3'
+        #
+        #     print(f'Sending compressed and encoded message to {agent}, {receptor}, {len(encoded_data2)}, {len(encoded_data3)}')
+        #     await self.send(new_msg3)
+        #     print('ok')
+        #     response = await self.receive(timeout=180)
+        #     if response:
+        #         print(f"{datetime.now()} Response received from agent for {agent}: {response.body}")
+        #         return response
+        #     else:
+        #         print(f"{datetime.now()} No response received for {agent}")
+        #         return "Failed"
     async def setup(self):
         self.add_behaviour(self.ReceiveMsg(period=1))

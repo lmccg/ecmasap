@@ -19,5 +19,6 @@
   "rl_retrain_agent": "rl_retrain_agent",
   "rl_selector_agent": "rl_selector_agent",
   "rules_agent": "rules_agent",
-  "target_agent": "target_agent"
+  "target_agent": "target_agent",
+  "jid_domain": "ecmasap.gecad.isep.ipp.pt"
 }

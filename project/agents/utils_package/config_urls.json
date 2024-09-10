@@ -28,9 +28,9 @@
   "urlGetPklFile": "http://192.168.2.142:1103/forecasting/file",
   "urlRegisterModel": "http://192.168.2.142:1106/model/register/",
   "urlRegisteredModels": "http://192.168.2.142:1106/models/",
-  "url_database_service": "http://192.168.2.142:1102/",
-  "url_resources": "http://192.168.2.142:1102/api/resources",
-  "url_table_data": "http://192.168.2.142:1102/api/analytics/average/{FREQUENCY}min/{TABLE}/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+  "url_database_service": "http://127.0.0.1:1102/",
+  "url_resources": "http://127.0.0.1:1102/api/resources",
+  "url_table_data": "http://127.0.0.1:1102/api/analytics/average/{FREQUENCY}min/{TABLE}/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
   "fields_to_replace": [
     "{FREQUENCY}",
     "{TABLE}",
@@ -39,7 +39,7 @@
     "{STARTTIME}",
     "{ENDTIME}"
   ],
-  "url_table_column_data": "http://192.168.2.142:1102/api/analytics/average/{FREQUENCY}min/{TABLE}/{COLUMN}/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+  "url_table_column_data": "http://127.0.0.1:1102/api/analytics/average/{FREQUENCY}min/{TABLE}/{COLUMN}/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
   "fields_to_replace_emul": [
     "{FREQUENCY}",
     "{TABLE}",

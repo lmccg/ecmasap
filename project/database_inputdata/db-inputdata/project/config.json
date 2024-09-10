@@ -1,0 +1,2213 @@
+{
+    "baseURL": "http://192.168.2.211:1102",
+    "DATETIMEFORMAT": "%Y-%m-%d %H:%M",
+    "hour_format": "%H:%M:%S",
+    "datetime_format": "%Y-%m-%d %H:%M:%S",
+    "date_col" : "start_at",
+    "activity":[
+        {"start": "08:00", "end": "09:29", "probability": 15},
+        {"start": "09:30", "end": "11:59", "probability": 80},
+        {"start": "12:00", "end": "13:29", "probability": 20},
+        {"start": "13:30", "end": "17:59", "probability": 90},
+        {"start": "18:00", "end": "19:59", "probability": 30},
+        {"start": "20:00", "end": "07:59", "probability": 3}
+    ],
+    "methods": {
+        "average": "avg",
+        "sum": "sum"
+    },
+    "seconds_between_raw_data": 10,
+    "intervals": [
+        1,
+        5,
+        15,
+        30,
+        60
+    ],
+    "htmlData": [
+        {
+            "headerId": "headingServiceResources",
+            "resourceName": "Resources",
+            "description": "Resources returns all tables that the service includes, as well as a description of the table, all columns, their unit and a description of each column",
+            "requestType": "GET",
+            "responseType": "Json Object",
+            "requestPath": "/api/resources"
+        },
+        {
+            "headerId": "headingServiceResource",
+            "resourceName": "Resource",
+            "description": "Resource returns the instantaneous value of all columns in a table or the value of a specific column",
+            "requestType": "GET",
+            "responseType": "Json Object",
+            "requestPath": "/api/resource/{table}/{column}",
+            "parameters": [
+                {
+                    "name": "table",
+                    "location": "Query",
+                    "description": "The table to obtain the data records",
+                    "required": "Yes",
+                    "dataType": "String"
+                },
+                {
+                    "name": "column",
+                    "location": "Query",
+                    "description": "A specific column to obtain the data records in a table",
+                    "required": "No",
+                    "dataType": "String"
+                }
+            ],
+            "queryExampleTable": "/api/resource/cons_zone1",
+            "queryExampleColumn": "/api/resource/cons_zone1/ac_total"
+        },
+        {
+            "headerId": "headingServiceRaw",
+            "resourceName": "Raw",
+            "description": "Raw returns all information about a table within the interval that they are stored in database",
+            "requestType": "GET",
+            "responseType": "Json List",
+            "requestPath": "/api/raw/{table}/{column}?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+            "parameters": [
+                {
+                    "name": "table",
+                    "location": "Query",
+                    "description": "The table to obtain the data records",
+                    "required": "Yes",
+                    "dataType": "String"
+                },
+                {
+                    "name": "column",
+                    "location": "Query",
+                    "description": "A specific column to obtain the data records in a table",
+                    "required": "No",
+                    "dataType": "String"
+                },
+                {
+                    "name": "startDate",
+                    "location": "Query",
+                    "description": "The start date for obtaining data records from a table",
+                    "required": "Yes",
+                    "dataType": "String",
+                    "possibleValues": "yyyy-mm-dd"
+                },
+                {
+                    "name": "endDate",
+                    "location": "Query",
+                    "description": "The end date for obtaining data records from a table",
+                    "required": "Yes",
+                    "dataType": "String",
+                    "possibleValues": "yyyy-mm-dd"
+                },
+                {
+                    "name": "startTime",
+                    "location": "Query",
+                    "description": "The start time for obtaining data records from a table",
+                    "required": "No",
+                    "dataType": "String",
+                    "possibleValues": "HH:MM, 00:00 (default)"
+                },
+                {
+                    "name": "endTime",
+                    "location": "Query",
+                    "description": "The end time for obtaining data records from a table",
+                    "required": "No",
+                    "dataType": "String",
+                    "possibleValues": "HH:MM, 23:59 (default)"
+                }
+            ],
+            "queryExampleTable": "/api/raw/cons_zone1/?startDate=2023-05-22&endDate=2023-05-22&startTime=15:30&endTime=15:45 ",
+            "queryExampleColumn": "/api/raw/cons_zone1/ac_total?startDate=2023-05-22&endDate=2023-05-22&startTime=15:30&endTime=15:45 "
+        },
+        {
+            "headerId": "headingServiceAnalytics",
+            "resourceName": "Analytics",
+            "description": "Analytics returns all records of a table between two dates, with an interval between data defined in the request, aggregating the data according to the chosen method",
+            "requestType": "GET",
+            "responseType": "Json List",
+            "requestPath": "/api/analytics/{method}/{time}min/{table}/{column}?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+            "parameters": [
+                {
+                    "name": "method",
+                    "location": "Query",
+                    "description": "The way data will be aggregated",
+                    "required": "Yes",
+                    "dataType": "String",
+                    "possibleValues": "average or sum"
+                },
+                {
+                    "name": "time",
+                    "location": "Query",
+                    "description": "The interval between data records",
+                    "required": "Yes",
+                    "dataType": "integer",
+                    "possibleValues": "1, 5, 15, 30 or 60"
+                },
+                {
+                    "name": "table",
+                    "location": "Query",
+                    "description": "The table to obtain the data records",
+                    "required": "Yes",
+                    "dataType": "String"
+                },
+                {
+                    "name": "column",
+                    "location": "Query",
+                    "description": "A specific column to obtain the data records in a table",
+                    "required": "No",
+                    "dataType": "String"
+                },
+                {
+                    "name": "startDate",
+                    "location": "Query",
+                    "description": "The start date for obtaining data records from a table",
+                    "required": "Yes",
+                    "dataType": "String",
+                    "possibleValues": "yyyy-mm-dd"
+                },
+                {
+                    "name": "endDate",
+                    "location": "Query",
+                    "description": "The end date for obtaining data records from a table",
+                    "required": "Yes",
+                    "dataType": "String",
+                    "possibleValues": "yyyy-mm-dd"
+                },
+                {
+                    "name": "startTime",
+                    "location": "Query",
+                    "description": "The start time for obtaining data records from a table",
+                    "required": "No",
+                    "dataType": "String",
+                    "possibleValues": "HH:MM, 00:00 (default)"
+                },
+                {
+                    "name": "endTime",
+                    "location": "Query",
+                    "description": "The end time, excluded, for obtaining data records from a table",
+                    "required": "No",
+                    "dataType": "String",
+                    "possibleValues": "HH:MM, 23:59 (default)"
+                }
+            ],
+            "queryExampleTable": "/api/analytics/average/60min/cons_zone1/?startDate=2023-05-22&endDate=2023-05-23&startTime=15:30&endTime=15:30",
+            "queryExampleColumn": "/api/analytics/average/60min/cons_zone1/ac_total?startDate=2023-05-22&endDate=2023-05-23&startTime=15:30&endTime=15:30"
+        }
+    ],
+    "json_path_urls": "$.tables.db..url_historicaldata",
+    "json_path_tables_db": "$.tables.db[:].name",
+    "json_path_tables_emul": "$.tables.emul[:].name",
+    "json_path_tables_inside_table": "$.tables.db[:].data.info[:].?('TABLE')",
+    "json_path_columns": "$.tables.db[:].data.info[:].info",
+    "json_path_columns_emul": "$.tables.emul[:].data.info[:].info",
+    "json_path_column_unit": "$.tables.emul[:].data.info[?(@.info == 'COLUMN')].unit",
+    "start_time": "00:00",
+    "end_time": "23:59",
+    "optional": {
+        "column": "Column name in the list of table presented here",
+        "STARTTIME": "format HH:MM",
+        "ENDTIME": "format HH:MM"
+    },
+    "mandatory": {
+        "table": "Table name in the list of table presented here",
+        "STARTDATE": "format yyyy-mm-dd",
+        "ENDDATE": "format yyyy-mm-dd",
+        "method": "One for [average, sum]",
+        "time": "One of [1, 5,15,30,60]"
+    },
+    "responseAnalyticsData": "Arraylist",
+    "queryResource": "SELECT TOP 1 LocalCol,COLUMN FROM dbo.TABLE ORDER BY LocalCol DESC;",
+    "queryRawData": "SELECT DATECOLUMN, TARGET FROM TABLE WHERE DATECOLUMN >=  'START_DATE START_TIME' AND DATECOLUMN <= 'END_DATE END_TIME'",
+    "queryRawData_replace": {
+        "DATECOLUMN": "datetime_column",
+        "TARGET": "targetColumn",
+        "TABLE": "tableName",
+        "START_DATE": "startDate",
+        "START_TIME": "startTime",
+        "END_DATE": "endDate",
+        "END_TIME": "endTime"
+    },
+    "queryAnalyticsData": "SELECT DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0) as datetime, TARGET FROM TABLE WHERE DATECOLUMN >=  'START_DATE START_TIME' AND (DATECOLUMN < 'END_DATE END_TIME' OR (DATEDIFF(minute, 'END_DATE END_TIME', DATECOLUMN) % INTERVAL = 0 AND DATECOLUMN <= 'END_DATE END_TIME')) GROUP BY DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0) order BY DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0)",
+    "queryAnalyticsData_binary":"WITH ModeData AS ( SELECT DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0) as datetime, TARGET as mode_value, ROW_NUMBER() OVER (PARTITION BY DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0) ORDER BY COUNT(*) DESC) as mode_rank FROM TABLE WHERE DATECOLUMN >= 'START_DATE START_TIME' AND (DATECOLUMN < 'END_DATE END_TIME' OR (DATEDIFF(minute, 'END_DATE END_TIME', DATECOLUMN) % INTERVAL = 0 AND DATECOLUMN <= 'END_DATE END_TIME')) GROUP BY DATEADD(minute, (INTERVAL * FLOOR(DATEDIFF(minute, 0, DATECOLUMN) / INTERVAL)), 0), TARGET) SELECT datetime, mode_value FROM ModeData WHERE mode_rank = 1 ORDER BY  datetime",
+    "query_replace": {
+        "INTERVAL": "interval",
+        "DATECOLUMN": "datetime_column",
+        "TARGET": "operation",
+        "TABLE": "tableName",
+        "START_DATE": "startDate",
+        "START_TIME": "startTime",
+        "END_DATE": "endDate",
+        "END_TIME": "endTime"
+    },
+    "default_url_historicaldata": "/api/analytics/{method}/{time}min/{table}/{column}?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+    "default_url_rawdata": "/api/raw/{table}/{column}?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+    "tables": {
+        "emul": [
+            {
+                "name": "emul",
+                "description": "Get emulated data.",
+                "datetime_column": "LocalCol",
+                "data": {
+                    "info": [
+                        {
+                            "info": "n101_activity_analytics",
+                            "table": "sensor",
+                            "type": "Analytics",
+                            "description": "Get emulated data for room 101 activity between two dates.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n102_activity_analytics",
+                            "table": "sensor",
+                            "type": "Analytics",
+                            "description": "Get emulated data for room 102 activity between two dates.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n103_activity_analytics",
+                            "table": "sensor",
+                            "type": "Analytics",
+                            "description": "Get emulated data for room 103 activity between two dates.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "hallway_zone4_activity_analytics",
+                            "table": "sensor",
+                            "type": "Analytics",
+                            "description": "Get emulated data for hallway activity between two dates.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n101_activity_resource",
+                            "table": "sensor",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of room 101 activity.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n102_activity_resource",
+                            "table": "sensor",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of room 102 activity.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n103_activity_resource",
+                            "table": "sensor",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of room 103 activity.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "hallway_zone4_activity_resource",
+                            "table": "sensor",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of hallway activity.",
+                            "unit": "activity"
+                        },
+                        {
+                            "info": "n101_light_1_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 101.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N101_1"
+                        },
+                        {
+                            "info": "n101_light_1_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 101.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N101_1"
+                        },
+                        {
+                            "info": "n101_light_2_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 101.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N101_2"
+                        },
+                        {
+                            "info": "n101_light_2_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 101.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N101_2"
+                        },
+                        {
+                            "info": "n102_light_1_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 102.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N102_1"
+                        },
+                        {
+                            "info": "n102_light_1_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 102.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N102_1"
+                        },
+                        {
+                            "info": "n102_light_2_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 102.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N102_2"
+                        },
+                        {
+                            "info": "n102_light_2_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 102.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N102_2"
+                        },
+                        {
+                            "info": "n103_light_1_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 103.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N103_1"
+                        },
+                        {
+                            "info": "n103_light_1_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in room 103.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N103_1"
+                        },
+                        {
+                            "info": "n103_light_2_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 103.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N103_2"
+                        },
+                        {
+                            "info": "n103_light_2_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in room 103.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer1_V4",
+                            "totalConsumptionscolumnDb": "Ph3_P",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Light_N103_2"
+                        },
+                        {
+                            "info": "hallway_light_1_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in hallway.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_1"
+                        },
+                        {
+                            "info": "hallway_light_1_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 1 in hallway.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_1"
+                        },
+                        {
+                            "info": "hallway_light_2_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in hallway.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_2"
+                        },
+                        {
+                            "info": "hallway_light_2_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 2 in hallway.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_2"
+                        },
+                        {
+                            "info": "hallway_light_3_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 3 in hallway.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_3"
+                        },
+                        {
+                            "info": "hallway_light_3_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 3 in hallway.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_3"
+                        },
+                        {
+                            "info": "hallway_light_4_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 4 in hallway.",
+                            "unit": "W",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_4"
+                        },
+                        {
+                            "info": "hallway_light_4_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of light 4 in hallway.",
+                            "unit": "%",
+                            "totalConsumptionsTableDb": "Analyzer4_V4",
+                            "totalConsumptionscolumnDb": "P2",
+                            "tableDb": "DaliValues_V3",
+                            "columnDb": "Corridor_4"
+                        },
+                        {
+                            "info": "n101_ac_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 101.",
+                            "unit": "W",
+                            "tableDb": "Analyzer1_V4",
+                            "columnDb": "PH1_P"
+                        },
+                        {
+                            "info": "n101_ac_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 101.",
+                            "unit": "",
+                            "tableDb": "Analyzer1_V4",
+                            "columnDb": "PH1_P"
+                        },
+                        {
+                            "info": "n102_ac_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 102.",
+                            "unit": "W",
+                            "tableDb": "Analyzer102ac_V1",
+                            "columnDb": "AC102_P"
+                        },
+                        {
+                            "info": "n102_ac_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 102.",
+                            "unit": "",
+                            "tableDb": "Analyzer102ac_V1",
+                            "columnDb": "AC102_P"
+                        },
+                        {
+                            "info": "n103_ac_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 103.",
+                            "unit": "W",
+                            "tableDb": "Analyzer103ac_V1",
+                            "columnDb": "AC103_P"
+                        },
+                        {
+                            "info": "n103_ac_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in room 103.",
+                            "unit": "",
+                            "tableDb": "Analyzer103ac_V1",
+                            "columnDb": "AC103_P"
+                        },
+                        {
+                            "info": "hallway_ac_consumption",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in hallway.",
+                            "unit": "W",
+                            "tableDb": "Analyzer4_V4",
+                            "columnDb": "P3"
+                        },
+                        {
+                            "info": "hallway_ac_state",
+                            "table": "cons",
+                            "type": "Resource",
+                            "description": "Get emulated data for the instantaneous value of ac in hallway.",
+                            "unit": "",
+                            "tableDb": "Analyzer4_V4",
+                            "columnDb": "P3"
+                        }
+                    ]
+                }
+            }
+        ],
+        "db": [
+            {
+                "name": "cons_zone1",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_rawdata": "/api/raw/cons_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all consumption records for zone 1 (N101, N102 and N103).",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "ac_total",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/ac_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/ac_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all ac's in zone 1.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "sum": [
+                                        {
+                                            "name": "Analyzer1_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer102ac_V1",
+                                            "datetime_column": "LocalCol",
+                                            "column": "AC102_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer103ac_V1",
+                                            "datetime_column": "LocalCol",
+                                            "column": "AC103_P",
+                                            "multiplier": 1
+                                        }
+                                    ]
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "sum": [
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "column": "Ph1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer102ac_V1",
+                                            "column": "AC102_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer103ac_V1",
+                                            "column": "AC103_P",
+                                            "multiplier": 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "info": "sockets_total",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/sockets_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/sockets_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all sockets in zone 1.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH2_P",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH2_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "column": "Ph2_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "lights_total",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/lights_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/lights_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all lights in zone 1.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH3_P",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH3_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "column": "Ph3_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "cons_total",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/cons_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/cons_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only total consumption records for zone 1.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "sum": [
+                                        {
+                                            "name": "Analyzer1_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer102ac_V1",
+                                            "datetime_column": "LocalCol",
+                                            "column": "AC102_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer103ac_V1",
+                                            "datetime_column": "LocalCol",
+                                            "column": "AC103_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH2_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH2_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH3_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH3_P",
+                                            "multiplier": 1
+                                        }
+                                    ]
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "sum": [
+                                        {
+                                            "name": "Analyzer1_V4",
+                                            "column": "PH1_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer102ac_V1",
+                                            "column": "AC102_P",
+                                            "multiplier": 1
+                                        },
+                                        {
+                                            "name": "Analyzer103ac_V1",
+                                            "column": "AC103_P",
+                                            "multiplier": 1
+                                        },{
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH2_P",
+                                            "multiplier": 1
+                                        },{
+                                            "name": "Analyzer1_V4",
+                                            "datetime_column": "LocalCol",
+                                            "column": "PH3_P",
+                                            "multiplier": 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "info": "cons_ac101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/cons_ac101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/cons_ac101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for ac in room 101.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH1_P",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PH1_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer1_V4",
+                                    "column": "PH1_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "cons_ac102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/cons_ac102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/cons_ac102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for ac in room 102.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer102ac_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "AC102_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer102ac_V1",
+                                    "column": "AC102_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "cons_ac103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/cons_ac103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/cons_ac103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for ac in room 103.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer103ac_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "AC103_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer103ac_V1",
+                                    "column": "AC103_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_101_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_101_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_101_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 1 in room 101.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N101_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N101_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_101_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_101_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_101_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 2 in room 101.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N101_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N101_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_102_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_102_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_102_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 1 in room 102.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N102_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N102_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_102_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_102_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_102_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 2 in room 102.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N102_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N102_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_103_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_103_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_103_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 1 in room 103.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N103_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N103_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_103_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_zone1/int_lights_103_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_zone1/int_lights_103_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 2 in room 103.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Light_N103_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Light_N103_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "cons_hallway_zone4",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_data": "/api/raw/cons_hallway_zone4/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all consumption records for the hallway in zone 1.",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "ac",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/ac?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/ac?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all ac's in the hallway.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer4_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_P3",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "P3",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "column": "P3",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "sockets",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/sockets?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/sockets?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all sockets in the hallway.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer4_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "P1_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "P1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "column": "P1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "lights",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/lights?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/lights?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only consumption records for all lights in the hallway.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Analyzer4_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "P2_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "P2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "column": "P2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "cons_total",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/cons_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/cons_total?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only total consumption records for hallway.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "sum": [
+                                        {
+                                            "name": "Analyzer4_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "P1_x10",
+                                            "multiplier": 0.1
+                                        },
+                                        {
+                                            "name": "Analyzer4_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "P2_x10",
+                                            "multiplier": 0.1
+                                        },
+                                        {
+                                            "name": "Analyzer4_V3",
+                                            "datetime_column": "LocalCol",
+                                            "column": "Corridor_P3",
+                                            "multiplier": 1
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "PTotal",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Analyzer4_V4",
+                                    "column": "PTotal",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/int_lights_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/int_lights_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 1 in the hallway.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Corridor_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/int_lights_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/int_lights_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 2 in the hallway.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Corridor_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_3",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/int_lights_3?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/int_lights_3?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 3 in the hallway.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_3",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Corridor_3",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "int_lights_4",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/cons_hallway_zone4/int_lights_4?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/cons_hallway_zone4/int_lights_4?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light intensity for light 4 in the hallway.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_4",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "DaliValues_V3",
+                                    "column": "Corridor_4",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "gen_rooftop",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_rawdata": "/api/raw/gen_rooftop/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all generation records for the rooftop.",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "pv",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/pv?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/pv?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the photovoltaic panels generation in the rooftop.",
+                            "unit": "W",
+                            "tables": [
+                                {
+                                    "name": "Inverter6_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N6_P1",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Inverter6_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N6_P",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Inverter6_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N6_P",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Inverter6_V3",
+                                    "column": "N6_P",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "outdoor_temp",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/outdoor_temp?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/outdoor_temp?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the outdoor temperature from the door sensor.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Sensors_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Outdoor_temperature_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_V1",
+                                    "column": "Outdoor_temperature_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "outdoor_temp_meteo_station",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/outdoor_temp_meteo_station?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/outdoor_temp_meteo_station?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the outdoor temperature from the weather station.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_temperature",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_temperature",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                            {
+                            "info": "solar_radiation",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/solar_radiation?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/solar_radiation?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the solar radiation from the weather station.",
+                            "unit": "W/m²",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "solar_and_uvi_solar_radiation",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "solar_and_uvi_solar_radiation",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "rainfall_rate",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/rainfall_rate?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/rainfall_rate?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the rainfall rate from the weather station.",
+                            "unit": "in/hr",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "rainfall_rain_rate",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "rainfall_rain_rate",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "wind_speed",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/wind_speed?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/wind_speed?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the wind speed from the weather station.",
+                            "unit": "mph",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "wind_wind_speed",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "wind_wind_speed",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "outdoor_humidity",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/outdoor_humidity?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/outdoor_humidity?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the outdoor humidity from the weather station.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_humidity",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_humidity",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "outdoor_dew_point",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/gen_rooftop/outdoor_dew_point?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/gen_rooftop/outdoor_dew_point?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the outdoor dew_point from the weather station.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_dew_point",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Weather",
+                                    "datetime_column": "LocalCol",
+                                    "column": "outdoor_dew_point",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "sensors_zone1",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_rawdata": "/api/raw/sensors_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all sensors records for the zone 1.",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "lights_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/lights_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/lights_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light sensor in room 101.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "temperature_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/temperature_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/temperature_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the temperature sensor in room 101.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_Temp_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_Temp_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "co2_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/co2_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/co2_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the CO2 (Carbon Dioxide) sensor in room 101.",
+                            "unit": "ppm",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_CO2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_CO2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "voc_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/voc_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/voc_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the VOC (Volatile Organic Compounds) sensor in room 101.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_VOC_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_VOC_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "humidity_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/humidity_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/humidity_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the humidity sensor in room 101.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_Hum_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_Hum_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "lights_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/lights_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/lights_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light sensor in room 102.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Light_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "temperature_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/temperature_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/temperature_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the temperature sensor in room 102.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Temperature_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Temperature_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Temperature_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Temperature_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_Temperature_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "co2_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/co2_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/co2_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the CO2 (Carbon Dioxide) sensor in room 102.",
+                            "unit": "ppm",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Co2",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Co2",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Co2",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Co2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_Co2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "voc_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/voc_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/voc_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the VOC (Volatile Organic Compounds) sensor in room 102.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_VOC_Air_Quality_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_VOC_Air_Quality_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_VOC_Air_Quality_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_VOC_Air_Quality_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_VOC_Air_Quality_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "humidity_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/humidity_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/humidity_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the humidity sensor in room 102.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Humidity_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Humidity_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Humidity_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Humidity_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_Humidity_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "lights_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/lights_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/lights_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light sensor in room 103.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "temperature_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/temperature_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/temperature_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the temperature sensor in room 103.",
+                            "unit": "°C",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_Temp_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_Temp_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "co2_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/co2_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/co2_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the CO2 (Carbon Dioxide) sensor in room 103.",
+                            "unit": "ppm",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_CO2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_CO2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "voc_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/voc_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/voc_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the VOC (Volatile Organic Compounds) sensor in room 103.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_VOC_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_VOC_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "humidity_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/humidity_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/humidity_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the humidity sensor in room 103.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_Hum_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_Hum_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "door_101",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/door_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/door_101?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the door sensor in room 101.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_Door_NO",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N101_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N101_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "door_102",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/door_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/door_102?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the door sensor in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Door_NO",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N102_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N102_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "door_103",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_zone1/door_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_zone1/door_103?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the door sensor in room 103.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_Door_NO",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "column": "N103_Door_NO",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "sensors_hallway_zone4",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_hallway_zone4/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_rawdata": "/api/raw/sensors_hallway_zone4/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all sensors records for the hallway.",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "lights",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_hallway_zone4/lights?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_hallway_zone4/lights?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the light sensor in the hallway.",
+                            "unit": "%",
+                            "tables": [
+                                {
+                                    "name": "Sensors_3_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_Light_x10",
+                                    "multiplier": 0.1
+                                },
+                                {
+                                    "name": "Sensors_3_V2",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Corridor_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_3_V2",
+                                    "column": "Corridor_Light_x10",
+                                    "multiplier": 0.1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "movement_sensors",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/sensors_hallway_zone4/movement_sensors?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/sensors_hallway_zone4/movement_sensors?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movvement sensor in the hallway.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_Movement_3_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Main_hall",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_3_V1",
+                                    "column": "Main_hall",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "movement_sensors_zone1",
+                "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "url_rawdata": "/api/raw/movement_sensors_zone1/?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                "description": "Get all information about all movement sensors records for the zone 1.",
+                "data": {
+                    "datetime_column": "LocalCol",
+                    "info": [
+                        {
+                            "info": "n102_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n102_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n102_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 1 in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_1",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_1",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "column": "Movement_Sensor_N102_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "n102_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n102_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n102_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 2 in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_2",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_2",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "column": "Movement_Sensor_N102_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "n102_3",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n102_3?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n102_3?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 3 in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_3",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_3",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_3",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "column": "Movement_Sensor_N102_3",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "n102_4",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n102_4?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n102_4?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 4 in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_1_V3",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_4",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_1_V4",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_4",
+                                    "multiplier": 1
+                                },
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "Movement_Sensor_N102_4",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_V1",
+                                    "column": "Movement_Sensor_N102_4",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "n103_1",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n103_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n103_1?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 1 in room 102.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_Movement_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_1",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_1_V1",
+                                    "column": "N103_1",
+                                    "multiplier": 1
+                                }
+                            ]
+                        },
+                        {
+                            "info": "n103_2",
+                            "url_historicaldata": "/api/analytics/{method}/{time}min/movement_sensors_zone1/n103_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "url_rawdata": "/api/raw/movement_sensors_zone1/n103_2?startDate={STARTDATE}&endDate={ENDDATE}&startTime={STARTTIME}&endTime={ENDTIME}",
+                            "description": "Get only records about the movement sensor 2 in room 103.",
+                            "unit": "binary",
+                            "tables": [
+                                {
+                                    "name": "Sensors_Movement_1_V1",
+                                    "datetime_column": "LocalCol",
+                                    "column": "N103_2",
+                                    "multiplier": 1
+                                }
+                            ],
+                            "tableResource": [
+                                {
+                                    "name": "Sensors_Movement_1_V1",
+                                    "column": "N103_2",
+                                    "multiplier": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

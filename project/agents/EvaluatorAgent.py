@@ -12,17 +12,17 @@ EPSILON = 1e-10
 class EvaluatorAgent(Agent):
     class ReceiveMsg(PeriodicBehaviour):
         async def run(self):
-            msg = await self.receive(10)
+            msg = await self.receive()
             if msg:
                 result = "Failed"
                 print(f"model: {msg.sender} sent me a message: '{msg.body}'")
-                with open('../utils_package/config_params.json') as config_file:
+                with open('utils_package/config_params.json') as config_file:
                     config_params = json.load(config_file)
-                with open('../utils_package/config_settings.json') as config_file:
+                with open('utils_package/config_settings.json') as config_file:
                     config_settings = json.load(config_file)
-                with open('../utils_package/tablesData.json') as config_file:
+                with open('utils_package/tablesData.json') as config_file:
                     tables_dataset = json.load(config_file)
-                with open('../utils_package/config_agents.json') as config_file:
+                with open('utils_package/config_agents.json') as config_file:
                     config_agents = json.load(config_file)
                 metric_instant_error = config_settings['instant_error']
                 metric_score = config_settings.get('error_metric')
@@ -33,7 +33,7 @@ class EvaluatorAgent(Agent):
                 request_models.set_metadata("performative", "request")
                 request_models.body = 'get_models_to_evaluate'
                 await self.send(request_models)
-                response = await self.receive(timeout=60)
+                response = await self.receive()
                 if response:
                     if response.get_metadata("performative") == "inform":
                         models_to_evaluate = response.body
@@ -74,7 +74,7 @@ class EvaluatorAgent(Agent):
                                     msg_ = 'get_real_data|'+msg_
                                     request_real_data.body = json.dumps(msg_)
                                     await self.send(request_real_data)
-                                    response = await self.receive(timeout=60)
+                                    response = await self.receive()
                                     if response:
                                         if response.get_metadata("performative") == "inform":
                                             real_data = response.body
@@ -82,8 +82,11 @@ class EvaluatorAgent(Agent):
                                             real_value = [float(real_data['value'])]
                                             model_real_values.append(real_value)
                                             instant_error = await self.calculate_instant_error(real_value, predicted, metric_instant_error)
+                                            errors = await self.calculate_other_errors(instant_error,
+                                                                                       real_value, predicted)
+
                                             updated_entry['real_value'] = real_value
-                                            updated_entry['score'] = instant_error
+                                            updated_entry['score'] = errors
                                             updated_entry['metric'] = metric_instant_error
                                             updated_entry['unit'] = real_data['unit']
                                             updated_historic_predictions.append(updated_entry)
@@ -118,7 +121,7 @@ class EvaluatorAgent(Agent):
                                 msg_ = json.dumps(msg_)
                                 new_msg.body = msg_
                                 await self.send(new_msg)
-                                response = await self.receive(timeout=60)
+                                response = await self.receive()
                                 if response:
                                     if response.get_metadata("performative") == "inform":
                                         result = response.body
@@ -164,6 +167,16 @@ class EvaluatorAgent(Agent):
                 except:
                     return "Failed"
             return result
+
+        async def calculate_other_errors(self, errors, actual, predicted):
+            if len(predicted) != len(actual):
+                return "Failed"
+
+            try:
+                errors = await self._calculateOtherErrors(errors, predicted, actual)
+            except:
+                pass
+            return errors
 
         async def calculate_instant_error(self, actual, predicted, metric):
 
@@ -276,6 +289,19 @@ class EvaluatorAgent(Agent):
                 if not isinstance(v, np.float64):
                     metrics[k] = np.float64(v)
             return metrics
+        async def _calculateOtherErrors(self, errors, predict, actual):
+
+            errors.update({'rmspe': await self.rmspe(actual=actual, predicted=predict)})
+            errors.update({'smape': await self.smape(actual=actual, predicted=predict)})
+            errors.update({'wape': await self.wape(actual=actual, predicted=predict)})
+            for k, v in errors.items():
+                if np.isnan(v):
+                    errors[k] = np.float64(0.0)
+                elif np.isinf(v):
+                    errors[k] = np.float64(0.0)
+                if not isinstance(v, np.float64):
+                    errors[k] = np.float64(v)
+            return errors
 
         async def _calculateErrorStr(self, predict, actual):
             metrics = {
