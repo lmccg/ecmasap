@@ -836,12 +836,12 @@ class DBAgent(Agent):
             return False
 
         async def print_model(self):
+            msg = 'ok'
             session = Session()
             model = session.query(Model).filter_by(target_name='cons_total', ml_model='RFR').first()
             session.close()
-            print('model',  model)
             oid = model.model_binary_oid
-            print('oid', oid)
+            print(timestamp_with_time_zone(),'oid', oid)
             # print(timestamp_with_time_zone(), 'model:', model)
             # try:
             #     model_binary = model.model_binary
@@ -870,15 +870,49 @@ class DBAgent(Agent):
             # Decompress the binary model data
             model_data = zlib.decompress(compressed_model_data)
 
-            print('got_model_data:', type(model_data), len(model_data))
+            print(timestamp_with_time_zone(), 'got_model_data:', type(model_data), len(model_data))
             try:
-                regr = pickle.loads(model_data)
-                print('regressor', regr, len(regr))
+                regressor = pickle.loads(model_data)
+                if isinstance(regressor, bytes):
+                    print(timestamp_with_time_zone(),'try to load bytes')
+                    try:
+                        regressor = pickle.loads(regressor)
+                        msg = str(timestamp_with_time_zone()) + '_ regressor ' + str(regressor)
+                        print(timestamp_with_time_zone(),'regressor', regressor)
+                    except Exception as e:
+                        print(e)
+                        pass
+                else:
+                    print(timestamp_with_time_zone(), 'type is', type(regressor))
             except:
                 pass
             cur.close()
             conn.close()
-            return 'ok'
+            return msg
+
+        async def open_model_binary(self, id):
+            regressor = None
+            session = Session()
+            model = session.query(Model).filter_by(model_id=id).first()
+            session.close()
+            oid = model.model_binary_oid
+            conn = create_connection()
+            cur = conn.cursor()
+            # Open the large object for reading
+            large_object = conn.lobject(oid, 'rb')
+            compressed_model_data = large_object.read()
+            large_object.close()
+            # Decompress the binary model data
+            model_data = zlib.decompress(compressed_model_data)
+            try:
+                regressor = pickle.loads(model_data)
+                regressor = pickle.loads(regressor)
+            except:
+                pass
+            cur.close()
+            conn.close()
+            return regressor
+
     async def setup(self):
         await start_app()
         self.chunked_messages = defaultdict(dict)  # Thread-safe chunk storage
