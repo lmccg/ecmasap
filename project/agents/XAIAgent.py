@@ -92,10 +92,11 @@ class XAIAgent(Agent):
                 classes = model_info["classes"]
                 feature_names = model_info["columns_names"]
                 model_name = model_info["model_name"]
-                target_name = model_info["target_name"]
+                target_feature = model_info["target_feature"]
+                #todo: also target zone
 
                 response = self.get_model_global_analysis(model_name, shap_values,
-                                                          target_name, feature_names, classes, number_of_top_features)
+                                                          target_feature, feature_names, classes, number_of_top_features)
 
                 return response, True
 
@@ -119,7 +120,7 @@ class XAIAgent(Agent):
 
                 model_name = model_info["model_name"]
                 base_values = model_info["base_values"]
-                target_name = model_info["target_name"]
+                target_feature = model_info["target_feature"]
                 feature_names = model_info['columns_names']
                 classes_names = model_info['classes']
                 y_real = forecast_data['y_real']
@@ -127,7 +128,7 @@ class XAIAgent(Agent):
 
                 response = self.get_dynamic_local_analysis(
                     explainer, base_values, x_used, y_predicted, y_real, feature_names,
-                    model_name, target_name, classes_names)
+                    model_name, target_feature, classes_names)
 
                 model_info["local_explanations"][timestamp] = response
             return response, model_info
@@ -457,7 +458,7 @@ class XAIAgent(Agent):
             return local_stats_raw, local_stats_str, increasing_features, decreasing_features
 
         def get_dynamic_local_analysis(self, explainer, base_values, x, predicted_y, true_y,
-                                       feature_names, model_name, target_name, classes_names):
+                                       feature_names, model_name, target_feature, classes_names):
 
             x_data_local_instance = pd.DataFrame(x, columns=feature_names)
             x_data_local_instance = x_data_local_instance.iloc[[0]]

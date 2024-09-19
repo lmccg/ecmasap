@@ -255,7 +255,8 @@ class DBAgent(Agent):
                         model.x_scaler = x_scaler
                         model.y_scaler = y_scaler
                         model.columns_names = model_info.get('columns_names')
-                        model.target_name = model_info.get('target_name')
+                        model.target_feature = model_info.get('target_feature')
+                        model.target_zone = model_info.get('target_zone')
                         model.model_name = model_info.get('model_name')
                         model.model_type = model_info.get('model_type')
                         model.model_params = json.dumps(model_info.get('model_params'))
@@ -302,7 +303,8 @@ class DBAgent(Agent):
                             x_scaler=x_scaler,
                             y_scaler=y_scaler,
                             columns_names=model_info.get('columns_names'),
-                            target_name=model_info.get('target_name'),
+                            target_feature=model_info.get('target_feature'),
+                            target_zone=model_info.get('target_zone'),
                             model_name=model_info.get('model_name'),
                             model_type=model_info.get('model_type'),
                             ml_model=model_info.get('ml_model'),
@@ -364,7 +366,8 @@ class DBAgent(Agent):
                         x_scaler=x_scaler,
                         y_scaler=y_scaler,
                         columns_names=model_info.get('columns_names'),
-                        target_name=model_info.get('target_name'),
+                        target_feature=model_info.get('target_feature'),
+                        target_zone=model_info.get('target_zone'),
                         model_name=model_info.get('model_name'),
                         model_type=model_info.get('model_type'),
                         ml_model=model_info.get('ml_model'),
@@ -578,7 +581,8 @@ class DBAgent(Agent):
             session = Session()
             models = session.query(Model.model_id,
                                    Model.model_name,
-                                   Model.target_name,
+                                   Model.target_feature,
+                                   Model.target_zone,
                                    Model.ml_model,
                                    Model.model_type,
                                    Model.test_errors,
@@ -588,7 +592,8 @@ class DBAgent(Agent):
 
             model_list = [{'model_id': model.model_id,
                            'model_name': model.model_name,
-                           'target_name': model.target_name,
+                           'target_feature': model.target_feature,
+                           'target_zone': model.target_zone,
                            'ml_model': model.ml_mdodel,
                            'model_type': model.model_type,
                            'default_metric': model.default_metric,
@@ -598,10 +603,11 @@ class DBAgent(Agent):
             return json.dumps(model_list)
 
         async def get_models_to_evaluate(self):
+            #todo add target zone
             session = Session()
             models = session.query(Model.model_id,
                                    Model.model_name,
-                                   Model.target_name,
+                                   Model.target_feature,
                                    Model.historic_predictions_model,
                                    Model.historic_scores_model,
                                    Model.train_errors).all()
@@ -715,7 +721,8 @@ class DBAgent(Agent):
             model.x_scaler = pickle.dumps(model_info['x_scaler'])
             model.y_scaler = pickle.dumps(model_info['y_scaler'])
             model.columns_names = model_info['columns_names']
-            model.target_name = model_info['target_name']
+            model.target_feature = model_info['target_feature']
+            model.target_zone = model_info['target_zone']
             model.model_name = model_info['model_name']
             model.model_type = model_info['model_type']
             model.model_params = json.dumps(model_info['model_params'])
@@ -744,7 +751,8 @@ class DBAgent(Agent):
                         'model_binary': pickle.loads(model.model_binary),
                         'train_data': pickle.loads(model.train_data),
                         'columns_names': model.columns_names,
-                        'target_name': model.target_name,
+                        'target_feature': model.target_feature,
+                        'target_zone': model.target_zone,
                         'model_name': model.model_name,
                         'model_type': model.model_type,
                         'ml_model': model.ml_model,
@@ -777,7 +785,8 @@ class DBAgent(Agent):
                         'model_binary': pickle.loads(model.model_binary),
                         'train_data': pickle.loads(model.train_data),
                         'columns_names': model.columns_names,
-                        'target_name': model.target_name,
+                        'target_feature': model.target_feature,
+                        'target_zone':model.target_zone,
                         'model_name': model.model_name,
                         'model_type': model.model_type,
                         'explainer': pickle.loads(model.explainer),
@@ -802,7 +811,8 @@ class DBAgent(Agent):
                     return {
                         'model_id': model.model_id,
                         'historic_predictions_model': json.loads(model.historic_predictions_model) if model.historic_predictions_model else {},
-                        'target_name': model.target_name,
+                        'target_feature': model.target_feature,
+                        'target_zone': model.target_zone,
                         'ml_model': model.ml_model,
                         'characteristics': json.loads(model.characteristics) if model.characteristics else {},
                         'historic_scores_model': json.loads(
@@ -817,7 +827,8 @@ class DBAgent(Agent):
         async def check_if_model_exists(self, model_info):
             session = Session()
             target = model_info['target']
-            models = session.query(Model.characteristics).filter_by(target_name=target).filter(Model.model_binary.isnot(None)).all()
+            target_zone = model_info['target_table']
+            models = session.query(Model.characteristics).filter_by(target_feature=target, target_zone=target_zone).filter(Model.model_binary.isnot(None)).all()
             session.close()
             for model in models:
                 for model_characteristics in model:
@@ -825,8 +836,8 @@ class DBAgent(Agent):
                         exists = True
                         if not isinstance(model_characteristics, dict):
                             model_characteristics = json.loads(model_characteristics)
-                        if model_characteristics.get('target_table') != model_info['target_table']:
-                            exists = False
+                        # if model_characteristics.get('target_table') != model_info['target_table']:
+                        #     exists = False
                         if model_characteristics.get('dataset_type') != model_info['dataset_type']:
                             exists = False
                         if model_characteristics.get('frequency') != model_info['frequency']:
@@ -890,7 +901,7 @@ class DBAgent(Agent):
             conn.close()
             return msg
 
-        async def open_model_binary(self, id):
+        async def load_model_binary(self, id):
             regressor = None
             session = Session()
             model = session.query(Model).filter_by(model_id=id).first()
