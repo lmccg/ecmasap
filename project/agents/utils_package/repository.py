@@ -1,7 +1,8 @@
 import psycopg2
 import json
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from sqlalchemy import create_engine, Column, Integer, String, Text, Float, LargeBinary, ARRAY, DateTime, JSON, BOOLEAN, func
+from sqlalchemy import create_engine, Column, Integer, String, Text, Float, LargeBinary, ARRAY, DateTime, JSON, BOOLEAN, \
+    func, BigInteger
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Load configuration from JSON file
@@ -22,14 +23,16 @@ Session = sessionmaker(bind=engine)
 class Model(Base):
     __tablename__ = 'models'
     model_id = Column(Integer, primary_key=True)
-    model_binary = Column(LargeBinary, nullable=False)
-    train_data = Column(LargeBinary, nullable=False)
-    x_train_data_norm = Column(LargeBinary, nullable=False)
-    y_train_data_norm = Column(LargeBinary, nullable=False)
-    x_scaler = Column(LargeBinary, nullable=False)
-    y_scaler = Column(LargeBinary, nullable=False)
+    model_binary = Column(LargeBinary)
+    train_data = Column(LargeBinary)
+    x_train_data_norm = Column(LargeBinary)
+    y_train_data_norm = Column(LargeBinary)
+    x_scaler = Column(LargeBinary)
+    y_scaler = Column(LargeBinary)
     columns_names = Column(ARRAY(String), nullable=False)
     target_name = Column(String, nullable=False)
+    # target_feature = Column(String, nullable=False)
+    # target_zone = Column(String, nullable=False)
     model_name = Column(String, nullable=False)
     ml_model = Column(String, nullable=False)
     model_type = Column(String, nullable=False)
@@ -56,6 +59,7 @@ class Model(Base):
     training_dates = Column(JSON, nullable=False)
     registered_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
+    model_binary_oid = Column(BigInteger)
 
 
 class Result(Base):
@@ -94,3 +98,18 @@ async def start_app():
     # Your logic here
     create_database_if_not_exists()
     initialize_database()
+
+
+def create_connection():
+    connection = psycopg2.connect(
+        dbname="postgres",
+        user=DB_USERNAME,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+    return connection
+
+
+def close_connection(connection):
+    connection.close()

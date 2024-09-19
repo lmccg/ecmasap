@@ -6,12 +6,17 @@ import aiohttp
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import os
+import pickle
+from utils_package.utils import timestamp_with_time_zone
+
+
 class HistoricalDataAgent(Agent):
     class GetData(PeriodicBehaviour):
         async def run(self):
             msg = await self.receive()
             if msg:
-                print('msg received', msg.body)
+                print(timestamp_with_time_zone(), 'msg received', msg.body)
                 with open('utils_package/config_urls.json') as config_file:
                     config_urls = json.load(config_file)
                 with open('utils_package/config_settings.json') as config_file:
@@ -32,18 +37,27 @@ class HistoricalDataAgent(Agent):
                     # print(f"Data sent back to {msg.sender}: {data}")
                 elif request == 'get_historical_data':
                     # Make an async HTTP request to the external service
-                    print(datetime.now(), 'get_historical_data')
+                    print(timestamp_with_time_zone(), 'get_historical_data')
+                    start_date = input_data['start_date']
+                    end_date = input_data['end_date']
+                    frequency = input_data['frequency']
+                    column = input_data['target']
+                    table = input_data['target_table'].lower()
+                    dataset_type = input_data['dataset_type']
+                    name_file = request+'_'+table+'_'+column+'_'+frequency+'min_'+dataset_type+'_'+start_date+'_'+end_date+'.pkl'
                     data = await self.obtain_data(input_data, config_settings, config_urls, config_tables_db)
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
-                    json_data = json.dumps(data)
+                    # json_data = json.dumps(data)
                     # Compress the JSON data
-                    compressed_data = zlib.compress(json_data.encode('utf-8'))
+                    # compressed_data = zlib.compress(json_data.encode('utf-8'))
 
                     # Encode the compressed data using Base64
-                    encoded_data = base64.b64encode(compressed_data).decode('utf-8')
-
-                    response_msg.body = encoded_data
+                    # encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+                    # print(len(encoded_data))
+                    path = self.save_object_to_file(data, name_file)
+                    # response_msg.body = 'historical_data_response|' + encoded_data
+                    response_msg.body = 'historical_data_response|' + path
 
                     # Define the maximum chunk size (this could depend on your server's limit)
                     # MAX_CHUNK_SIZE = 1024  # example size in bytes
@@ -61,7 +75,23 @@ class HistoricalDataAgent(Agent):
                     #     chunk_msg.body = chunk
                     #     await self.send(chunk_msg)
                     await self.send(response_msg)
-                    print(f"{datetime.now()} Data sent back to {response_msg.sender}, {response_msg.get_metadata('performative')}")
+                    print(
+                        f"{timestamp_with_time_zone()} Data sent back to {response_msg.to}, {response_msg.get_metadata('performative')}")
+
+        def save_object_to_file(self, object, file_name):
+            # Get the absolute path for the current working directory
+            current_dir = os.getcwd()
+
+            # Define the full path for the file
+            file_path = os.path.join(current_dir, 'aux_files')
+            file_path = os.path.join(file_path, file_name)
+
+            # Save the object to a file using pickle
+            with open(file_path, 'wb') as f:
+                pickle.dump(object, f)
+
+            # Return the file path
+            return file_path
 
         async def get_real_data(self, input_data, config_settings, config_urls):
             try:
@@ -140,7 +170,7 @@ class HistoricalDataAgent(Agent):
                         target_data = await response.json()
                         status_code = response.status
                 if status_code in config_settings.get('errors').values():
-                    return -2, None, None, None
+                    return -2, None, None, None, None
                 dataframe_column = [date_column, column]
                 final_df = pd.DataFrame(columns=dataframe_column)
                 # print(Utils.timestamp_with_time_zone(), 'line 239')
@@ -174,7 +204,7 @@ class HistoricalDataAgent(Agent):
                         for new_table, other_col in c.items():
                             for col in other_col:
                                 if col != column:
-                                     list_columns.append({col: new_table})
+                                    list_columns.append({col: new_table})
                     else:
                         if c != column:
                             list_columns.append({c: table})
@@ -187,7 +217,7 @@ class HistoricalDataAgent(Agent):
                                 resp_data = await response.json()
                                 status_code = response.status
                         if status_code in config_errors:
-                            return -2, None, None, None
+                            return -2, None, None, None, None
                         if isinstance(resp_data, list):
                             if len(resp_data) > 0:
                                 first_row = resp_data[0]
@@ -247,23 +277,23 @@ class HistoricalDataAgent(Agent):
                 new_df = final_df
                 new_df = new_df[[col for col in new_df.columns if col != column] + [column]]
                 response = await self.fix_dataset(new_df, start_date, end_date, start_time, end_time, frequency,
-                                                            column, date_column, datetime_format,
-                                                            config_settings, config_tables_db)
+                                                  column, date_column, datetime_format,
+                                                  config_settings, config_tables_db)
                 columns_with_sunny_time = config_tables_db.get("columns_with_sunny_time")
                 if column in columns_with_sunny_time:
                     categorical_columns.append('sun_time')
                 response = response + (categorical_columns,)
                 return response
             except Exception as ex:
-                return ex, None, None, None
+                return ex, None, None, None, None
 
         async def fix_dataset(self, dataset, startDate, endDate, startTime, endTime, time, target_name,
                               date_column,
                               datetimeFormat, config_settings, config_tables_db):
 
             response = await self.missingValues(dataset, startDate, endDate, startTime, endTime, time,
-                                                   target_name, date_column, datetimeFormat, config_settings,
-                                                   config_tables_db)
+                                                target_name, date_column, datetimeFormat, config_settings,
+                                                config_tables_db)
             # print('then', response[1])
             return response
 
@@ -416,7 +446,7 @@ class HistoricalDataAgent(Agent):
                                             new_value = df3[c].mean()
                                         else:
                                             new_value = (0.5 * mean_raw) + (
-                                                        0.5 * ((previuos_value + last_value) / 2))
+                                                    0.5 * ((previuos_value + last_value) / 2))
                                         if np.isnan(new_value):
                                             new_value = 0
                                         df3.loc[index, c] = new_value
@@ -434,7 +464,9 @@ class HistoricalDataAgent(Agent):
             df3 = df3.drop(columns='dayofweek')
             df_dataset = df3.values
             df_dataset = df_dataset.tolist()
-            return df_dataset, date_columm, datetimeFormat
+            df_columns = df3.columns.tolist()
+            # print(timestamp_with_time_zone(), 'here', df3, date_columm, datetimeFormat, df_columns)
+            return df_dataset, date_columm, datetimeFormat, df_columns
 
         async def replaceFields(self, url, fields, data):
             newUrl = url
@@ -444,7 +476,6 @@ class HistoricalDataAgent(Agent):
                 newUrl = newUrl.replace(field, info)
             newUrl = newUrl.replace(" ", "")
             return newUrl
-
 
     # Setup function for the historical data agent
     async def setup(self):

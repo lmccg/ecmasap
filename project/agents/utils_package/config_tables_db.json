@@ -39,14 +39,6 @@
         "outdoor_dew_point"],
   "tables": [
     {
-      "emul": [
-        "n101_activity_analytics",
-        "n102_activity_analytics",
-        "n103_activity_analytics",
-        "hallway_zone4_activity_analytics"
-      ]
-    },
-    {
       "cons_zone1": [
         "cons_total"
       ]
@@ -74,6 +66,14 @@
     {
       "sensors_hallway_zone4": [
         "lights"]
+    },
+    {
+      "emul": [
+        "n101_activity_analytics",
+        "n102_activity_analytics",
+        "n103_activity_analytics",
+        "hallway_zone4_activity_analytics"
+      ]
     }
   ]
 }

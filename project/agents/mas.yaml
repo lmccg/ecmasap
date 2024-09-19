@@ -56,6 +56,6 @@ agents:
     target_agent:
         resource: target_agent
         file: TargetAgent.py
-    xai_agent:
-        resource: xai_agent
-        file: XAIAgent.py
+#    xai_agent:
+#        resource: xai_agent
+#        file: XAIAgent.py

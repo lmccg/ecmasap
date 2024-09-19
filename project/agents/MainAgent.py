@@ -1,5 +1,5 @@
 import asyncio
-
+from utils_package.utils import timestamp_with_time_zone
 from peak import Agent, OneShotBehaviour, CyclicBehaviour, PeriodicBehaviour, Message
 from spade.template import Template
 import aiohttp_cors
@@ -66,22 +66,22 @@ class MainAgent(Agent):
             await asyncio.sleep(10)
             with open('utils_package/config_agents.json') as f:
                 config_agents = json.load(f)
-            target_agent = config_agents['target_agent']
-            jid = f'{target_agent}@{self.jid}'
-            self.agent.set('selected_agent', jid)  # Use self.agent to access the agent instance
-            self.agent.set('request_type', 'needed_models_to_train')
-            behaviour = self.agent.GetDataFromAgent()
-            self.agent.add_behaviour(behaviour)
-            await behaviour.join()
-            self.agent.set('selected_agent', None)
-            data = self.agent.get('agent_target')
-            print(data)
-            if data is not None:
-                for entry in data:
-                    print('sending', entry)
-                    await self.agent.train_model(entry)
-                    await asyncio.sleep(10)
-                    print('okkk')
+            # target_agent = config_agents['target_agent']
+            # jid = f'{target_agent}@{self.jid}'
+            # self.agent.set('selected_agent', jid)  # Use self.agent to access the agent instance
+            # self.agent.set('request_type', 'needed_models_to_train')
+            # behaviour = self.agent.GetDataFromAgent()
+            # self.agent.add_behaviour(behaviour)
+            # await behaviour.join()
+            # self.agent.set('selected_agent', None)
+            # data = self.agent.get('agent_target')
+            # print(timestamp_with_time_zone(),data)
+            # if data is not None:
+            #     for entry in data:
+            #         print(timestamp_with_time_zone(), 'sending', entry)
+            #         await self.agent.train_model(entry)
+            #         await asyncio.sleep(10)
+            #         print(timestamp_with_time_zone(), 'okkk')
 
     async def get_real_data_view(self, request):
         with open('utils_package/config_agents.json') as f:
@@ -123,6 +123,22 @@ class MainAgent(Agent):
         data = self.get('agent_target')
         return data
 
+    async def print_model_view(self, request):
+        with open('utils_package/config_agents.json') as f:
+            config_settings = json.load(f)
+        target_agent = config_settings['database_agent']
+        jid = f'{target_agent}@{self.jid.domain}'
+        self.set('selected_agent', jid)
+        self.set('request_type', 'print_model')
+        behaviour = self.GetDataFromAgent()
+        self.add_behaviour(behaviour)
+        await behaviour.join()
+
+        self.set('selected_agent', None)
+        data = self.get('agent_target')
+        return data
+
+
     async def get_predictions_view(self, request):
         global training_on_going
         if not training_on_going:
@@ -159,7 +175,7 @@ class MainAgent(Agent):
 
             self.set('selected_agent', None)
             data = self.get('agent_target')
-            print('from predictions', data)
+            print(timestamp_with_time_zone(), 'from predictions', data)
             return data
         else:
             return 'There is a training going on, please wait and try again!'
@@ -234,7 +250,7 @@ class MainAgent(Agent):
             self.set('selected_agent', None)
             data = self.get('agent_target')
             training_on_going = False
-            print('data', data)
+            print(timestamp_with_time_zone(), 'data', data)
             return data
         else:
             return 'There is a training going on, please wait and try again!'
@@ -287,6 +303,7 @@ class MainAgent(Agent):
         self.web.add_post('/train', self.get_train_view, None)
         self.web.add_post('/retrain', self.get_retrain_view, None)
         self.web.add_post('/get_real_data', self.get_real_data_view, None)
+        self.web.add_get('/print_model', self.print_model_view, None)
         # Configure default CORS settings.
         cors = aiohttp_cors.setup(
             self.web.app,

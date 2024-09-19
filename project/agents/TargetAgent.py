@@ -6,7 +6,9 @@ import datetime as dt
 import base64
 import zlib
 import uuid
-
+import os
+import pickle
+from utils_package.utils import timestamp_with_time_zone
 
 class TargetAgent(Agent):
     class ReceiveMsg(CyclicBehaviour):
@@ -14,10 +16,11 @@ class TargetAgent(Agent):
             msg = await self.receive()
             try:
                 if msg:
-                    print(f"TargetAgent: {msg.sender} sent me a message: '{msg.body}'")
+                    msg_id = str(uuid.uuid4())
+                    print(f"{timestamp_with_time_zone()} TargetAgent: {msg.sender} sent me a message: '{msg.body}'")
                     parts_of_msg = msg.body.split("|")
                     request_type = parts_of_msg[0]
-                    print('request_type:', request_type)
+                    print(timestamp_with_time_zone(), 'request_type:', request_type)
                     if request_type == 'predict' or request_type == 'train' or request_type == 'retrain':
                         target = parts_of_msg[1]
                         request_data = parts_of_msg[2]
@@ -46,7 +49,7 @@ class TargetAgent(Agent):
                                 weeks_data = config_settings.get("weeks_historical_cases_train")
                                 _, _, request_data = await self.fix_timestamps_train(request_data, datetime_format,
                                                                                      weeks_data)
-                            print('timestamp fixed')
+                            print(timestamp_with_time_zone(), 'timestamp fixed')
                             dataset_types = config_settings.get('possible_data_types')
                             dataset_types = list(dataset_types.keys())
                             if "dataset_type" in request_data:
@@ -62,11 +65,12 @@ class TargetAgent(Agent):
                             model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
                             agents = config_agents['ml_model_agents'][model_type]
                             # get the historical data
-                            print(datetime.now(), 'get historical data')
+                            print(timestamp_with_time_zone(), 'get historical data')
                             historical_data_agent = config_agents["historical_data_agent"]
                             msg_hst_data = Message(
                                 to=f"{historical_data_agent}@{self.agent.jid.domain}/{historical_data_agent}")
                             msg_hst_data.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                            msg_hst_data.set_metadata("thread", msg_id)
                             if isinstance(request_data, dict):
                                 request_hst_data = json.dumps(request_data)
                             else:
@@ -74,72 +78,47 @@ class TargetAgent(Agent):
                             request_hst_data = 'get_historical_data|' + request_hst_data
                             msg_hst_data.body = request_hst_data
                             await self.send(msg_hst_data)
-                            self.agent.add_behaviour(self.agent.WaitHistoricalData(period=1))
+                            # self.agent.add_behaviour(self.agent.WaitResponse())
                             response_hist_data = None
-                            # Check if the result from InnerBehaviour has been set
-                            while not self.agent.response_hist_data:
-                                # print("Waiting for response from hist data agent...")
-                                await asyncio.sleep(1)  # Wait for the WaitResponse behavior to process the message
+                            while not response_hist_data:
+                                if self.agent.received_messages:
+                                    for hst_msg in self.agent.received_messages:
+                                        if hst_msg.get_metadata('thread') == msg_id and hst_msg.get_metadata("performative") == "inform" and 'historical_data_response' in hst_msg.body:
+                                            response_hist_data = hst_msg
+                                            self.agent.received_messages.remove(hst_msg)
+                                            break
+                                if response_hist_data:
+                                    break
+                                await asyncio.sleep(1)
 
-                            if self.agent.response_hist_data:
-                                response_hist_data = self.agent.response_hist_data
-                                # print(f"ReceiveMsg received result from WaitHistoricalData: {response_hist_data}")
-                                # Reset shared_data after processing
-                                self.agent.response_hist_data = None
+                            # # Check if the result from InnerBehaviour has been set
+                            # while not self.agent.received_messages:
+                            #     # print("Waiting for response from hist data agent...")
+                            #     await asyncio.sleep(1)  # Wait for the WaitResponse behavior to process the message
+                            #
+                            # if self.agent.response_hist_data:
+                            #     response_hist_data = self.agent.response_hist_data
+                            #     # print(f"ReceiveMsg received result from WaitHistoricalData: {response_hist_data}")
+                            #     # Reset shared_data after processing
+                            #     self.agent.response_hist_data = None
+                            #
 
-                            # received_data = []
-                            # total_chunks = None
-                            # current_chunk = 0
-                            # got_response = None
-                            # response_metadata = None
-                            # input_data = None
-                            # while current_chunk < total_chunks if total_chunks else True:
-                            #     response = await self.receive(timeout=180)
-                            #     if response:
-                            #         received_data.append(response.body)
-                            #         current_chunk = int(response.get_metadata("chunk_index"))
-                            #         total_chunks = int(response.get_metadata("total_chunks"))
-                            #         response_metadata = response.get_metadata("performative")
-                            #
-                            #     else:
-                            #         break
-                            #
-                            # # Once all chunks are received, combine them
-                            # if len(received_data) == total_chunks:
-                            #     full_data = ''.join(received_data)
-                            #     input_data = json.loads(full_data)
-                            #     got_response = True
-                            #     print(datetime.now(), 'got historical data')
-                            #     received_data.clear()
-                            #     # Now you can process the complete data
-                            # else:
-                            #     print(datetime.now(), "Failed to receive all chunks.")
-                            # # response = await self.receive()
-                            # input_dataset = []
-                            # if got_response:
-                            #     print(datetime.now(), 'got response')
-                            #     if response_metadata == "inform":
-                            #         # input_data = response.body
-                            #         try:
-                            #             input_data = json.loads(input_data)
-                            #         except:
-                            #             pass
-                            #         input_dataset = input_data[0]
-                            # response_hist_data = await self.receive()
                             if response_hist_data:
                                 encoded_data = response_hist_data.body
+                                encoded_data = encoded_data.split("|")
+                                encoded_data = encoded_data[1]
+                                input_data = self.load_object_from_file(encoded_data)
                                 # Decode the Base64-encoded string
-                                compressed_data = base64.b64decode(encoded_data)
-
-                                # Decompress the data
-                                input_data = zlib.decompress(compressed_data).decode('utf-8')
+                                # compressed_data = base64.b64decode(encoded_data)
+                                #
+                                # # Decompress the data
+                                # input_data = zlib.decompress(compressed_data).decode('utf-8')
 
                                 try:
                                     input_data = json.loads(input_data)
                                 except:
                                     pass
                                 input_dataset = input_data[0]
-                                print(input_dataset)
                                 # ask predictions
                                 if request_type == 'predict':
                                     # get the models to predict
@@ -151,13 +130,13 @@ class TargetAgent(Agent):
                                     if not isinstance(request_data, dict):
                                         request_data = json.loads(request_data)
 
-                                    print('line 69')
+                                    print(timestamp_with_time_zone(), 'line 69')
                                     request_data = await self.get_input_characterization_predict(request_data,
                                                                                                  tables_dataset,
                                                                                                  dataset_type,
                                                                                                  first_start_timestamp,
                                                                                                  last_end_timestamp)
-                                    print(request_data)
+                                    print(timestamp_with_time_zone(), request_data)
                                     if isinstance(request_data, dict):
                                         request_data = json.dumps(request_data)
                                     predict_msg.body = request_data
@@ -170,7 +149,7 @@ class TargetAgent(Agent):
                                             models = json.loads(models)
 
                                     # Wait for a response
-                                    print('lets send some requests')
+                                    print(timestamp_with_time_zone(), 'lets send some requests')
                                     tasks = []
                                     predict_one_model = False
                                     while models:
@@ -184,7 +163,7 @@ class TargetAgent(Agent):
                                         model = entry[0]
                                         #model é model id e model id será o meu boolean
                                         await self._send_and_collect_response(request_type, agent, model, request_data,
-                                                                              input_dataset, False)
+                                                                              input_dataset, msg_id, False)
                                         # result =
                                         # if result != 'Failed':
                                         #     predict_one_model = True
@@ -211,7 +190,7 @@ class TargetAgent(Agent):
                                             model = entry[0]
                                             #model é model id
                                             await self._send_and_collect_response(request_type, agent, model,
-                                                                                  request_data, input_dataset,
+                                                                                  request_data, input_dataset, msg_id,
                                                                                   True)
                                         #     task =
                                         #     tasks.append(task)
@@ -224,7 +203,8 @@ class TargetAgent(Agent):
                                 elif request_type == 'train':
                                     date_column = input_data[1]
                                     datetimeFormat = input_data[2]
-                                    categorical_columns = input_data[3]
+                                    columns_in_df_from_hc = input_data[3]
+                                    categorical_columns = input_data[4]
                                     response = msg.make_reply()
                                     response.set_metadata("performative", "inform")
                                     response.body = "Requested train"
@@ -235,14 +215,16 @@ class TargetAgent(Agent):
                                                                                                training_dates,
                                                                                                date_column,
                                                                                                datetimeFormat,
-                                                                                               categorical_columns)
+                                                                                               categorical_columns,
+                                                                                               columns_in_df_from_hc)
                                     asyncio.create_task(
                                         self.run_train_in_background(request_data, request_type, input_dataset,
-                                                                     dataset_types, agents))
+                                                                     dataset_types, agents, msg_id))
                                 elif request_type == 'retrain':
                                     date_column = input_data[1]
                                     datetimeFormat = input_data[2]
-                                    categorical_columns = input_data[3]
+                                    columns_in_df_from_hc = input_data[3]
+                                    categorical_columns = input_data[4]
                                     response = msg.make_reply()
                                     response.set_metadata("performative", "inform")
                                     response.body = "Requested retrain"
@@ -254,10 +236,11 @@ class TargetAgent(Agent):
                                                                                                training_dates,
                                                                                                date_column,
                                                                                                datetimeFormat,
-                                                                                               categorical_columns)
+                                                                                               categorical_columns,
+                                                                                               columns_in_df_from_hc)
                                     asyncio.create_task(
                                         self.run_retrain_in_background(request_data, request_type, input_dataset,
-                                                                       model_id, agents))
+                                                                       model_id, agents, msg_id))
                             else:
                                 response_msg = msg.make_reply()
                                 response_msg.set_metadata("performative", "inform")
@@ -316,7 +299,7 @@ class TargetAgent(Agent):
                                             msg_requested = json.dumps(msg_)
                                             msg_model_target.body = msg_requested
                                             await self.send(msg_model_target)
-                                            self.agent.add_behaviour(self.agent.WaitResponse(period=1))
+                                            self.agent.add_behaviour(self.agent.WaitTrainResponse(period=1))
                                             response = None
                                             # We wait for the behaviour to update `response_get`
                                             while not self.agent.response_get:
@@ -357,9 +340,9 @@ class TargetAgent(Agent):
 
 
             except Exception as e:
-                print('exception', e, 'msg', msg.body)
+                print(timestamp_with_time_zone(), 'exception', e, 'msg', msg.body)
                 try:
-                    print(msg.body, 'response', response_hist_data)
+                    print(timestamp_with_time_zone(), msg.body, 'response', response_hist_data)
                 except:
                     pass
                 response_msg = msg.make_reply()
@@ -367,7 +350,7 @@ class TargetAgent(Agent):
                 response_msg.body = "Failed!"
                 await self.send(response_msg)
 
-        async def run_train_in_background(self, request_data, request_type, input_data, dataset_types, agents):
+        async def run_train_in_background(self, request_data, request_type, input_data, dataset_types, agents, msg_id):
             tasks = []
             # for dataset_type in dataset_types:
             for agent, model in agents.items():
@@ -378,7 +361,7 @@ class TargetAgent(Agent):
                     request_data = json.dumps(request_data)
                 if isinstance(input_data, list):
                     input_data = json.dumps(input_data)
-                await self._send_and_collect_response(request_type, agent, model, request_data, input_data)
+                await self._send_and_collect_response(request_type, agent, model, request_data, input_data, msg_id)
             #     task =
             #     tasks.append(task)
             # await asyncio.gather(*tasks)
@@ -402,7 +385,7 @@ class TargetAgent(Agent):
                               'end_time': end_time}
             return training_dates
 
-        async def run_retrain_in_background(self, request_data, request_type, input_data, model_id, agents):
+        async def run_retrain_in_background(self, request_data, request_type, input_data, model_id, agents, msg_id):
             if not isinstance(request_data, dict):
                 request_data = json.loads(request_data)
             model = request_data['model']
@@ -413,7 +396,7 @@ class TargetAgent(Agent):
                 request_data = json.dumps(request_data)
             if isinstance(input_data, list):
                 input_data = json.dumps(input_data)
-            await self._send_and_collect_response(request_type, agent, model, request_data, input_data,
+            await self._send_and_collect_response(request_type, agent, model, request_data, input_data, msg_id,
                                                   model_id)
 
         async def round_to_frequency(self, dt, frequency_minutes, round_up=False):
@@ -659,7 +642,7 @@ class TargetAgent(Agent):
             return dataset_type, input_data
 
         async def get_input_characterization_train(self, input_data, tables_dataset, training_dates, date_column,
-                                                   datetimeFormat, categorical_columns):
+                                                   datetimeFormat, categorical_columns, columns_in_df_from_hc):
             table_target = input_data['target_table']
             dataset_type = input_data['dataset_type']
             target = input_data['target']
@@ -674,7 +657,13 @@ class TargetAgent(Agent):
                 else:
                     if entry != target:
                         columns_for_target.append(table_target + "_" + entry)
+            with open('utils_package/config_tables_db.json') as config_file:
+                config_tables_db = json.load(config_file)
+            columns_with_sunny_time = config_tables_db.get("columns_with_sunny_time")
+            if target in columns_with_sunny_time:
+                columns_for_target.append('sun_time')
             columns_for_target.append(target)
+            columns_for_target = [column_ for column_ in columns_for_target if column_ in columns_in_df_from_hc]
             model_type = tables_dataset.get("time_series_columns").get(table_target).get(target)
             settings = tables_dataset.get("settings")
             settings['filters']['dayofweek'] = input_data['dayofweek']
@@ -730,8 +719,31 @@ class TargetAgent(Agent):
             input_data.update({"last_end_timestamp": last_end_timestamp})
             return input_data
 
-        async def _send_and_collect_response(self, request_type, agent, model, request_data, input_data, model_id=None):
-            print('in send')
+        def load_object_from_file(self, file_path):
+            # Open the file and load the object using pickle
+            with open(file_path, 'rb') as f:
+                object = pickle.load(f)
+            os.remove(file_path)
+            # Return the loaded object
+            return object
+
+        def save_object_to_file(self, object, file_name):
+            # Get the absolute path for the current working directory
+            current_dir = os.getcwd()
+
+            # Define the full path for the file
+            file_path = os.path.join(current_dir, 'aux_files')
+            file_path = os.path.join(file_path, file_name)
+
+            # Save the object to a file using pickle
+            with open(file_path, 'wb') as f:
+                pickle.dump(object, f)
+
+            # Return the file path
+            return file_path
+
+        async def _send_and_collect_response(self, request_type, agent, model, request_data, input_data, msg_id, model_id=None):
+            print(timestamp_with_time_zone(), 'in send')
             receptor = f"{agent}@{self.agent.jid.domain}/{agent}"
 
             # Construct the body data for the message
@@ -741,42 +753,58 @@ class TargetAgent(Agent):
             json_data = body_data
 
             # Compress the JSON data
-            compressed_data = zlib.compress(json_data.encode('utf-8'))
-
-            # Encode the compressed data using Base64
-            encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+            # compressed_data = zlib.compress(json_data.encode('utf-8'))
+            #
+            # # Encode the compressed data using Base64
+            # encoded_data = base64.b64encode(compressed_data).decode('utf-8')
 
             # Create a message and set the encoded data as the body
             new_msg = Message(to=receptor)
+            print(timestamp_with_time_zone(), 'sending to', receptor, 'in send and collect')
             new_msg.set_metadata("performative", "request")
-            new_msg.body = encoded_data
-
-            print(f'Sending compressed and encoded message to {agent}')
+            new_msg.set_metadata("thread", msg_id)
+            # new_msg.body = encoded_data
+            name_file = model+'_'+agent+'.pkl'
+            path = self.save_object_to_file(json_data, name_file)
+            new_msg.body = 'open|'+path
+            print(f'{timestamp_with_time_zone()} Sending compressed and encoded message to {agent}')
             await self.send(new_msg)
 
-            print(f"{datetime.now()} Request sent to ML agent for {agent}")
-            self.agent.add_behaviour(self.agent.WaitResponse(period=1))
+            print(f"{timestamp_with_time_zone()} Request sent to ML agent for {agent}")
+            response = None
+            while not response:
+                if self.agent.received_messages:
+                    for msg in self.agent.received_messages:
+                        if msg.get_metadata('thread') == msg_id and msg.get_metadata(
+                                "performative") == "inform" and 'ml_response' in msg.body:
+                            response = msg
+                            self.agent.received_messages.remove(msg)
+                            break
+                if response:
+                    break
+                await asyncio.sleep(1)
+            # self.agent.add_behaviour(self.agent.WaitResponse())
+            # # response = None
+            # # if self.agent.response_get:
+            # #     response = self.agent.response_get
+            # #     print(f"OuterBehaviour received result from InnerBehaviour: {response}")
+            # #     # Reset shared_data after processing
+            # #     self.agent.response_hist_data = None
+            # # return response
             # response = None
+            #
+            # # We wait for the behaviour to update `response_get`
+            # while not self.agent.response_get:
+            #     print("Waiting for response from ML agent...")
+            #     await asyncio.sleep(1)  # Wait for the WaitResponse behavior to process the message
+            #
+            # # Once we have the response
             # if self.agent.response_get:
             #     response = self.agent.response_get
-            #     print(f"OuterBehaviour received result from InnerBehaviour: {response}")
+            #     print(f"Received response from ML agent: {response.body}")
             #     # Reset shared_data after processing
-            #     self.agent.response_hist_data = None
-            # return response
-            response = None
-
-            # We wait for the behaviour to update `response_get`
-            while not self.agent.response_get:
-                print("Waiting for response from ML agent...")
-                await asyncio.sleep(1)  # Wait for the WaitResponse behavior to process the message
-
-            # Once we have the response
-            if self.agent.response_get:
-                response = self.agent.response_get
-                print(f"Received response from ML agent: {response}")
-                # Reset shared_data after processing
-                self.agent.response_get = None
-
+            #     self.agent.response_get = None
+            print(f"{timestamp_with_time_zone()} Received response from ML agent: {response.body}")
             return response
 
             # Wait for the response from Agent
@@ -850,20 +878,31 @@ class TargetAgent(Agent):
         async def run(self):
             msg = await self.receive()
             if msg:
-                if msg.get_metadata("performative") == "inform":
+                if msg.get_metadata("performative") == "inform" and 'historical_data_response' in msg.body:
                     # Store the result in the shared_data
                     self.agent.response_hist_data = msg
                     # print(f"WaitHistoricalData setting shared data: {self.agent.response_hist_data}")
                     self.kill()  # Stop the InnerBehaviour after handling the response
                 else:
-                    print(f"got another message {msg}")
-    class WaitResponse(PeriodicBehaviour):
+                    print(f"{timestamp_with_time_zone()} got another message {msg}")
+    class WaitResponse(CyclicBehaviour):
         async def run(self):
             # Inner Behaviour: runs periodically after receiving "start"
             # print("InnerBehaviour running... Waiting for specific response.")
             msg = await self.receive()
             if msg:
-                # print(f"WaitResponse received: {msg.body}, {msg}")
+                # print(f"WaitResponse received: {msg.body}")
+                if msg.get_metadata("performative") == "inform":
+                    # Store the result in the shared_data
+                    self.agent.received_messages.append(msg)
+                    # print(f"WaitResponse setting shared data: {self.agent.response_get}")
+                    # self.kill()  # Stop the InnerBehaviour after handling the response
+    class WaitTrainResponse(PeriodicBehaviour):
+        async def run(self):
+            # Inner Behaviour: runs periodically after receiving "start"
+            # print("InnerBehaviour running... Waiting for specific response.")
+            msg = await self.receive()
+            if msg:
                 if msg.get_metadata("performative") == "inform":
                     # Store the result in the shared_data
                     self.agent.response_get = msg
@@ -875,6 +914,8 @@ class TargetAgent(Agent):
 
         self.response_hist_data = None
         self.response_get = None
+        self.received_messages = []
+        self.id_agent_for_messages= None
 
         # Start ReceiveMsg behaviour
         receive_template = Template()
@@ -882,18 +923,21 @@ class TargetAgent(Agent):
         self.add_behaviour(self.ReceiveMsg(), receive_template)
 
         # Template for WaitHistoricalData
-        historical_template = Template()
-        historical_template.set_metadata("performative", "inform")
-        historical_template.body = "historical_data_response"
-
+        # historical_template = Template()
+        # historical_template.set_metadata("performative", "inform")
+        # # historical_template.body = "historical_data_response"
+        wait_template = Template()
+        wait_template.set_metadata("performative", "inform")
+        # ml_template.body = "ml_response"
         # Template for WaitResponse
-        ml_template = Template()
-        ml_template.set_metadata("performative", "inform")
-        ml_template.body = "ml_response"
+        wait_train_template = Template()
+        wait_train_template.set_metadata("performative", "inform")
+        # ml_template.body = "ml_response"
 
         # Add both behaviours with their specific templates
-        self.add_behaviour(self.WaitHistoricalData(period=1), template=historical_template)
-        self.add_behaviour(self.WaitResponse(period=1), template=ml_template)
+        # self.add_behaviour(self.WaitHistoricalData(period=1), template=historical_template)
+        self.add_behaviour(self.WaitResponse(), template=wait_template)
+        self.add_behaviour(self.WaitTrainResponse(period=1), template=wait_train_template)
 
     # async def setup(self):
     #     self.response_hist_data = None

@@ -3,7 +3,8 @@ import json
 import pickle
 import base64
 import zlib
-from utils_package.repository import Session, Model, Result, start_app
+from utils_package.repository import Session, Model, Result, start_app, engine,create_connection, close_connection
+from utils_package.utils import timestamp_with_time_zone
 from sqlalchemy import func, asc
 from collections import defaultdict
 import asyncio
@@ -17,21 +18,21 @@ class DBAgent(Agent):
         async def run(self):
             msg = await self.receive()
             if msg:
-                if msg.get_metadata("compressed"):
-                    # print(f"DB agent: {msg.sender} sent me a message")
-
-                    encoded_data = msg.body
-
-                    # Decode the Base64-encoded string
-                    compressed_data = base64.b64decode(encoded_data)
-
-                    # Decompress the data
-                    new_msg = zlib.decompress(compressed_data).decode('utf-8')
-                else:
-                    # print(f"DB agent: {msg.sender} sent me a message: '{msg.body}'")
-                    new_msg = msg.body
+                # if msg.get_metadata("compressed"):
+                #     # print(f"DB agent: {msg.sender} sent me a message")
+                #
+                #     encoded_data = msg.body
+                #
+                #     # Decode the Base64-encoded string
+                #     compressed_data = base64.b64decode(encoded_data)
+                #
+                #     # Decompress the data
+                #     new_msg = zlib.decompress(compressed_data).decode('utf-8')
+                # else:
+                #     # print(f"DB agent: {msg.sender} sent me a message: '{msg.body}'")
+                new_msg = msg.body
                 if 'save_model' in new_msg:
-                    print('Saving model')
+                    print(timestamp_with_time_zone(), 'Saving model')
                     data_to_insert_in_database = json.loads(new_msg)
                     data_to_insert_in_database = data_to_insert_in_database['save_model']
                     response_db = await self.save_model_to_db(data_to_insert_in_database)
@@ -39,7 +40,7 @@ class DBAgent(Agent):
                     response_msg = msg.make_reply()
                     response_msg.set_metadata("performative", "inform")
                     if response_db:
-                        print('db response', response_db, type(response_db))
+                        print(timestamp_with_time_zone(), 'db response', response_db, type(response_db))
                         response_msg.body = response_db
                     else:
                         response_msg.body = "failure"
@@ -53,7 +54,7 @@ class DBAgent(Agent):
                     value = parts_of_msg[3]
                     response_db = await self.save_part_of_model_to_db(id_model, column, value)
                     if response_db:
-                        print(response_db)
+                        print(timestamp_with_time_zone(), response_db)
                         response_msg.body = response_db
                     else:
                         response_msg.body = "failure"
@@ -172,24 +173,38 @@ class DBAgent(Agent):
                     response_msg.set_metadata("performative", "inform")
                     response_msg.body = response_db
                     await self.send(response_msg)
+                elif 'print_model' in new_msg:
+                    response_db = await self.print_model()
+                    response_db = json.dumps(response_db)
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = response_db
+                    await self.send(response_msg)
+
+
 
         def load_object_from_file(self, file_path):
-            # Open the file and load the regressor using pickle
-            with open(file_path, 'rb') as f:
-                object = pickle.load(f)
+            if 'pkl' in file_path:
+                # Open the file and load the object using pickle
+                with open(file_path, 'rb') as f:
+                    object = pickle.load(f)
+            elif 'txt' in file_path:
+                # Open the file and load the object using json
+                with open(file_path, 'r') as f:
+                    object = f.read()
             os.remove(file_path)
-            # Return the loaded regressor
+            # Return the loaded object
             return object
         async def handle_compress_msg(self, key, msg):
             if key == 'save_model':
-                print("Saving model")
-                print("Received 'I'm here'. Waiting for other messages...")
+                print(timestamp_with_time_zone(), "Saving model")
+                print(timestamp_with_time_zone(), "Received 'I'm here'. Waiting for other messages...")
                 # Wait for the next two messages
                 messages_received = 0
                 while messages_received < 2:
                     response = await self.receive(timeout=60)  # Adjust timeout as needed
                     if response:
-                        print(response)
+                        print(timestamp_with_time_zone(), response)
                 new_msg = msg.body
                 data_to_insert_in_database = json.loads(new_msg)
                 data_to_insert_in_database = data_to_insert_in_database['save_model']
@@ -198,7 +213,7 @@ class DBAgent(Agent):
                 response_msg = msg.make_reply()
                 response_msg.set_metadata("performative", "inform")
                 if response_db:
-                    print(response_db)
+                    print(timestamp_with_time_zone(), response_db)
                     response_msg.body = "success"
                 else:
                     response_msg.body = "failure"
@@ -214,18 +229,26 @@ class DBAgent(Agent):
         async def save_model_to_db(self, model_info):
             session = None
             try:
-                print("lets save model")
+                print(timestamp_with_time_zone(), "lets save model")
                 session = Session()
                 if 'model_id' in model_info:
                     model = session.query(Model).filter_by(model_id=model_info['model_id']).first()
+                    model_binary = self.load_object_from_file(model_info.get('model_binary'))
+                    # print(type(model_binary))
+                    # model_binary = model_binary.encode('latin1')
+                    print(type(model_binary))
+                    model_binary = pickle.loads(model_binary)
+                    print(type(model_binary))
+                    model_binary = pickle.dumps(model_binary)
+                    print(type(model_binary), len(model_binary))
+                    model_binary = zlib.compress(model_binary)
+                    print(type(model_binary), len(model_binary))
+                    train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
+                    x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
+                    y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
+                    x_scaler = pickle.dumps(self.load_object_from_file(model_info.get('x_scaler')))
+                    y_scaler = pickle.dumps(self.load_object_from_file(model_info.get('y_scaler')))
                     if model:
-                        model_binary = pickle.dumps(self.load_object_from_file(model_info.get('model_binary')))
-                        train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
-                        x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
-                        y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
-                        x_scaler = pickle.dumps(self.load_object_from_file(model_info.get('x_scaler')))
-                        y_scaler = pickle.dumps(self.load_object_from_file(model_info.get('y_scaler')))
-                        model.model_binary = model_binary
                         model.train_data = train_data
                         model.x_train_data_norm = x_train
                         model.y_train_data_norm = y_train
@@ -249,24 +272,30 @@ class DBAgent(Agent):
                         # model.classes = model_info.get('classes')
                         # model.global_explanations = pickle.dumps(model_info.get('global_explanations', {}))
                         # model.local_explanations = pickle.dumps(model_info.get('local_explanations', {}))
-                        model.historic_predictions_model = json.dumps(model_info.get('historic_predictions_model'))
-                        model.historic_scores_model = json.dumps(model_info.get('historic_scores_model'))
-                        model.historic_norm_test_data = json.dumps(model_info.get('historic_norm_test_data'))
+                        if model_info.get('historic_predictions_model') is not None:
+                            model.historic_predictions_model = json.dumps(model_info.get('historic_predictions_model'))
+                        if model_info.get('historic_scores_model') is not None:
+                            model.historic_scores_model = json.dumps(model_info.get('historic_scores_model'))
+                        if model_info.get('historic_norm_test_data') is not None:
+                            model.historic_norm_test_data = json.dumps(model_info.get('historic_norm_test_data'))
                         model.retrain_counter = model_info.get('retrain_counter')
                         model.flag_training = model_info.get('flag_training')
                         model.models_version = model_info.get('models_version')
                         model.training_dates = json.dumps(model_info.get('training_dates'))
                         model.updated_at = func.now()
+                        session.add(model)
+                        session.commit()
+                        model_id = model.model_id
                     else:
-                        print("Model dont exists", model_info.keys())
-                        model_binary = pickle.dumps(self.load_object_from_file(model_info.get('model_binary')))
-                        train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
-                        x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
-                        y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
-                        x_scaler = pickle.dumps(self.load_object_from_file(model_info.get('x_scaler')))
-                        y_scaler = pickle.dumps(self.load_object_from_file(model_info.get('y_scaler')))
+                        print(timestamp_with_time_zone(), "Model dont exists line 255")
+                        # model_binary = pickle.dumps(self.load_object_from_file(model_info.get('model_binary')))
+                        # train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
+                        # x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
+                        # y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
+                        # x_scaler = pickle.dumps(self.load_object_from_file(model_info.get('x_scaler')))
+                        # y_scaler = pickle.dumps(self.load_object_from_file(model_info.get('y_scaler')))
                         model = Model(
-                            model_binary=model_binary,
+                            # model_binary=model_binary,
                             train_data=train_data,
                             x_train_data_norm=x_train,
                             y_train_data_norm=y_train,
@@ -291,9 +320,6 @@ class DBAgent(Agent):
                             # classes = model_info.get('classes')
                             # global_explanations = pickle.dumps(model_info.get('global_explanations', {}))
                             # local_explanations = pickle.dumps(model_info.get('local_explanations', {}))
-                            historic_predictions_model=json.dumps(model_info.get('historic_predictions_model')),
-                            historic_scores_model=json.dumps(model_info.get('historic_scores_model')),
-                            historic_norm_test_data=json.dumps(model_info.get('historic_norm_test_data')),
                             retrain_counter=model_info.get('retrain_counter'),
                             flag_training=model_info.get('flag_training'),
                             models_version=model_info.get('models_version'),
@@ -302,20 +328,36 @@ class DBAgent(Agent):
                             updated_at=func.now()
                         )
                         session.add(model)
-                    session.commit()
-                    model_id = model.model_id
+                        session.commit()
+                        model_id = model.model_id
+                        if model_info.get('historic_predictions_model') is not None:
+                            await self.save_other_entries(model_id, session,'historic_predictions_model',
+                                                          json.dumps(model_info.get('historic_predictions_model')))
+                        if model_info.get('historic_scores_model') is not None:
+                            await self.save_other_entries(model_id, session, 'historic_scores_model', json.dumps(model_info.get('historic_scores_model')))
+                        if model_info.get('historic_norm_test_data') is not None:
+                            await self.save_other_entries(model_id, session, 'historic_norm_test_data', json.dumps(model_info.get('historic_norm_test_data')))
+                        await self.save_large_binaries(model_id, session, model_binary)
                     session.close()
                     return str(model_id)
                 else:
-                    print("Model dont exists", model_info.keys())
-                    model_binary = pickle.dumps(self.load_object_from_file(model_info.get('model_binary')))
+                    print(timestamp_with_time_zone(), "Model dont exists line 305")
+                    print(type(model_info.get('model_binary')))
+                    model_binary = self.load_object_from_file(model_info.get('model_binary'))
+                    # print(type(model_binary))
+                    # model_binary = model_binary.encode('latin1')
+                    print(type(model_binary), len(model_binary))
+                    model_binary = pickle.dumps(model_binary)
+                    print('pickle_dumps', type(model_binary), len(model_binary))
+                    model_binary = zlib.compress(model_binary)
+                    print('zlib:', type(model_binary), len(model_binary))
                     train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
                     x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
                     y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
                     x_scaler = pickle.dumps(self.load_object_from_file(model_info.get('x_scaler')))
                     y_scaler = pickle.dumps(self.load_object_from_file(model_info.get('y_scaler')))
                     model = Model(
-                        model_binary=model_binary,
+                        # model_binary=model_binary,
                         train_data=train_data,
                         x_train_data_norm=x_train,
                         y_train_data_norm=y_train,
@@ -340,9 +382,9 @@ class DBAgent(Agent):
                         # classes = model_info.get('classes')
                         # global_explanations = pickle.dumps(model_info.get('global_explanations', {}))
                         # local_explanations = pickle.dumps(model_info.get('local_explanations', {}))
-                        historic_predictions_model=json.dumps(model_info.get('historic_predictions_model')),
-                        historic_scores_model=json.dumps(model_info.get('historic_scores_model')),
-                        historic_norm_test_data=json.dumps(model_info.get('historic_norm_test_data')),
+                        # historic_predictions_model=json.dumps(model_info.get('historic_predictions_model')),
+                        # historic_scores_model=json.dumps(model_info.get('historic_scores_model')),
+                        # historic_norm_test_data=json.dumps(model_info.get('historic_norm_test_data')),
                         retrain_counter=model_info.get('retrain_counter'),
                         flag_training=model_info.get('flag_training'),
                         models_version=model_info.get('models_version'),
@@ -353,12 +395,115 @@ class DBAgent(Agent):
                     session.add(model)
                     session.commit()
                     model_id = model.model_id
+                    if model_info.get('historic_predictions_model') is not None:
+                        await self.save_other_entries(model_id, session, 'historic_predictions_model',
+                                                      json.dumps(model_info.get('historic_predictions_model')))
+                    if model_info.get('historic_scores_model') is not None:
+                        await self.save_other_entries(model_id, session, 'historic_scores_model',
+                                                      json.dumps(model_info.get('historic_scores_model')))
+                    if model_info.get('historic_norm_test_data') is not None:
+                        await self.save_other_entries(model_id, session, 'historic_norm_test_data',
+                                                      json.dumps(model_info.get('historic_norm_test_data')))
+                    await self.save_large_binaries(model_id, session, model_binary)
+                    # await self.save_large_binaries(model_id, session, model_binary)
                     session.close()
                     return str(model_id)
             except Exception as e:
-                print('exception', e)
+                print(timestamp_with_time_zone(), 'exception', e)
                 session.rollback()
                 return 'Failed'
+
+
+        # def store_large_object(self, connection, binary_data):
+        #     print(timestamp_with_time_zone(), 'store large object')
+        #     with connection.cursor() as cursor:
+        #         cursor.execute("BEGIN;")  # Start a transaction
+        #
+        #         # Create a new large object
+        #         cursor.execute("SELECT lo_create(0);")
+        #         lo_oid = cursor.fetchone()[0]
+        #
+        #         # Open the large object for writing
+        #         lo_fd = connection.lobject(lo_oid, mode="w")
+        #
+        #         # Write the binary data in chunks (to handle large sizes)
+        #         chunk_size = 8192
+        #         for i in range(0, len(binary_data), chunk_size):
+        #             print(datetime.now(), 'writing...')
+        #             lo_fd.write(binary_data[i:i + chunk_size])
+        #
+        #         # Close the large object
+        #         lo_fd.close()
+        #
+        #         # Commit the transaction
+        #         connection.commit()
+        #
+        #         return lo_oid
+
+        async def save_other_entries(self, model_id, session, entry, value):
+            if entry == 'historic_predictions_model':
+                session.query(Model).filter(Model.model_id == model_id).update({Model.historic_predictions_model: value})
+                session.commit()
+            if entry == 'historic_norm_test_data':
+                session.query(Model).filter(Model.model_id == model_id).update({Model.historic_norm_test_data: value})
+                session.commit()
+            if entry == 'historic_scores_model':
+                session.query(Model).filter(Model.model_id == model_id).update({Model.historic_scores_model: value})
+                session.commit()
+
+        async def save_large_binaries(self, model_id, session, model_binary):
+            print(timestamp_with_time_zone(), 'saving large binaries')
+            print(timestamp_with_time_zone(), 'model_binary')
+            try:
+                print(timestamp_with_time_zone(), len(model_binary))
+            except:
+                pass
+            # session.query(Model).filter(Model.model_id == model_id).update({Model.model_binary: model_binary})
+            # model.model_binary = model_binary
+            # session.add(model)
+            # session.commit()
+            # try:
+            #     print(timestamp_with_time_zone(), 'len:', len(model_binary))
+            #     session.query(Model).filter(Model.model_id == model_id).update({Model.model_binary: model_binary})
+            #     # connection = session.connection().connection
+            #     # lo_oid = self.store_large_object(connection, model_binary)
+            #     # session.query(Model).filter(Model.model_id == model_id).update({Model.model_binary: lo_oid})
+            #     session.commit()
+            # except Exception as e:
+            #     print(f"{timestamp_with_time_zone()} Error: {e}")
+            #     session.rollback()
+            #
+            # finally:
+            #     session.close()
+
+            # conn = create_connection()
+            # cur = conn.cursor()
+            # cur.execute("SELECT lo_create(0);")
+            # oid = cur.fetchone()[0]
+            # large_object = conn.lobject(oid, 'wb')
+            # large_object.write(model_binary)
+            # large_object.close()
+            # cur.execute("UPDATE models SET model_binary_oid = %s WHERE model_id = %s", (oid, model_id))
+            # conn.commit()
+            # cur.close()
+            # close_connection(conn)
+            conn = create_connection()
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT lo_create(0);")
+                oid = cursor.fetchone()[0]
+                lo = conn.lobject(oid, 'wb')
+                lo.write(model_binary)
+                lo.close()
+                conn.commit()
+                # stmt = (update(models_table).where(models_table.c.model_id == model_id).values(model_binary_oid=oid))
+                # conn.execute(stmt)
+            close_connection(conn)
+            print('here')
+            model = session.query(Model).filter(Model.model_id == model_id).first()
+            print(model)
+            if model:
+                model.model_binary_oid = oid
+                session.commit()
 
 
         async def save_result_to_db(self, result_info):
@@ -473,23 +618,30 @@ class DBAgent(Agent):
         async def update_model_historic(self, model_info):
             model_id = model_info['model_id']
             session = Session()
-
-            # Retrieve the colour entry based on the given filters
-            model = (
-                session.query(Model)
-                .filter_by(model_id=model_id)
-                .first()
-            )
-
-            if not model:
-                session.close()
-                return 'Failed'
-
-            # Update the desired fields
-            model.historic_norm_test_data = json.dumps(model_info['historic_norm_test_data'])
-            model.historic_predictions_model = json.loads(model_info['historic_predictions_model'])
-            # Commit the changes to the database
+            session.query(Model).filter(Model.model_id == model_id).update(
+                {Model.historic_norm_test_data: json.dumps(model_info['historic_norm_test_data'])})
             session.commit()
+
+            session.query(Model).filter(Model.model_id == model_id).update(
+                {Model.historic_predictions_model: json.dumps(model_info['historic_predictions_model'])})
+            session.commit()
+            # # Retrieve the colour entry based on the given filters
+            # model = (
+            #     session.query(Model)
+            #     .filter_by(model_id=model_id)
+            #     .first()
+            # )
+            #
+            # if not model:
+            #     session.close()
+            #     return 'Failed'
+            #
+            #
+            # # Update the desired fields
+            # model.historic_norm_test_data = json.dumps(model_info['historic_norm_test_data'])
+            # model.historic_predictions_model = json.dumps(model_info['historic_predictions_model'])
+            # # Commit the changes to the database
+            # session.commit()
 
             session.close()
             return 'Success'
@@ -497,31 +649,45 @@ class DBAgent(Agent):
         async def update_model_historics(self, model_info):
             model_id = model_info['model_id']
             session = Session()
-
-            # Retrieve the colour entry based on the given filters
-            model = (
-                session.query(Model)
-                .filter_by(model_id=model_id)
-                .first()
-            )
-
-            if not model:
-                session.close()
-                return 'Failed'
-            commit = False
-            # Update the desired fields
             if model_info['historic_predictions_model']:
-                commit = True
-                model.historic_predictions_model = json.dumps(model_info['historic_predictions_model'])
-            if model_info['test_errors']:
-                commit = True
-                model.test_errors = json.dumps(model_info['test_errors'])
-            if model_info['historic_scores_model']:
-                commit = True
-                model.historic_scores_model = json.dumps(model_info['historic_scores_model'])
-            # Commit the changes to the database
-            if commit:
+                session.query(Model).filter(Model.model_id == model_id).update(
+                    {Model.historic_predictions_model: json.dumps(model_info['historic_predictions_model'])})
                 session.commit()
+
+            if model_info['test_errors']:
+                session.query(Model).filter(Model.model_id == model_id).update(
+                    {Model.test_errors: json.dumps(model_info['test_errors'])})
+                session.commit()
+
+            if model_info['historic_scores_model']:
+                session.query(Model).filter(Model.model_id == model_id).update(
+                    {Model.historic_scores_model: json.dumps(model_info['historic_scores_model'])})
+                session.commit()
+
+            # # Retrieve the colour entry based on the given filters
+            # model = (
+            #     session.query(Model)
+            #     .filter_by(model_id=model_id)
+            #     .first()
+            # )
+            #
+            # if not model:
+            #     session.close()
+            #     return 'Failed'
+            # commit = False
+            # # Update the desired fields
+            # if model_info['historic_predictions_model']:
+            #     commit = True
+            #     model.historic_predictions_model = json.loads(model_info['historic_predictions_model'])
+            # if model_info['test_errors']:
+            #     commit = True
+            #     model.test_errors = json.loads(model_info['test_errors'])
+            # if model_info['historic_scores_model']:
+            #     commit = True
+            #     model.historic_scores_model = json.loads(model_info['historic_scores_model'])
+            # # Commit the changes to the database
+            # if commit:
+            #     session.commit()
 
             session.close()
             return 'Success'
@@ -651,7 +817,7 @@ class DBAgent(Agent):
         async def check_if_model_exists(self, model_info):
             session = Session()
             target = model_info['target']
-            models = session.query(Model.characteristics).filter_by(target_name=target).all()
+            models = session.query(Model.characteristics).filter_by(target_name=target).filter(Model.model_binary.isnot(None)).all()
             session.close()
             for model in models:
                 for model_characteristics in model:
@@ -669,6 +835,50 @@ class DBAgent(Agent):
                             return True
             return False
 
+        async def print_model(self):
+            session = Session()
+            model = session.query(Model).filter_by(target_name='cons_total', ml_model='RFR').first()
+            session.close()
+            print('model',  model)
+            oid = model.model_binary_oid
+            print('oid', oid)
+            # print(timestamp_with_time_zone(), 'model:', model)
+            # try:
+            #     model_binary = model.model_binary
+            #     decom_data = zlib.decompress(model_binary)
+            #     print(type(decom_data), len(decom_data))
+            #     regr = pickle.loads(decom_data)
+            #     print(regr, len(regr))
+            # except Exception as e:
+            #     print(e)
+            #     decom_data = zlib.decompress(model)
+            #     print(type(decom_data), len(decom_data))
+            #     regr = pickle.loads(decom_data)
+            #     print(regr, len(regr))
+            # Connect to the PostgreSQL database
+            conn = create_connection()
+            cur = conn.cursor()
+
+            #cur.execute("SELECT model_binary_oid FROM models WHERE target_name='cons_zone1'and ml_model='RFR'")
+            #oid = cur.fetchone()[0]
+
+            # Open the large object for reading
+            large_object = conn.lobject(oid, 'rb')
+            compressed_model_data = large_object.read()
+            large_object.close()
+
+            # Decompress the binary model data
+            model_data = zlib.decompress(compressed_model_data)
+
+            print('got_model_data:', type(model_data), len(model_data))
+            try:
+                regr = pickle.loads(model_data)
+                print('regressor', regr, len(regr))
+            except:
+                pass
+            cur.close()
+            conn.close()
+            return 'ok'
     async def setup(self):
         await start_app()
         self.chunked_messages = defaultdict(dict)  # Thread-safe chunk storage
@@ -680,5 +890,5 @@ class DBAgent(Agent):
             current_time = datetime.now()
             for message_id, data in list(self.chunked_messages.items()):
                 if (current_time - data.get("timestamp", current_time)).total_seconds() > 180:  # Timeout of 3 minutes
-                    print(f"Cleaning up incomplete message {message_id}")
+                    print(f" {timestamp_with_time_zone()} Cleaning up incomplete message {message_id}")
                     del self.chunked_messages[message_id]
