@@ -30,7 +30,13 @@
 ##### 3. In a terminal run:
 ###### docker run -d --name db_local -e POSTGRES_PASSWORD=psw -p 9911:5432 postgres
 
-#### Then create a virtual environment in the terminal running:
+
+#### 1- In one terminal:
+##### To run the microservice for historical data (It will run the service in port 8080, so url service = 127.0.0.1:8080):
+
+###### Go to the directory where the requirements.txt file is located
+
+###### Then create a virtual environment in the terminal running:
 
 ##### python -m venv venv
 
@@ -42,10 +48,9 @@
 
 ##### pip install -r .\requirements.txt
 
-#### 1- In one terminal:
-##### To run the microservice for historical data (It will run the service in port 8080, so url service = 127.0.0.1:8080):
+###### Enter the project directory
 
-###### hypercorn app:app -b 0.0.0.0:8080
+###### Run: hypercorn app:app -b 0.0.0.0:8080
 
 #### 2- In another terminal:
 ##### To run the multi-agent system
