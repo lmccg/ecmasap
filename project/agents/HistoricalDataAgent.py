@@ -1,4 +1,4 @@
-from peak import Agent, PeriodicBehaviour, Message
+from peak import Agent, CyclicBehaviour, Message
 import zlib
 import base64
 import json
@@ -12,7 +12,7 @@ from utils_package.utils import timestamp_with_time_zone
 
 
 class HistoricalDataAgent(Agent):
-    class GetData(PeriodicBehaviour):
+    class GetData(CyclicBehaviour):
         async def run(self):
             msg = await self.receive()
             if msg:
@@ -479,5 +479,5 @@ class HistoricalDataAgent(Agent):
 
     # Setup function for the historical data agent
     async def setup(self):
-        b = self.GetData(period=1)
+        b = self.GetData()
         self.add_behaviour(b)

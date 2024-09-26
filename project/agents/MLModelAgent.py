@@ -1,4 +1,4 @@
-from peak import Agent, Message, PeriodicBehaviour, CyclicBehaviour
+from peak import Agent, Message, CyclicBehaviour
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, GradientBoostingRegressor, AdaBoostRegressor
 from sklearn.model_selection import StratifiedKFold, TimeSeriesSplit, KFold, cross_val_score, cross_val_predict, \
     cross_validate
@@ -20,7 +20,7 @@ from ast import literal_eval
 from utils_package.utils import timestamp_with_time_zone
 
 class MLModelAgent(Agent):
-    class ReceiveMsg(PeriodicBehaviour):
+    class ReceiveMsg(CyclicBehaviour):
         async def run(self):
             msg = await self.receive()
             if msg:
@@ -160,13 +160,7 @@ class MLModelAgent(Agent):
                         y_train_path = 'y_train_' + suffix_pkl
                         x_scale_path = 'x_scale_' + suffix_pkl
                         y_scale_path = 'y_scale_' + suffix_pkl
-                        try:
-                            print('len regressor:', len(regressor), type(regressor))
-                        except:
-                            print('just type', type(regressor))
-                            pass
                         regressor_dec = pickle.dumps(regressor)
-                        print('len regressor:', len(regressor_dec), type(regressor_dec))
                         # regressor_dec = regressor_dec.decode('latin1')
                         regressor_path = self.save_object_to_file(regressor_dec, regressor_path)
                         array_data_df_path = self.save_object_to_file(array_data_df, array_data_df_path)
@@ -203,7 +197,6 @@ class MLModelAgent(Agent):
                                 'models_version': models_version,
                                 'training_dates': training_dates}}
                             msg_ = json.dumps(model_info)
-                            print(len(msg_))
                             # new_msg.body = msg_
                             print(timestamp_with_time_zone(), 'sending')
                             response = await self._send_response(msg_, database_agent, 4800)
@@ -816,7 +809,32 @@ class MLModelAgent(Agent):
             #initial_msg.set_metadata("compressed", "true")
             initial_msg.set_metadata("performative", "request")
             initial_msg.body = full_message
-            await self.send(initial_msg)
+            print(timestamp_with_time_zone(), 'okk sending...', time_out, 'seconds')
+            alive = False
+            while not alive:
+                alive_msg = Message(to=receptor)
+                alive_msg.set_metadata("performative", "request")
+                alive_msg.body = 'alive'
+                print(timestamp_with_time_zone(), 'lets try to send')
+                try:
+                    try:
+                        await self.send(alive_msg)
+                    except ConnectionError as e:
+                        print('hmmm', e)
+                    try:
+                        response_alive = await self.receive(timeout=15)
+                        alive = json.loads(response_alive.body)
+                    except:
+                        pass
+                except ConnectionError as e:
+                    print('alive exception', str(e))
+            print('is alive', alive)
+            try:
+                await self.send(initial_msg)
+            except Exception as e:
+                print('here in send initial msg', str(e), str(time_out), 'seconds')
+                raise e
+            print('okk waiting...', time_out, 'seconds')
             response = await self.receive(timeout=time_out)
             if response:
                 print(f"{timestamp_with_time_zone()} Response received from agent for {agent}: {response.body}")
@@ -928,4 +946,4 @@ class MLModelAgent(Agent):
         #         print(f"{datetime.now()} No response received for {agent}")
         #         return "Failed"
     async def setup(self):
-        self.add_behaviour(self.ReceiveMsg(period=1))
+        self.add_behaviour(self.ReceiveMsg())

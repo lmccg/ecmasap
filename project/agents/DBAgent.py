@@ -1,4 +1,4 @@
-from peak import Agent, Message, PeriodicBehaviour, CyclicBehaviour
+from peak import Agent, Message, CyclicBehaviour
 import json
 import pickle
 import base64
@@ -14,12 +14,12 @@ import os
 
 
 class DBAgent(Agent):
-    class ReceiveMsg(PeriodicBehaviour):
+    class ReceiveMsg(CyclicBehaviour):
         async def run(self):
-            msg = await self.receive()
+            msg = await self.receive(10)
             if msg:
                 # if msg.get_metadata("compressed"):
-                #     # print(f"DB agent: {msg.sender} sent me a message")
+                print(f"{timestamp_with_time_zone()} DB agent: {msg.sender} sent me a message {msg.body}")
                 #
                 #     encoded_data = msg.body
                 #
@@ -31,7 +31,12 @@ class DBAgent(Agent):
                 # else:
                 #     # print(f"DB agent: {msg.sender} sent me a message: '{msg.body}'")
                 new_msg = msg.body
-                if 'save_model' in new_msg:
+                if 'alive' in new_msg:
+                    response_msg = msg.make_reply()
+                    response_msg.set_metadata("performative", "inform")
+                    response_msg.body = json.dumps(True)
+                    await self.send(response_msg)
+                elif 'save_model' in new_msg:
                     print(timestamp_with_time_zone(), 'Saving model')
                     data_to_insert_in_database = json.loads(new_msg)
                     data_to_insert_in_database = data_to_insert_in_database['save_model']
@@ -180,7 +185,8 @@ class DBAgent(Agent):
                     response_msg.set_metadata("performative", "inform")
                     response_msg.body = response_db
                     await self.send(response_msg)
-
+            else:
+                print(timestamp_with_time_zone(), 'waiting for msg')
 
 
         def load_object_from_file(self, file_path):
@@ -195,29 +201,29 @@ class DBAgent(Agent):
             os.remove(file_path)
             # Return the loaded object
             return object
-        async def handle_compress_msg(self, key, msg):
-            if key == 'save_model':
-                print(timestamp_with_time_zone(), "Saving model")
-                print(timestamp_with_time_zone(), "Received 'I'm here'. Waiting for other messages...")
-                # Wait for the next two messages
-                messages_received = 0
-                while messages_received < 2:
-                    response = await self.receive(timeout=60)  # Adjust timeout as needed
-                    if response:
-                        print(timestamp_with_time_zone(), response)
-                new_msg = msg.body
-                data_to_insert_in_database = json.loads(new_msg)
-                data_to_insert_in_database = data_to_insert_in_database['save_model']
-                response_db = await self.save_model_to_db(data_to_insert_in_database)
-                # REPLY BACK
-                response_msg = msg.make_reply()
-                response_msg.set_metadata("performative", "inform")
-                if response_db:
-                    print(timestamp_with_time_zone(), response_db)
-                    response_msg.body = "success"
-                else:
-                    response_msg.body = "failure"
-                await self.send(response_msg)
+        # async def handle_compress_msg(self, key, msg):
+        #     if key == 'save_model':
+        #         print(timestamp_with_time_zone(), "Saving model")
+        #         print(timestamp_with_time_zone(), "Received 'I'm here'. Waiting for other messages...")
+        #         # Wait for the next two messages
+        #         messages_received = 0
+        #         while messages_received < 2:
+        #             response = await self.receive(timeout=60)  # Adjust timeout as needed
+        #             if response:
+        #                 print(timestamp_with_time_zone(), response)
+        #         new_msg = msg.body
+        #         data_to_insert_in_database = json.loads(new_msg)
+        #         data_to_insert_in_database = data_to_insert_in_database['save_model']
+        #         response_db = await self.save_model_to_db(data_to_insert_in_database)
+        #         # REPLY BACK
+        #         response_msg = msg.make_reply()
+        #         response_msg.set_metadata("performative", "inform")
+        #         if response_db:
+        #             print(timestamp_with_time_zone(), response_db)
+        #             response_msg.body = "success"
+        #         else:
+        #             response_msg.body = "failure"
+        #         await self.send(response_msg)
         def extract_shap_data(self, shap_values):
             if isinstance(shap_values, list):
                 return [shap_array.values if hasattr(shap_array, 'values') else shap_array for shap_array in
@@ -236,13 +242,9 @@ class DBAgent(Agent):
                     model_binary = self.load_object_from_file(model_info.get('model_binary'))
                     # print(type(model_binary))
                     # model_binary = model_binary.encode('latin1')
-                    print(type(model_binary))
                     model_binary = pickle.loads(model_binary)
-                    print(type(model_binary))
                     model_binary = pickle.dumps(model_binary)
-                    print(type(model_binary), len(model_binary))
                     model_binary = zlib.compress(model_binary)
-                    print(type(model_binary), len(model_binary))
                     train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
                     x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
                     y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
@@ -344,15 +346,11 @@ class DBAgent(Agent):
                     return str(model_id)
                 else:
                     print(timestamp_with_time_zone(), "Model dont exists line 305")
-                    print(type(model_info.get('model_binary')))
                     model_binary = self.load_object_from_file(model_info.get('model_binary'))
                     # print(type(model_binary))
                     # model_binary = model_binary.encode('latin1')
-                    print(type(model_binary), len(model_binary))
                     model_binary = pickle.dumps(model_binary)
-                    print('pickle_dumps', type(model_binary), len(model_binary))
                     model_binary = zlib.compress(model_binary)
-                    print('zlib:', type(model_binary), len(model_binary))
                     train_data = pickle.dumps(self.load_object_from_file(model_info.get('train_data')))
                     x_train = pickle.dumps(self.load_object_from_file(model_info.get('x_train_data_norm')))
                     y_train = pickle.dumps(self.load_object_from_file(model_info.get('y_train_data_norm')))
@@ -456,11 +454,6 @@ class DBAgent(Agent):
 
         async def save_large_binaries(self, model_id, session, model_binary):
             print(timestamp_with_time_zone(), 'saving large binaries')
-            print(timestamp_with_time_zone(), 'model_binary')
-            try:
-                print(timestamp_with_time_zone(), len(model_binary))
-            except:
-                pass
             # session.query(Model).filter(Model.model_id == model_id).update({Model.model_binary: model_binary})
             # model.model_binary = model_binary
             # session.add(model)
@@ -501,9 +494,7 @@ class DBAgent(Agent):
                 # stmt = (update(models_table).where(models_table.c.model_id == model_id).values(model_binary_oid=oid))
                 # conn.execute(stmt)
             close_connection(conn)
-            print('here')
             model = session.query(Model).filter(Model.model_id == model_id).first()
-            print(model)
             if model:
                 model.model_binary_oid = oid
                 session.commit()
@@ -553,14 +544,15 @@ class DBAgent(Agent):
 
         async def get_regressor_and_scalers(self, model_id):
             session = Session()
-            model = session.query(Model.model_binary,
+            model = session.query(Model.model_binary_oid,
                                   Model.x_scaler,
                                   Model.y_scaler,
                                   Model.dataset_transformations).filter_by(model_id=model_id).first()
             session.close()
             model_dict = {}
             if model:
-                model_dict = {'regressor': pickle.loads(model.model_binary), 'x_scaler': pickle.loads(model.x_scaler),
+                # todo regressor is the oid
+                model_dict = {'regressor': pickle.loads(model.model_binary_oid), 'x_scaler': pickle.loads(model.x_scaler),
                               'y_scaler': pickle.loads(model.y_scaler), 'settings': json.loads(
                         model.dataset_transformations) if model.dataset_transformations else {}}
             return json.dumps(model_dict)
@@ -714,7 +706,8 @@ class DBAgent(Agent):
                 return 'Failed'
 
             # Update the desired fields
-            model.model_binary = pickle.dumps(model_info['model_binary'])
+            #todo : now is oid
+            # model.model_binary = pickle.dumps(model_info['model_binary'])
             model.train_data = pickle.dumps(model_info['train_data'])
             model.x_train_data_norm = pickle.dumps(model_info['x_train_data_norm'])
             model.y_train_data_norm = pickle.dumps(model_info['y_train_data_norm'])
@@ -748,7 +741,7 @@ class DBAgent(Agent):
                 session.close()
                 model_list = [{
                         'model_id': model.model_id,
-                        'model_binary': pickle.loads(model.model_binary),
+                        # 'model_binary': pickle.loads(model.model_binary),
                         'train_data': pickle.loads(model.train_data),
                         'columns_names': model.columns_names,
                         'target_feature': model.target_feature,
@@ -782,7 +775,7 @@ class DBAgent(Agent):
                 if model:
                     return {
                         'model_id': model.model_id,
-                        'model_binary': pickle.loads(model.model_binary),
+                        # 'model_binary': pickle.loads(model.model_binary),
                         'train_data': pickle.loads(model.train_data),
                         'columns_names': model.columns_names,
                         'target_feature': model.target_feature,
@@ -828,7 +821,7 @@ class DBAgent(Agent):
             session = Session()
             target = model_info['target']
             target_zone = model_info['target_table']
-            models = session.query(Model.characteristics).filter_by(target_feature=target, target_zone=target_zone).filter(Model.model_binary.isnot(None)).all()
+            models = session.query(Model.characteristics).filter_by(target_feature=target, target_zone=target_zone).all()
             session.close()
             for model in models:
                 for model_characteristics in model:
@@ -927,13 +920,13 @@ class DBAgent(Agent):
     async def setup(self):
         await start_app()
         self.chunked_messages = defaultdict(dict)  # Thread-safe chunk storage
-        self.add_behaviour(self.ReceiveMsg(period=1))
+        self.add_behaviour(self.ReceiveMsg())
 
-    async def clean_up_chunks(self):
-        while True:
-            await asyncio.sleep(30)  # Clean every 30 seconds
-            current_time = datetime.now()
-            for message_id, data in list(self.chunked_messages.items()):
-                if (current_time - data.get("timestamp", current_time)).total_seconds() > 180:  # Timeout of 3 minutes
-                    print(f" {timestamp_with_time_zone()} Cleaning up incomplete message {message_id}")
-                    del self.chunked_messages[message_id]
+    # async def clean_up_chunks(self):
+    #     while True:
+    #         await asyncio.sleep(30)  # Clean every 30 seconds
+    #         current_time = datetime.now()
+    #         for message_id, data in list(self.chunked_messages.items()):
+    #             if (current_time - data.get("timestamp", current_time)).total_seconds() > 180:  # Timeout of 3 minutes
+    #                 print(f" {timestamp_with_time_zone()} Cleaning up incomplete message {message_id}")
+    #                 del self.chunked_messages[message_id]

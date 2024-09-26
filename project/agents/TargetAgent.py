@@ -1,4 +1,4 @@
-from peak import Agent, CyclicBehaviour, Message, PeriodicBehaviour, Template
+from peak import Agent, CyclicBehaviour, PeriodicBehaviour, Message, Template
 import asyncio
 import json
 from datetime import datetime, timedelta
@@ -9,7 +9,7 @@ import uuid
 import os
 import pickle
 from utils_package.utils import timestamp_with_time_zone
-
+training = False
 class TargetAgent(Agent):
     class ReceiveMsg(CyclicBehaviour):
         async def run(self):
@@ -209,6 +209,7 @@ class TargetAgent(Agent):
                                     response.set_metadata("performative", "inform")
                                     response.body = "Requested train"
                                     await self.send(response)
+                                    await self.set_training_on()
                                     training_dates = await self.get_training_dates(request_data, config_settings)
                                     request_data = await self.get_input_characterization_train(request_data,
                                                                                                tables_dataset,
@@ -230,6 +231,7 @@ class TargetAgent(Agent):
                                     response.body = "Requested retrain"
                                     await self.send(response)
                                     model_id = request_data.get('model_id')
+                                    await self.set_training_on()
                                     training_dates = await self.get_training_dates(request_data, config_settings)
                                     request_data = await self.get_input_characterization_train(request_data,
                                                                                                tables_dataset,
@@ -267,6 +269,12 @@ class TargetAgent(Agent):
                                 response_msg.set_metadata("performative", "inform")
                                 response_msg.body = input_data
                                 await self.send(response_msg)
+                    elif request_type == 'get_training_status':
+                        status = json.dumps(await self.set_get_training_status())
+                        response_msg = msg.make_reply()
+                        response_msg.set_metadata("performative", "inform")
+                        response_msg.body = status
+                        await self.send(response_msg)
 
                     elif request_type == 'needed_models_to_train':
                         with open('utils_package/config_agents.json') as config_file:
@@ -362,9 +370,23 @@ class TargetAgent(Agent):
                 if isinstance(input_data, list):
                     input_data = json.dumps(input_data)
                 await self._send_and_collect_response(request_type, agent, model, request_data, input_data, msg_id)
+            await self.set_training_off()
             #     task =
             #     tasks.append(task)
             # await asyncio.gather(*tasks)
+
+        async def set_get_training_status(self):
+            global training
+            return training
+
+        async def set_training_on(self):
+            global training
+            training = True
+
+        async def set_training_off(self):
+            global training
+            training = False
+
 
         async def get_training_dates(self, request_data, config_settings):
             start_date = request_data.get('start_date')
@@ -398,7 +420,7 @@ class TargetAgent(Agent):
                 input_data = json.dumps(input_data)
             await self._send_and_collect_response(request_type, agent, model, request_data, input_data, msg_id,
                                                   model_id)
-
+            await self.set_training_off()
         async def round_to_frequency(self, dt, frequency_minutes, round_up=False):
             # Convert the time to total minutes (hour * 60 + minute)
             minutes = dt.hour * 60 + dt.minute

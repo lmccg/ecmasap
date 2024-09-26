@@ -1,6 +1,6 @@
 import asyncio
 from utils_package.utils import timestamp_with_time_zone
-from peak import Agent, OneShotBehaviour, CyclicBehaviour, PeriodicBehaviour, Message
+from peak import Agent, OneShotBehaviour, CyclicBehaviour, Message
 from spade.template import Template
 import aiohttp_cors
 import time
@@ -66,22 +66,38 @@ class MainAgent(Agent):
             await asyncio.sleep(10)
             with open('utils_package/config_agents.json') as f:
                 config_agents = json.load(f)
-            # target_agent = config_agents['target_agent']
-            # jid = f'{target_agent}@{self.jid}'
-            # self.agent.set('selected_agent', jid)  # Use self.agent to access the agent instance
-            # self.agent.set('request_type', 'needed_models_to_train')
-            # behaviour = self.agent.GetDataFromAgent()
-            # self.agent.add_behaviour(behaviour)
-            # await behaviour.join()
-            # self.agent.set('selected_agent', None)
-            # data = self.agent.get('agent_target')
-            # print(timestamp_with_time_zone(),data)
-            # if data is not None:
-            #     for entry in data:
-            #         print(timestamp_with_time_zone(), 'sending', entry)
-            #         await self.agent.train_model(entry)
-            #         await asyncio.sleep(10)
-            #         print(timestamp_with_time_zone(), 'okkk')
+            target_agent = config_agents['target_agent']
+            jid = f'{target_agent}@{self.jid}'
+            self.agent.set('selected_agent', jid)  # Use self.agent to access the agent instance
+            self.agent.set('request_type', 'needed_models_to_train')
+            behaviour = self.agent.GetDataFromAgent()
+            self.agent.add_behaviour(behaviour)
+            await behaviour.join()
+            self.agent.set('selected_agent', None)
+            data = self.agent.get('agent_target')
+            print(timestamp_with_time_zone(), data)
+            if data is not None:
+                for entry in data:
+                    print(timestamp_with_time_zone(), 'sending')
+                    await self.agent.train_model(entry)
+                    ready_for_another_call = False
+                    while not ready_for_another_call:
+                        print(timestamp_with_time_zone(), 'waiting for status training to be false...')
+                        target_agent = config_agents['target_agent']
+                        jid = f'{target_agent}@{self.jid}'
+                        self.agent.set('selected_agent', jid)  # Use self.agent to access the agent instance
+                        self.agent.set('request_type', 'get_training_status')
+                        behaviour = self.agent.GetDataFromAgent()
+                        self.agent.add_behaviour(behaviour)
+                        await behaviour.join()
+                        self.agent.set('selected_agent', None)
+                        status = self.agent.get('agent_target')
+                        if not status:
+                            ready_for_another_call = True
+                        else:
+                            await asyncio.sleep(60)
+
+                    print(timestamp_with_time_zone(), 'okkk')
 
     async def get_real_data_view(self, request):
         with open('utils_package/config_agents.json') as f:

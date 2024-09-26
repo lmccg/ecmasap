@@ -23,7 +23,6 @@ Session = sessionmaker(bind=engine)
 class Model(Base):
     __tablename__ = 'models'
     model_id = Column(Integer, primary_key=True)
-    model_binary = Column(LargeBinary)
     train_data = Column(LargeBinary)
     x_train_data_norm = Column(LargeBinary)
     y_train_data_norm = Column(LargeBinary)

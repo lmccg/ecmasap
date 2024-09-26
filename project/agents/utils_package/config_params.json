@@ -1277,7 +1277,7 @@
         }
       }
     },
-    "general_periods_12": {
+    "general_periods": {
       "KNNR": {
         "params": {
           "algorithm": "brute",

@@ -104,7 +104,7 @@
 #         b = self.PublishResults(period=1)
 #         self.add_behaviour(b)
 
-from peak import Agent, PeriodicBehaviour
+from peak import Agent, CyclicBehaviour
 import time
 from datetime import datetime, timedelta
 from paho.mqtt import client as mqtt_client
@@ -121,6 +121,8 @@ client_id_base = 'publish-'
 publish_interval = timedelta(minutes=5)
 
 published_topics = {}
+
+id_msg = 1
 
 
 def connect_mqtt(client_id, max_retries=5, retry_interval=5):
@@ -164,7 +166,7 @@ def connect_mqtt(client_id, max_retries=5, retry_interval=5):
 
 
 class PublisherAgent(Agent):
-    class PublishResults(PeriodicBehaviour):
+    class PublishResults(CyclicBehaviour):
 
         async def run(self):
 
@@ -187,7 +189,8 @@ class PublisherAgent(Agent):
                         last_published, last_content = published_topics[topic]
 
                         if last_content == content and datetime.now() - last_published < publish_interval:
-                            print(f"{timestamp_with_time_zone()} Skipping publishing to `{topic}` as the message has been published recently.")
+                            print(
+                                f"{timestamp_with_time_zone()} Skipping publishing to `{topic}` as the message has been published recently.")
 
                             continue
 
@@ -196,7 +199,10 @@ class PublisherAgent(Agent):
                     client = connect_mqtt(client_id)
 
                     client.loop_start()
-
+                    global id_msg
+                    content = str(id_msg) + "|" + content
+                    print('new content', content)
+                    id_msg += 1
                     publisher = self.MQTTPublisher(client_id, topic, content)
 
                     thread = Thread(target=publisher.run, args=(client,))
@@ -231,11 +237,13 @@ class PublisherAgent(Agent):
 
                     if status == 0:
 
-                        print(f"{timestamp_with_time_zone()} Sent `{self.content}` to topic `{self.topic}` using client ID: {self.client_id}")
+                        print(
+                            f"{timestamp_with_time_zone()} Sent `{self.content}` to topic `{self.topic}` using client ID: {self.client_id}")
 
                     else:
 
-                        print(f"{timestamp_with_time_zone()} Failed to send message to topic {self.topic} using client ID: {self.client_id}")
+                        print(
+                            f"{timestamp_with_time_zone()} Failed to send message to topic {self.topic} using client ID: {self.client_id}")
 
                 except Exception as e:
 
@@ -257,7 +265,6 @@ class PublisherAgent(Agent):
 
     async def setup(self):
 
-        b = self.PublishResults(period=1)
+        b = self.PublishResults()
 
         self.add_behaviour(b)
-
